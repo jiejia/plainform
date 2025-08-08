@@ -16,7 +16,7 @@ function SubmitButton() {
             color="primary"
             isLoading={pending}
             disabled={pending}
-            className="w-full"
+            className="w-full"https://tailwindcss.com/docs/
         >
             {pending ? '登录中...' : '登录'}
         </Button>
@@ -27,9 +27,11 @@ export default function Login() {
 
     return (
         <Block className="w-full mt-5 px-5 py-5">
-            <div className="h-10 flex items-center justify-center mb-2">
+            <h2 className="text-center text-md font-normal">Login</h2>
 
-            </div>
+            {/*<div className="h-10 flex items-center justify-center mb-2">*/}
+
+            {/*</div>*/}
             <form  className="w-full flex flex-col gap-5 mt-5">
                 <Input
                     type="email"
@@ -37,9 +39,8 @@ export default function Login() {
                     label=""
                     placeholder="邮箱"
                     labelPlacement="outside"
-                    required
                     startContent={
-                        <Mail size={15} className="content-center" />
+                        <Mail size={16} className="content-center text-default-400" />
                     }
                 />
                 <Input
@@ -48,9 +49,8 @@ export default function Login() {
                     label=""
                     placeholder="密码"
                     labelPlacement="outside"
-                    required
                     startContent={
-                        <Lock size={15} className="content-center" />
+                        <Lock size={16} className="content-center text-default-400" />
                     }
                 />
                 <div className="text-xs grid grid-flow-col">
