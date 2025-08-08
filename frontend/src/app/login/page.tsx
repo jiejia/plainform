@@ -16,7 +16,7 @@ function SubmitButton() {
             color="primary"
             isLoading={pending}
             disabled={pending}
-            className="w-full"https://tailwindcss.com/docs/
+            className="w-full"
         >
             {pending ? '登录中...' : '登录'}
         </Button>
