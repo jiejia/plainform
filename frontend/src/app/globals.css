@@ -6,8 +6,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: hsl(var(--heroui-background));
+  --foreground: hsl(var(--heroui-foreground));
   --font-geist-sans: 'Geist Sans', Arial, Helvetica, sans-serif;
   --font-geist-mono: 'Geist Mono', 'Fira Mono', monospace;
 }
@@ -27,7 +27,7 @@
 }
 
 html,body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: hsl(var(--heroui-foreground));
+  background: hsl(var(--heroui-background));
+  font-family: var(--font-geist-sans);
 }
