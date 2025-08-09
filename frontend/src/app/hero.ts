@@ -1,2 +1,63 @@
 import { heroui } from "@heroui/react";
-export default heroui();
+
+export default heroui({
+    prefix: "heroui",
+    addCommonColors: false,
+    defaultTheme: "light",
+    defaultExtendTheme: "light",
+    layout: {},
+    themes: {
+      light: {
+        layout: {},
+        colors: {
+          background: "#ffffff",
+          foreground: "#111827",
+          primary: {
+            50: "#EEF2FF",
+            100: "#E0E7FF",
+            200: "#C7D2FE",
+            300: "#A5B4FC",
+            400: "#818CF8",
+            500: "#6366F1",
+            600: "#4F46E5",
+            700: "#4338CA",
+            800: "#3730A3",
+            900: "#312E81",
+            DEFAULT: "#6366F1",
+            foreground: "#ffffff",
+          },
+          secondary: { 500: "#64748B", 600: "#475569", DEFAULT: "#64748B", foreground: "#ffffff" },
+          success:   { 500: "#22C55E", 600: "#16A34A", DEFAULT: "#22C55E", foreground: "#052E16" },
+          warning:   { 500: "#F59E0B", 600: "#D97706", DEFAULT: "#F59E0B", foreground: "#111827" },
+          danger:    { 500: "#EF4444", 600: "#DC2626", DEFAULT: "#EF4444", foreground: "#ffffff" },
+          focus: "#A78BFA",
+        },
+      },
+      dark: {
+          layout: {},
+          colors: {
+              background: "#ffffff",
+              foreground: "#111827",
+              primary: {
+                  50: "#EEF2FF",
+                  100: "#E0E7FF",
+                  200: "#C7D2FE",
+                  300: "#A5B4FC",
+                  400: "#818CF8",
+                  500: "#6366F1",
+                  600: "#4F46E5",
+                  700: "#4338CA",
+                  800: "#3730A3",
+                  900: "#312E81",
+                  DEFAULT: "#6366F1",
+                  foreground: "#ffffff",
+              },
+              secondary: { 500: "#64748B", 600: "#475569", DEFAULT: "#64748B", foreground: "#ffffff" },
+              success:   { 500: "#22C55E", 600: "#16A34A", DEFAULT: "#22C55E", foreground: "#052E16" },
+              warning:   { 500: "#F59E0B", 600: "#D97706", DEFAULT: "#F59E0B", foreground: "#111827" },
+              danger:    { 500: "#EF4444", 600: "#DC2626", DEFAULT: "#EF4444", foreground: "#ffffff" },
+              focus: "#A78BFA",
+          },
+      },
+    },
+  });
