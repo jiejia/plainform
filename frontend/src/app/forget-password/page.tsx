@@ -10,7 +10,7 @@ export default function ForgetPassword() {
     return (
         <LoginLayout>
                 <Block className="w-full mt-5 px-5 py-5">
-                    <h2 className="text-center text-md font-normal">Forget Password</h2>
+                    <h2 className="text-center text-lg font-normal">Forget Password</h2>
                     <div className="w-full flex flex-col gap-5 mt-5">
                         <div>
                             <p className="text-xs text-center text-slate-400"> You will receive a link to create a new

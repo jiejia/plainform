@@ -27,7 +27,7 @@ export default function Login() {
 
     return (
         <Block className="w-full mt-5 px-5 py-5">
-            <h2 className="text-center text-md font-normal">Login</h2>
+            <h2 className="text-center text-lg font-normal">Login</h2>
 
             {/*<div className="h-10 flex items-center justify-center mb-2">*/}
 
