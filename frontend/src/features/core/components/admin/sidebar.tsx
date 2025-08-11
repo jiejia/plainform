@@ -54,7 +54,7 @@ export default function Sidebar({menuItemId}: { menuItemId: number }) {
                                         fullWidth
                                         variant={item.id == menuItemId ? "flat" : "light"}
                                         className={clsx("justify-start", {
-                                            "bg-primary-400 text-primary-foreground": item.id == menuItemId
+                                            "bg-primary-500 text-primary-foreground": item.id == menuItemId
                                         })}
                                         color={item.id == menuItemId ? "default" : "primary"}
                                         startContent={item.icon}

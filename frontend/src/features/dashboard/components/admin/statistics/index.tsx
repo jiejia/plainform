@@ -1,7 +1,5 @@
 import Block from "@/features/core/components/shared/block";
 
-
-
 export default function Index() {
     return (
         <div className="grid md:grid-rows-[2fr_5fr_5fr] grid-rows-[4fr_8fr]  gap-4 h-full">
