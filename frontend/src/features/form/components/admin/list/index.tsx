@@ -22,7 +22,10 @@ import {
 } from "@heroui/react";
 import {parseDateTime} from "@internationalized/date";
 import {getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@heroui/table";
-import {EllipsisVertical, ListFilterPlus, RefreshCw, Search, ArrowDownUp, Calendar, Hash, Activity, Pause, Play, Trash2} from "lucide-react"
+import {
+    EllipsisVertical, ListFilterPlus, RefreshCw, Search, ArrowDownUp, Calendar, Hash, Activity, Pause, Play, Trash2,
+    Pencil, Eye, Copy
+} from "lucide-react"
 import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@heroui/modal";
 
 
@@ -169,9 +172,52 @@ export default function Index() {
                         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
                     </TableHeader>
                     <TableBody items={rows}>
-                        {(item) => (<TableRow key={item.key}>
-                            {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
-                        </TableRow>)}
+                        {(item) => (
+                            <TableRow key={item.key}>
+                                {(columnKey) => (
+                                    <TableCell>
+                                        {columnKey === "actions" ? (
+                                            <Dropdown placement="bottom-end">
+                                                <DropdownTrigger>
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        className="text-default-400"
+                                                    >
+                                                        <EllipsisVertical size="16" />
+                                                    </Button>
+                                                </DropdownTrigger>
+                                                <DropdownMenu aria-label="Row actions">
+                                                    <DropdownItem
+                                                        key="edit"
+                                                        startContent={<Pencil size="16" />}
+                                                    >
+                                                        编辑
+                                                    </DropdownItem>
+                                                    <DropdownItem
+                                                        key="view"
+                                                        startContent={<Eye size="16" />}
+                                                    >
+                                                        查看
+                                                    </DropdownItem>
+                                                    <DropdownItem
+                                                        key="delete"
+                                                        className="text-danger"
+                                                        color="danger"
+                                                        startContent={<Trash2 size="16" />}
+                                                    >
+                                                        删除
+                                                    </DropdownItem>
+                                                </DropdownMenu>
+                                            </Dropdown>
+                                        ) : (
+                                            getKeyValue(item, columnKey)
+                                        )}
+                                    </TableCell>
+                                )}
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </Scroll>
