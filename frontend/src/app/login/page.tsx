@@ -1,7 +1,7 @@
 'use client'
 
 import Block from '@/features/core/components/shared/block';
-import { Input, Button, Checkbox,Card, CardHeader, CardBody, CardFooter} from "@heroui/react";
+import { Input, Button, Checkbox,Card, CardHeader, CardBody, CardFooter, Divider} from "@heroui/react";
 import { Link } from "@heroui/link";
 import { useFormState, useFormStatus } from 'react-dom';
 import { useEffect } from 'react';
@@ -26,12 +26,13 @@ function SubmitButton() {
 export default function Login() {
 
     return (
-        <Card className="w-full mt-5 px-2 py-2">
+        <Card className="w-full mt-5">
             <CardHeader className="text-center">
                 <h2 className="text-center text-lg font-normal block w-full">Login</h2>
             </CardHeader>
+            <Divider />
             <CardBody>
-                <form  className="w-full flex flex-col gap-5">
+                <form  className="w-full flex flex-col gap-4">
                     <Input
                         type="email"
                         name="email"

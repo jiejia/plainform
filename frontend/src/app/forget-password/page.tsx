@@ -2,20 +2,21 @@
 
 import LoginLayout from '@/app/login/layout';
 import Block from '@/features/core/components/shared/block';
-import {Input, Button, Checkbox,Card, CardHeader, CardBody, CardFooter} from "@heroui/react";
+import {Input, Button, Checkbox,Card, CardHeader, CardBody, CardFooter, Divider} from "@heroui/react";
 import {Link} from "@heroui/link";
 import { Mail } from "lucide-react";
 
 export default function ForgetPassword() {
     return (
         <LoginLayout>
-            <Card className="w-full mt-5 px-2 py-2">
+            <Card className="w-full mt-5">
                 <CardHeader className="text-center">
                     <h2 className="text-center text-lg font-normal block w-full">Forget Password</h2>
                 </CardHeader>
+                <Divider />
                 <CardBody>
 
-                    <form  className="w-full flex flex-col gap-5">
+                    <form  className="w-full flex flex-col gap-4">
                         <div>
                             <p className="text-xs text-center text-slate-400"> You will receive a link to create a new password via email.</p>
                         </div>
