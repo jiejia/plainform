@@ -31,8 +31,8 @@ export default function Login() {
                 <h2 className="text-center text-lg font-normal block w-full">Login</h2>
             </CardHeader>
             <Divider />
-            <CardBody>
-                <form  className="w-full flex flex-col gap-4">
+            <CardBody className="p-5">
+                <form  className="w-full flex flex-col gap-5">
                     <Input
                         type="email"
                         name="email"

@@ -14,9 +14,9 @@ export default function ForgetPassword() {
                     <h2 className="text-center text-lg font-normal block w-full">Forget Password</h2>
                 </CardHeader>
                 <Divider />
-                <CardBody>
+                <CardBody className="p-5">
 
-                    <form  className="w-full flex flex-col gap-4">
+                    <form  className="w-full flex flex-col gap-5">
                         <div>
                             <p className="text-xs text-center text-slate-400"> You will receive a link to create a new password via email.</p>
                         </div>

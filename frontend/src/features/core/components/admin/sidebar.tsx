@@ -47,7 +47,7 @@ export default function Sidebar({menuItemId}: { menuItemId: number }) {
                         </Link>
                     </h1>
                 </CardHeader>
-                <CardBody>
+                <CardBody className="p-5">
                     <ul className="grid grid-flow-row text-sm gap-1">
                         {
                             menuItems.map((item, index) => {
