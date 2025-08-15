@@ -316,12 +316,14 @@ export default function Index() {
                                                     <DropdownItem
                                                         key="edit"
                                                         startContent={<Pencil size="16" />}
+                                                        href={`/dashboard/form/${item.id}/edit`}
                                                     >
                                                         编辑
                                                     </DropdownItem>
                                                     <DropdownItem
                                                         key="view"
                                                         startContent={<Eye size="16" />}
+                                                        href={`/dashboard/form/${item.id}`}
                                                     >
                                                         查看
                                                     </DropdownItem>
