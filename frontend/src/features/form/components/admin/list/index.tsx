@@ -1,10 +1,11 @@
 'use client';
 
 import React from "react";
-import Block from "@/features/core/components/shared/block";
 import Scroll from "@/features/core/components/shared/scroll";
 import {
     Button,
+    Card,
+    CardBody,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -33,6 +34,126 @@ import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@heroui/
 export default function Index() {
 
     const rows = [{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
+        key: "1",
+        id: 1,
+        name: "Tony Reichert",
+        created_at: "CEO",
+        submission_count: 10,
+        status: "active",
+        action: "edit",
+    },{
         key: "1",
         id: 1,
         name: "Tony Reichert",
@@ -77,8 +198,9 @@ export default function Index() {
 
 
     return (<div className="grid grid-rows-[56px_1fr_56px] gap-4 h-full">
-        <Block className="h-full pt-3">
-            <div className="grid grid-cols-[1fr_auto] items-center gap-2">
+        <Card className="h-full">
+            <CardBody className="pt-3">
+                <div className="grid grid-cols-[1fr_auto] items-center gap-2">
                 <div>
                     <form>
                         <Input
@@ -157,10 +279,12 @@ export default function Index() {
                         Create
                     </Button>
                 </div>
-            </div>
-        </Block>
-        <Block className="pr-2 h-full">
-            <Scroll>
+                </div>
+            </CardBody>
+        </Card>
+        <Card className="h-full">
+            <CardBody className="h-full">
+                <Scroll>
                 <Table
                     aria-label="Controlled table example with dynamic content"
                     selectedKeys={selectedKeys}
@@ -220,10 +344,12 @@ export default function Index() {
                         )}
                     </TableBody>
                 </Table>
-            </Scroll>
-        </Block>
-        <Block className="grid sm:grid-cols-[80px_1fr_80px] grid-cols-[1fr] pt-3 gap-2">
-            <div className="hidden sm:block justify-items-center content-center">
+                </Scroll>
+            </CardBody>
+        </Card>
+        <Card>
+            <CardBody className="grid sm:grid-cols-[80px_1fr_80px] grid-cols-[1fr] pt-3 gap-2">
+                <div className="hidden sm:block justify-items-center content-center">
                 Total 10
             </div>
             <div className="justify-items-center content-center">
@@ -248,8 +374,9 @@ export default function Index() {
                         {size}
                     </SelectItem>))}
                 </Select>
-            </div>
-        </Block>
+                </div>
+            </CardBody>
+        </Card>
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
             <ModalContent>
                 {(onClose) => (<>
