@@ -2,6 +2,7 @@
 
 import React from "react";
 import Scroll from "@/features/core/components/shared/scroll";
+import AdvancedSearch, { SearchField, SearchCondition } from "./advanced-search";
 import {
     Button,
     Card,
@@ -33,12 +34,30 @@ import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@heroui/
 
 export default function Index() {
 
+    // 定义搜索字段配置
+    const searchFields: SearchField[] = [
+        { key: 'id', label: 'ID', type: 'number' },
+        { key: 'name', label: '名称', type: 'string' },
+        { key: 'created_at', label: '创建时间', type: 'dateRange' },
+        { key: 'submission_count', label: '提交数', type: 'number' },
+        { 
+            key: 'status', 
+            label: '状态', 
+            type: 'select',
+            options: [
+                { key: 'active', label: '激活' },
+                { key: 'inactive', label: '暂停' },
+                { key: 'draft', label: '草稿' }
+            ]
+        }
+    ];
+
     const rows = [{
         key: "1",
         id: 1,
         name: "Tony Reichert",
         created_at: "CEO",
-        submission_count: 100,
+        submission_count: 10,
         status: "active",
         action: "edit",
     },{
@@ -46,7 +65,7 @@ export default function Index() {
         id: 1,
         name: "Tony Reichert",
         created_at: "CEO",
-        submission_count: 50032,
+        submission_count: 10,
         status: "active",
         action: "edit",
     },{
@@ -196,6 +215,19 @@ export default function Index() {
 
     const selectedValue = React.useMemo(() => Array.from(selectedKeys2).join(", ").replace(/_/g, ""), [selectedKeys2],);
 
+    // 高级搜索处理函数
+    const handleAdvancedSearch = (conditions: SearchCondition[]) => {
+        console.log('搜索条件:', conditions);
+        // 在这里处理搜索逻辑
+        // 例如：调用API，更新表格数据等
+    };
+
+    const handleSearchReset = () => {
+        console.log('重置搜索');
+        // 在这里处理重置逻辑
+        // 例如：清空搜索条件，重新加载数据等
+    };
+
 
     return (<div className="grid grid-rows-[56px_1fr_56px] gap-4 h-full">
         <Card className="h-full">
@@ -207,7 +239,7 @@ export default function Index() {
                             label=""
                             type="text"
                             size="sm"
-                            placeholder="搜索表单..."
+                            placeholder="搜索..."
                             startContent={<Search size="16"/>}
                         />
                     </form>
@@ -268,16 +300,6 @@ export default function Index() {
                             </DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
-                    <Button
-                        size="sm"
-                        title="order by"
-                        color="primary"
-                        variant="flat"
-                        as={Link}
-                        href="/dashboard/form/create"
-                    >
-                        Create
-                    </Button>
                 </div>
                 </div>
             </CardBody>
@@ -337,17 +359,6 @@ export default function Index() {
                                                     </DropdownItem>
                                                 </DropdownMenu>
                                             </Dropdown>
-                                        ) : columnKey === "submission_count" ? (
-                                            <Button
-                                                as={Link}
-                                                href={`/dashboard/form/${item.id}/submission`}
-                                                variant="flat"
-                                                size="sm"
-                                                color="primary"
-                                                className="min-w-fit w-auto"
-                                            >
-                                                {getKeyValue(item, columnKey)}
-                                            </Button>
                                         ) : (
                                             getKeyValue(item, columnKey)
                                         )}
@@ -387,90 +398,22 @@ export default function Index() {
                         {size}
                     </SelectItem>))}
                 </Select>
-                </div>
+                </div>6
             </CardBody>
         </Card>
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
             <ModalContent>
                 {(onClose) => (<>
-                        <ModalHeader className="flex flex-col gap-1">高级搜索</ModalHeader>
+                                                <ModalHeader className="flex flex-col gap-1">高级搜索</ModalHeader>
                         <ModalBody>
-                            <div className="flex flex-col gap-4">
-                                <div>
-                                    <Input
-                                        label="表单名称"
-                                        placeholder="输入表单名称关键词..."
-                                        startContent={<Search size="16" className="text-default-400"/>}
-                                        labelPlacement="outside"
-                                    />
-                                </div>
-
-                                {/* 创建时间范围搜索 */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-medium text-foreground">创建时间</label>
-                                    <div className="grid w-full">
-                                        <DateRangePicker
-                                            labelPlacement="outside"
-                                            defaultValue={{
-                                                start: parseDateTime("2025-08-13T14:00:00"),
-                                                end: parseDateTime("2025-08-13T18:00:00"),
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-medium text-foreground">提交数量</label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <Input
-                                            type="number"
-                                            placeholder="0"
-                                            startContent={<Hash size="16" className="text-default-400"/>}
-                                            labelPlacement="outside"
-                                            min="0"
-                                        />
-                                        <Input
-                                            type="number"
-                                            placeholder="999"
-                                            startContent={<Hash size="16" className="text-default-400"/>}
-                                            labelPlacement="outside"
-                                            min="0"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* 状态搜索 */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-medium text-foreground">状态</label>
-                                    <Select
-                                        placeholder="选择状态"
-                                        startContent={<Activity size="16" className="text-default-400"/>}
-                                        labelPlacement="outside"
-                                        selectionMode="multiple"
-                                    >
-                                        <SelectItem key="active">
-                                            启用
-                                        </SelectItem>
-                                        <SelectItem key="inactive">
-                                            禁用
-                                        </SelectItem>
-                                        <SelectItem key="draft">
-                                            草稿
-                                        </SelectItem>
-                                        <SelectItem key="archived">
-                                            已归档
-                                        </SelectItem>
-                                    </Select>
-                                </div>
-                            </div>
+                            <AdvancedSearch 
+                                fields={searchFields}
+                                onSearch={handleAdvancedSearch}
+                                onReset={handleSearchReset}
+                            />
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="primary" variant="flat" onPress={onClose}>
-                                Reset
-                            </Button>
-                            <Button color="primary" onPress={onClose}>
-                                Search
-                            </Button>
+                            {/* 移除了这里的按钮，因为 AdvancedSearch 组件内部已有按钮 */}
                         </ModalFooter>
                     </>)}
             </ModalContent>
