@@ -27,8 +27,7 @@ import {
     EllipsisVertical, ListFilterPlus, RefreshCw, Search, ArrowDownUp, Calendar, Hash, Activity, Pause, Play, Trash2,
     Pencil, Eye, Copy
 } from "lucide-react"
-import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@heroui/modal";
-
+import FormModal from "@/features/core/components/admin/form-modal";
 
 
 export default function Index() {
@@ -221,7 +220,8 @@ export default function Index() {
                     >
                         <RefreshCw size="16"/>
                     </Button>
-                    <Button
+                    <FormModal title="高级搜索" footer={null} button={
+                    <Button     
                         isIconOnly
                         size="sm"
                         variant="flat"
@@ -230,6 +230,76 @@ export default function Index() {
                     >
                         <ListFilterPlus size="16"/>
                     </Button>
+                    }>
+                            <div className="flex flex-col gap-4">
+                                <div>
+                                    <Input
+                                        label="表单名称"
+                                        placeholder="输入表单名称关键词..."
+                                        startContent={<Search size="16" className="text-default-400"/>}
+                                        labelPlacement="outside"
+                                    />
+                                </div>
+
+                                {/* 创建时间范围搜索 */}
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-medium text-foreground">创建时间</label>
+                                    <div className="grid w-full">
+                                        <DateRangePicker
+                                            labelPlacement="outside"
+                                            defaultValue={{
+                                                start: parseDateTime("2025-08-13T14:00:00"),
+                                                end: parseDateTime("2025-08-13T18:00:00"),
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-medium text-foreground">提交数量</label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Input
+                                            type="number"
+                                            placeholder="0"
+                                            startContent={<Hash size="16" className="text-default-400"/>}
+                                            labelPlacement="outside"
+                                            min="0"
+                                        />
+                                        <Input
+                                            type="number"
+                                            placeholder="999"
+                                            startContent={<Hash size="16" className="text-default-400"/>}
+                                            labelPlacement="outside"
+                                            min="0"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* 状态搜索 */}
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-medium text-foreground">状态</label>
+                                    <Select
+                                        placeholder="选择状态"
+                                        startContent={<Activity size="16" className="text-default-400"/>}
+                                        labelPlacement="outside"
+                                        selectionMode="multiple"
+                                    >
+                                        <SelectItem key="active">
+                                            启用
+                                        </SelectItem>
+                                        <SelectItem key="inactive">
+                                            禁用
+                                        </SelectItem>
+                                        <SelectItem key="draft">
+                                            草稿
+                                        </SelectItem>
+                                        <SelectItem key="archived">
+                                            已归档
+                                        </SelectItem>
+                                    </Select>
+                                </div>
+                            </div>                    
+                            </FormModal>
                     <Dropdown placement="bottom-end">
                         <DropdownTrigger>
                             <Button isIconOnly className="capitalize" variant="flat" size="sm">
@@ -390,90 +460,5 @@ export default function Index() {
                 </div>
             </CardBody>
         </Card>
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
-            <ModalContent>
-                {(onClose) => (<>
-                        <ModalHeader className="flex flex-col gap-1">高级搜索</ModalHeader>
-                        <ModalBody>
-                            <div className="flex flex-col gap-4">
-                                <div>
-                                    <Input
-                                        label="表单名称"
-                                        placeholder="输入表单名称关键词..."
-                                        startContent={<Search size="16" className="text-default-400"/>}
-                                        labelPlacement="outside"
-                                    />
-                                </div>
-
-                                {/* 创建时间范围搜索 */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-medium text-foreground">创建时间</label>
-                                    <div className="grid w-full">
-                                        <DateRangePicker
-                                            labelPlacement="outside"
-                                            defaultValue={{
-                                                start: parseDateTime("2025-08-13T14:00:00"),
-                                                end: parseDateTime("2025-08-13T18:00:00"),
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-medium text-foreground">提交数量</label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <Input
-                                            type="number"
-                                            placeholder="0"
-                                            startContent={<Hash size="16" className="text-default-400"/>}
-                                            labelPlacement="outside"
-                                            min="0"
-                                        />
-                                        <Input
-                                            type="number"
-                                            placeholder="999"
-                                            startContent={<Hash size="16" className="text-default-400"/>}
-                                            labelPlacement="outside"
-                                            min="0"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* 状态搜索 */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-medium text-foreground">状态</label>
-                                    <Select
-                                        placeholder="选择状态"
-                                        startContent={<Activity size="16" className="text-default-400"/>}
-                                        labelPlacement="outside"
-                                        selectionMode="multiple"
-                                    >
-                                        <SelectItem key="active">
-                                            启用
-                                        </SelectItem>
-                                        <SelectItem key="inactive">
-                                            禁用
-                                        </SelectItem>
-                                        <SelectItem key="draft">
-                                            草稿
-                                        </SelectItem>
-                                        <SelectItem key="archived">
-                                            已归档
-                                        </SelectItem>
-                                    </Select>
-                                </div>
-                            </div>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color="primary" variant="flat" onPress={onClose}>
-                                Reset
-                            </Button>
-                            <Button color="primary" onPress={onClose}>
-                                Search
-                            </Button>
-                        </ModalFooter>
-                    </>)}
-            </ModalContent>
-        </Modal>
     </div>);
 }

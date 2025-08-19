@@ -356,15 +356,6 @@ export default function AdvancedSearch({ fields, onSearch, onReset }: AdvancedSe
                 </div>
             )}
 
-            {/* 操作按钮 */}
-            <div className="flex justify-end gap-2 pt-2">
-                <Button variant="flat" onPress={handleReset}>
-                    重置
-                </Button>
-                <Button color="primary" onPress={handleSearch}>
-                    搜索
-                </Button>
-            </div>
         </div>
     );
 }

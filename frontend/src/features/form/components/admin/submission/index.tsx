@@ -29,7 +29,7 @@ import {
     Pencil, Eye, Copy
 } from "lucide-react"
 import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@heroui/modal";
-
+import FormModal from "@/features/core/components/admin/form-modal";    
 
 
 export default function Index() {
@@ -253,6 +253,7 @@ export default function Index() {
                     >
                         <RefreshCw size="16"/>
                     </Button>
+                    <FormModal title="高级搜索" footer={null} button={
                     <Button
                         isIconOnly
                         size="sm"
@@ -262,6 +263,13 @@ export default function Index() {
                     >
                         <ListFilterPlus size="16"/>
                     </Button>
+                    }>
+                            <AdvancedSearch 
+                                fields={searchFields}
+                                onSearch={handleAdvancedSearch}
+                                onReset={handleSearchReset}
+                            />                    
+                            </FormModal>
                     <Dropdown placement="bottom-end">
                         <DropdownTrigger>
                             <Button isIconOnly className="capitalize" variant="flat" size="sm">
@@ -401,22 +409,5 @@ export default function Index() {
                 </div>6
             </CardBody>
         </Card>
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
-            <ModalContent>
-                {(onClose) => (<>
-                                                <ModalHeader className="flex flex-col gap-1">高级搜索</ModalHeader>
-                        <ModalBody>
-                            <AdvancedSearch 
-                                fields={searchFields}
-                                onSearch={handleAdvancedSearch}
-                                onReset={handleSearchReset}
-                            />
-                        </ModalBody>
-                        <ModalFooter>
-                            {/* 移除了这里的按钮，因为 AdvancedSearch 组件内部已有按钮 */}
-                        </ModalFooter>
-                    </>)}
-            </ModalContent>
-        </Modal>
     </div>);
 }

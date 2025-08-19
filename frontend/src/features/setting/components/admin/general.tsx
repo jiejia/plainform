@@ -6,6 +6,7 @@ import React from "react";
 import {Select, SelectItem} from "@heroui/react";
 import Menu from './menu';
 import {SquarePen} from "lucide-react";
+import FormModal from '@/features/core/components/admin/form-modal';
 
 export default function General() {
 
@@ -29,30 +30,37 @@ export default function General() {
                         <ul className="h-full grid gap-2 content-start">
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
                                 <div>
-                                    <h3 className="text-sm">站点名称</h3>
-                                    <span className="text-default-400 text-xs">设置站点名称</span>
+                                    <h3 className="text-sm">应用名称</h3>
+                                    <span className="text-default-400 text-xs">设置应用名称</span>
                                 </div>
                                 <div>
+                                    <FormModal title="编辑应用名称" footer={null} button={
                                     <Button
                                         startContent={<SquarePen size={16}/>}
                                         size="sm"
                                         color="default"
                                         variant="flat"
                                     >编辑</Button>
+                                    }>
+                                        <Input type="text" placeholder="请输入应用名称" />
+                                    </FormModal>
                                 </div>
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
                                 <div>
-                                    <h3 className="text-sm">站点描述</h3>
-                                    <span className="text-default-400 text-xs">设置站点描述</span>
+                                    <h3 className="text-sm">应用描述</h3>
+                                    <span className="text-default-400 text-xs">设置应用描述</span>
                                 </div>
                                 <div>
+                                    <FormModal title="编辑应用描述" footer={null} button={
                                     <Button
                                         startContent={<SquarePen size={16}/>}
                                         size="sm"
-                                        color="default"
-                                        variant="flat"
+                                        color="default" variant="flat"
                                     >编辑</Button>
+                                    }>
+                                        <Input type="text" placeholder="请输入应用描述" />
+                                    </FormModal>
                                 </div>
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
@@ -78,7 +86,7 @@ export default function General() {
                                 </div>
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
-                                <label for="maintance">
+                                <label>
                                     <h3 className="text-sm">维护模式</h3>
                                     <span className="text-default-400 text-xs">是否开启站点维护模式</span>
                                 </label>

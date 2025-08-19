@@ -5,6 +5,7 @@ import React from "react";
 import {Select, SelectItem} from "@heroui/react";
 import Menu from './menu';
 import {SquarePen} from "lucide-react";
+import FormModal from "@/features/core/components/admin/form-modal";
 
 export default function General() {
 
@@ -47,12 +48,16 @@ export default function General() {
                                     <span className="text-default-400 text-xs">设置您的邮箱</span>
                                 </div>
                                 <div>
+                                    <FormModal title="编辑邮箱" footer={null} button={
                                     <Button
                                         startContent={<SquarePen size={16}/>}
                                         size="sm"
                                         color="primary"
                                         variant="flat"
                                     >修改</Button>
+                                    }>
+                                        <Input type="email" placeholder="请输入邮箱" />
+                                    </FormModal>
                                 </div>
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
@@ -61,12 +66,16 @@ export default function General() {
                                     <span className="text-default-400 text-xs">修改您的密码</span>
                                 </div>
                                 <div>
-                                    <Button
-                                        startContent={<SquarePen size={16}/>}
-                                        size="sm"
-                                        color="primary"
-                                        variant="flat"
-                                    >修改</Button>
+                                    <FormModal title="修改密码" footer={null} button={
+                                        <Button
+                                            startContent={<SquarePen size={16}/>}
+                                            size="sm"
+                                            color="primary"
+                                            variant="flat"
+                                        >修改</Button>
+                                    }>
+                                        <Input type="password" placeholder="请输入密码" />
+                                    </FormModal>
                                 </div>
                             </li>
                         </ul>
