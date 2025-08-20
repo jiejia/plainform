@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('description', 255);
             $table->boolean('enabled')->default(true);
             $table->integer('numbering_style')->default(0);
+            $table->integer('admin_id');
             $table->timestamps();
             $table->softDeletes();
             $table->integer('version')->default(1);

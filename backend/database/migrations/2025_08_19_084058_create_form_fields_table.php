@@ -28,14 +28,8 @@ return new class extends Migration
             $table->integer('sort')->default(0);
             $table->timestamps();
             $table->softDeletes();
-
             $table->index('form_id');
             $table->index('control_id');
-            // 参考: 假设存在 forms 与 controls/其它表; 这里只添加外键到 forms，
-            // 另一外键按需在知道目标表后再补充
-            if (Schema::hasTable('forms')) {
-                $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
-            }
         });
     }
 
