@@ -20,7 +20,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->integer('version')->default(1);
             $table->integer('ipv4')->nullable();
-            $table->index('form_id');
         });
     }
 

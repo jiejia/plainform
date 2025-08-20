@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('form_fields', function (Blueprint $table) {
             $table->id();
             $table->char('uuid', 36)->unique();
-            $table->text('title');
-            $table->text('description')->nullable();
-            $table->text('regex');
+            $table->string('title', 255);
+            $table->string('description', 255)->nullable();
+            $table->string('regex', 255);
             $table->boolean('required')->default(false);
             $table->boolean('published')->default(false);
             // 使用 json (兼容 sqlite / mysql); 若后续改用 PG 可切换为 jsonb
