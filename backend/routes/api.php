@@ -20,29 +20,3 @@ Route::prefix('admin')->middleware('auth:admin_api')->group(function () {
 Route::prefix('user')->middleware('auth:api')->group(function () {
     loadFeatureRoutes('user.php');
 });
-
-
-/**
- * load feature route files
- *
- * @param string $routeFileName
- * @return void
- */
-function loadFeatureRoutes(string $routeFileName = 'route.php'): void
-{
-    $featuresPath = app_path('Features');
-
-    if (!is_dir($featuresPath)) {
-        return;
-    }
-
-    $featureDirectories = glob($featuresPath . '/*', GLOB_ONLYDIR);
-
-    foreach ($featureDirectories as $featureDir) {
-        $routeFile = $featureDir . '/Routes/' . $routeFileName;
-
-        if (file_exists($routeFile)) {
-            require $routeFile;
-        }
-    }
-}

@@ -1,7 +1,7 @@
 <?php
 namespace App\Features\Core\Abstracts;
 
-use app\exception\ValidateException;
+use App\Features\Core\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -56,7 +56,10 @@ abstract class AbstractValidator
         $validator = Validator::make($data, $rules, $this->messages);
 
         if ($validator->fails()) {
-
+            throw new ValidationException(
+                'Validation Failed',
+                $validator->errors()->toArray()
+            );
         }
     }
 }
