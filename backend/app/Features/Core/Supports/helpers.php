@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\JsonResponse;
+
 /**
  * load feature route files
  *
@@ -31,13 +33,14 @@ function loadFeatureRoutes(string $routeFileName = 'route.php'): void
  * @param array $data
  * @param int $code
  * @param string $message
- * @return \Illuminate\Http\JsonResponse
+ * @param int $status
+ * @return JsonResponse
  */
-function json(array $data = [], int $code = 0, string $message = 'success'): \Illuminate\Http\JsonResponse
+function json(array $data = [], int $code = 0, string $message = 'success', int $status = 200): JsonResponse
 {
     return response()->json([
         'code' => $code,
         'msg' => $message,
         'data' => $data
-    ]);
+    ], $status);
 }

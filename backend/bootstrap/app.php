@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Features\Core\Exceptions\ValidationException;
 use App\Features\Core\Exceptions\BusinessException;
+use Illuminate\Auth\AuthenticationException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -32,6 +33,13 @@ return Application::configure(basePath: dirname(__DIR__))
                 return json([
                     'data' => $e->getData(),
                 ], $e->getCode(), $e->getMessage());
+            }
+        });
+
+        // handle AuthenticationException
+        $exceptions->render(function (AuthenticationException $e, $request) {
+            if ($request->expectsJson()) {
+                return json([], 401, 'Unauthorized', 401);
             }
         });
     })->create();
