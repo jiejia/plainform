@@ -1,9 +1,9 @@
 <?php
-namespace App\Features\Auth\Validators;
+namespace App\Features\Admin\Validators;
 
 use App\Features\Core\Abstracts\AbstractValidator;
 
-class AdminAuthValidator extends AbstractValidator
+class AuthValidator extends AbstractValidator
 {
     protected function rules()
     {

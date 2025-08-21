@@ -10,7 +10,7 @@ enum Code: int
     public function message(): string
     {
         $key = match($this) {
-            self::BUSINESS_LOGIC_ERROR => 'core.business_logic_error',
+            self::BUSINESS_LOGIC_ERROR => __('core.business_logic_error'),
             self::INVALID_TOKEN => 'core.invalid_token',
             self::SUCCESS => 'core.success',
         };
