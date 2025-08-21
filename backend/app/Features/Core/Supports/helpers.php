@@ -1,5 +1,6 @@
 <?php
 
+use App\Features\Core\Constants\Code;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -36,7 +37,7 @@ function loadFeatureRoutes(string $routeFileName = 'route.php'): void
  * @param int $status
  * @return JsonResponse
  */
-function json(array $data = [], int $code = 0, string $message = 'success', int $status = 200): JsonResponse
+function json(array $data = [], int $code = Code::SUCCESS->value, string $message = 'success', int $status = 200): JsonResponse
 {
     return response()->json([
         'code' => $code,

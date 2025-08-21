@@ -25,6 +25,28 @@ abstract class AbstractValidator
 
     ];
 
+    protected function messages()
+    {
+        return [];
+    }
+
+    protected function rules()
+    {
+        return [];
+    }
+
+    protected function scenes()
+    {
+        return [];
+    }
+
+    public function __construct()
+    {
+        $this->messages = $this->messages();
+        $this->rules = $this->rules();
+        $this->scenes = $this->scenes();
+    }
+
     /**
      * set validate scene
      *

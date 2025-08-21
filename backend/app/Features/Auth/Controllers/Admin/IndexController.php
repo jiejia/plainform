@@ -5,8 +5,17 @@ use Illuminate\Http\Request;
 use App\Features\Auth\Services\AdminAuthService;
 use App\Features\Auth\Validators\AdminAuthValidator;
 
+/**
+ * IndexController
+ */
 class IndexController
 {
+    /**
+     * __construct
+     * 
+     * @param AdminAuthService $adminAuthService
+     * @param AdminAuthValidator $adminAuthValidator
+     */
     public function __construct(
         protected AdminAuthService $adminAuthService,
         protected AdminAuthValidator $adminAuthValidator

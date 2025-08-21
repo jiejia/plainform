@@ -1,11 +1,11 @@
 <?php
 namespace App\Features\Auth\Constants;
 
-enum ErrorCode: int
+enum Code: int
 {
-    case EMAIL_NOT_FOUND = 10001;
+    case EMAIL_NOT_FOUND = 20001;
 
-    case PASSWORD_INCORRECT = 10002;  
+    case PASSWORD_INCORRECT = 20002;  
     
     public function message(): string
     {
