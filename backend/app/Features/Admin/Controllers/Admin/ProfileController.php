@@ -46,4 +46,30 @@ class ProfileController
 
         return json($user);
     }
+
+    /**
+     * sendEmailResetCode
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendEmailResetCode(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $this->validator->scene('send_email_reset_code')->validate($request->all());
+        $this->service->sendEmailResetCode($request->user(), $request->input('email'));
+        return json();
+    }
+
+    /**
+     * resetEmail
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resetEmail(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $this->validator->scene('reset_email')->validate($request->all());
+        $this->service->resetEmail($request->user(), $request->input('email'), $request->input('code'));
+        return json();
+    }
 }

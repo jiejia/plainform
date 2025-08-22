@@ -14,7 +14,7 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        Admin::create([[
+        Admin::insert([[
             'username' => 'admin',
             'email' => 'admin@example.com',
             'password' => Hash::make('123456'),
@@ -22,12 +22,12 @@ class AdminSeeder extends Seeder
             'last_logined_at' => null,
             'nickname' => 'admin',
         ], [
-            'username' => 'admin2',
-            'email' => 'admin2@example.com',
+            'username' => 'jiejia2009',
+            'email' => 'jiejia2009@gmail.com',
             'password' => Hash::make('123456'),
             'avatar' => null,
             'last_logined_at' => null,
-            'nickname' => 'admin2',
+            'nickname' => 'jiejia2009',
         ]]);
     }
 }

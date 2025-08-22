@@ -144,7 +144,7 @@ class AuthService
         }
 
         // validate token expired
-        if ($passwordReset->created_at < now()->subMinutes(60)) {
+        if ($passwordReset->created_at < now()->subSeconds(120)) {
             throw new BusinessException(Code::PASSWORD_RESET_TOKEN_EXPIRED->message(), Code::PASSWORD_RESET_TOKEN_EXPIRED->value);
         }
 

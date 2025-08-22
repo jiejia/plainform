@@ -9,9 +9,8 @@ class ProfileValidator extends AbstractValidator
     {
         return [
             'avatar' => 'required|string|max:255|url',
-            'old_password' => 'required|string|max:255',
-            'new_password' => 'required|string|max:255',
-            'new_password_confirmation' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'code' => 'required|string|max:255',
         ];
     }
 
@@ -22,6 +21,12 @@ class ProfileValidator extends AbstractValidator
             'avatar.string' => '头像必须是字符串',
             'avatar.max' => '头像不能超过255个字符',
             'avatar.url' => '头像必须是有效的URL',
+            'email.required' => '邮箱不能为空',
+            'email.email' => '邮箱格式不正确',
+            'email.max' => '邮箱不能超过255个字符',
+            'code.required' => '验证码不能为空',
+            'code.string' => '验证码必须是字符串',
+            'code.max' => '验证码不能超过255个字符',
         ];
     }
 
@@ -29,6 +34,8 @@ class ProfileValidator extends AbstractValidator
     {
         return [
             'update_avatar' => ['avatar'],
+            'send_email_reset_code' => ['email'],
+            'reset_email' => ['email', 'code'],
         ];
     }
 }

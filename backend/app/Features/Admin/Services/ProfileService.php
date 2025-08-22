@@ -3,6 +3,7 @@ namespace App\Features\Admin\Services;
 
 use App\Features\Admin\Models\Admin;
 use App\Features\Core\Exceptions\BusinessException;
+use App\Features\Core\Services\MailCodeService;
 use Illuminate\Support\Facades\Hash;
 use App\Features\Admin\Constants\Code;
 
@@ -21,5 +22,50 @@ class ProfileService
         $admin->save();
 
         return $admin->toArray();
+    }
+
+    /**
+     * sendEmailResetCode
+     * 
+     * @param Admin $admin
+     * @param string $email
+     * @return void
+     * @throws BusinessException
+     */
+    public function sendEmailResetCode(Admin $admin, string $email): void
+    {
+        // validate email
+        $admin = Admin::where('email', $email)->first();
+        if (!$admin) {
+            throw new BusinessException(Code::EMAIL_NOT_FOUND->message(), Code::EMAIL_NOT_FOUND->value);
+        }
+
+        $mailService = app(MailCodeService::class)->scene('email_reset');
+        $mailService->sendCode($email);
+    }
+
+    /**
+     * resetEmail
+     * 
+     * @param Admin $admin
+     * @param string $email
+     * @param string $code
+     * @return void
+     * @throws BusinessException
+     */
+    public function resetEmail(Admin $admin, string $email, string $code): void
+    {
+        // verify code
+        $mailService = app(MailCodeService::class)->scene('email_reset');
+        if (!$mailService->verifyCode($email, $code)) {
+            throw new BusinessException(Code::EMAIL_VERIFY_CODE_ERROR->message(), Code::EMAIL_VERIFY_CODE_ERROR->value);
+        }
+
+        // update email
+        $admin->email = $email;
+        $admin->save();
+
+        // clear cache
+        $mailService->clearCache($email);
     }
 }
