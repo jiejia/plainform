@@ -14,5 +14,5 @@ Route::prefix('profile')->group(function(){
     Route::get('me', [ProfileController::class, 'me'])->name('admin.profile.me');
     Route::post('update-avatar', [ProfileController::class, 'updateAvatar'])->name('admin.profile.update_avatar');
     Route::post('send-email-reset-code', [ProfileController::class, 'sendEmailResetCode'])->name('admin.profile.send_email_reset_code');
-    Route::post('reset-email', [ProfileController::class, 'resetEmail'])->name('admin.profile.reset_email');
+    Route::post('update-email', [ProfileController::class, 'updateEmail'])->name('admin.profile.update_email');
 });

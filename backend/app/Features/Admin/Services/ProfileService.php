@@ -45,7 +45,7 @@ class ProfileService
     }
 
     /**
-     * resetEmail
+     * updateEmail
      * 
      * @param Admin $admin
      * @param string $email
@@ -53,11 +53,11 @@ class ProfileService
      * @return void
      * @throws BusinessException
      */
-    public function resetEmail(Admin $admin, string $email, string $code): void
+    public function updateEmail(Admin $admin, string $email, string $code): void
     {
         // verify code
         $mailService = app(MailCodeService::class)->scene('email_reset');
-        if (!$mailService->verifyCode($email, $code)) {
+        if (! $mailService->verifyCode($email, $code)) {
             throw new BusinessException(Code::EMAIL_VERIFY_CODE_ERROR->message(), Code::EMAIL_VERIFY_CODE_ERROR->value);
         }
 

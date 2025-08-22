@@ -35,7 +35,7 @@ class ProfileValidator extends AbstractValidator
         return [
             'update_avatar' => ['avatar'],
             'send_email_reset_code' => ['email'],
-            'reset_email' => ['email', 'code'],
+            'update_email' => ['email', 'code'],
         ];
     }
 }

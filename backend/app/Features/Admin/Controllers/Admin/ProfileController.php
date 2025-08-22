@@ -66,10 +66,10 @@ class ProfileController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function resetEmail(Request $request): \Illuminate\Http\JsonResponse
+    public function updateEmail(Request $request): \Illuminate\Http\JsonResponse
     {
-        $this->validator->scene('reset_email')->validate($request->all());
-        $this->service->resetEmail($request->user(), $request->input('email'), $request->input('code'));
+        $this->validator->scene('update_email')->validate($request->all());
+        $this->service->updateEmail($request->user(), $request->input('email'), $request->input('code'));
         return json();
     }
 }

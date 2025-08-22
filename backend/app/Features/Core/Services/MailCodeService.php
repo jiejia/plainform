@@ -110,7 +110,7 @@ class MailCodeService
     public function verifyCode(string $email, int $code)
     {
         $cacheCode = Cache::get($this->getCacheKey($email, $this->scene));
-        if ($cacheCode !== $code) {
+        if ((string)$cacheCode !== (string)$code) {
             return false;
         }
 
