@@ -8,21 +8,27 @@ class ProfileValidator extends AbstractValidator
     protected function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'avatar' => 'required|string|max:255|url',
+            'old_password' => 'required|string|max:255',
+            'new_password' => 'required|string|max:255',
+            'new_password_confirmation' => 'required|string|max:255',
         ];
     }
 
     protected function messages()
     {
         return [
-            'name.required' => '名称不能为空',
+            'avatar.required' => '头像不能为空',
+            'avatar.string' => '头像必须是字符串',
+            'avatar.max' => '头像不能超过255个字符',
+            'avatar.url' => '头像必须是有效的URL',
         ];
     }
 
     protected function scenes()
     {
         return [
-            'update' => ['name'],
+            'update_avatar' => ['avatar'],
         ];
     }
 }

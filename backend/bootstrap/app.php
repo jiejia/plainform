@@ -21,18 +21,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // handle ValidationException
         $exceptions->render(function (ValidationException $e, $request) {
             if ($request->expectsJson()) {
-                return json([
-                    'data' => $e->getErrors(),
-                ], $e->getCode(), $e->getMessage());
+                return json($e->getErrors(), $e->getCode(), $e->getMessage());
             }
         });
 
         // handle BusinessException
         $exceptions->render(function (BusinessException $e, $request) {
             if ($request->expectsJson()) {
-                return json([
-                    'data' => $e->getData(),
-                ], $e->getCode(), $e->getMessage());
+                return json($e->getData(), $e->getCode(), $e->getMessage());
             }
         });
 

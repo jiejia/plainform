@@ -12,4 +12,5 @@ Route::prefix('auth')->group(function(){
 // profile
 Route::prefix('profile')->group(function(){
     Route::get('me', [ProfileController::class, 'me'])->name('admin.profile.me');
+    Route::post('update-avatar', [ProfileController::class, 'updateAvatar'])->name('admin.profile.update_avatar');
 });

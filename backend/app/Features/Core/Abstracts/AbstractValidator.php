@@ -78,9 +78,14 @@ abstract class AbstractValidator
         $validator = Validator::make($data, $rules, $this->messages);
 
         if ($validator->fails()) {
+            $errors = [];
+            foreach ($validator->errors()->keys() as $field) {
+                $errors[$field] = $validator->errors()->first($field);
+            }
+            
             throw new ValidationException(
                 'Validation Failed',
-                $validator->errors()->toArray()
+                $errors
             );
         }
     }

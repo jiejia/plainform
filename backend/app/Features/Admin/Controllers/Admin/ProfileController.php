@@ -13,12 +13,12 @@ class ProfileController
     /**
      * __construct
      * 
-     * @param ProfileService $profileService
-     * @param ProfileValidator $profileValidator
+     * @param ProfileService $serice
+     * @param ProfileValidator $validator
      */
     public function __construct(
-        protected ProfileService $profileService,
-        protected ProfileValidator $profileValidator
+        protected ProfileService $service,
+        protected ProfileValidator $validator
     ) {}
 
     /**
@@ -30,5 +30,20 @@ class ProfileController
     public function me(Request $request): \Illuminate\Http\JsonResponse
     {
         return json($request->user()->toArray());
+    }
+
+    /**
+     * Update avatar
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateAvatar(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $this->validator->scene('update_avatar')->validate($request->all());
+
+        $user = $this->service->updateAvatar($request->user(), $request->file('avatar'));
+
+        return json($user);
     }
 }
