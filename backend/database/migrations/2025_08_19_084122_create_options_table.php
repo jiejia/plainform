@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('options', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->json('value');
+            $table->json('data');
             $table->string('group', 255);
             $table->timestamps();
         });

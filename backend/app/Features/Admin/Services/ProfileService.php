@@ -68,4 +68,30 @@ class ProfileService
         // clear cache
         $mailService->clearCache($email);
     }
+
+    /**
+     * updatePassword
+     * 
+     * @param Admin $admin
+     * @param string $oldPassword
+     * @param string $password
+     * @return void
+     * @throws BusinessException
+     */
+    public function updatePassword(Admin $admin, string $oldPassword, string $password): void
+    {
+        // verify old password
+        if (!Hash::check($oldPassword, $admin->password)) {
+            throw new BusinessException(Code::PASSWORD_ERROR->message(), Code::PASSWORD_ERROR->value);
+        }
+
+        // verify password
+        if ($password === $oldPassword) {   
+            throw new BusinessException(Code::PASSWORD_SAME->message(), Code::PASSWORD_SAME->value);
+        }
+
+        // update password
+        $admin->password = Hash::make($password);
+        $admin->save();
+    }
 }

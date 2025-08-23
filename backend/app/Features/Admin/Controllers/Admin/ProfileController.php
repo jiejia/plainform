@@ -72,4 +72,17 @@ class ProfileController
         $this->service->updateEmail($request->user(), $request->input('email'), $request->input('code'));
         return json();
     }
+
+    /**
+     * updatePassword
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePassword(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $this->validator->scene('update_password')->validate($request->all());
+        $this->service->updatePassword($request->user(), $request->input('old_password'), $request->input('password'));
+        return json();
+    }
 }

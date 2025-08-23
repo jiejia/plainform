@@ -13,6 +13,10 @@ enum Code: int
 
     case EMAIL_VERIFY_CODE_ERROR = 20005;
 
+    case PASSWORD_ERROR = 20006;
+
+    case PASSWORD_SAME = 20007;
+
     public function message(): string
     {
         $key = match($this) {
@@ -21,6 +25,8 @@ enum Code: int
             self::PASSWORD_RESET_TOKEN_NOT_FOUND => __('auth.password_reset_token_not_found'),
             self::PASSWORD_RESET_TOKEN_EXPIRED => __('auth.password_reset_token_expired'),
             self::EMAIL_VERIFY_CODE_ERROR => __('auth.email_verify_code_error'),
+            self::PASSWORD_ERROR => __('auth.password_error'),
+            self::PASSWORD_SAME => __('auth.password_same'),
         };
 
         return __($key);
