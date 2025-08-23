@@ -18,8 +18,6 @@ return new class extends Migration
             $table->string('description', 255)->nullable();
             $table->string('regex', 255);
             $table->boolean('required')->default(false);
-            $table->boolean('published')->default(false);
-            // 使用 json (兼容 sqlite / mysql); 若后续改用 PG 可切换为 jsonb
             $table->json('config');
             $table->unsignedBigInteger('form_id');
             $table->unsignedBigInteger('control_id');

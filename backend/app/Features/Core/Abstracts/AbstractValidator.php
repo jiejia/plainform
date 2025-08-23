@@ -42,9 +42,9 @@ abstract class AbstractValidator
 
     public function __construct()
     {
-        $this->messages = $this->messages();
-        $this->rules = $this->rules();
-        $this->scenes = $this->scenes();
+        $this->messages = array_merge($this->messages, $this->messages());
+        $this->rules = array_merge($this->rules, $this->rules());
+        $this->scenes = array_merge($this->scenes, $this->scenes());
     }
 
     /**
