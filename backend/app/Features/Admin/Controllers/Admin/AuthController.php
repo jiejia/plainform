@@ -29,8 +29,13 @@ class AuthController
      */
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
-        $this->validator->scene('login')->validate($request->all());
-        $token = $this->service->login($request->input('email'), $request->input('password'));
+        $this->validator->scene('login')->validate($request->all()); 
+
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        $token = $this->service->login($email, $password);
+
         return json(['token' => $token]);
     }
 
@@ -43,6 +48,7 @@ class AuthController
     public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->user()->currentAccessToken()->delete();   
+
         return json();
     }
 
@@ -55,7 +61,11 @@ class AuthController
     public function sendForgetPasswordEmail(Request $request): \Illuminate\Http\JsonResponse
     {
         $this->validator->scene('send_forget_password_email')->validate($request->all());
-        $this->service->sendForgetPasswordEmail($request->input('email'));
+
+        $email = $request->input('email');
+
+        $this->service->sendForgetPasswordEmail($email);
+        
         return json();
     }
 
@@ -68,7 +78,13 @@ class AuthController
     public function resetPassword(Request $request): \Illuminate\Http\JsonResponse
     {
         $this->validator->scene('reset_password')->validate($request->all());
-        $this->service->resetPassword($request->input('email'), $request->input('password'), $request->input('reset_password_token'));
+
+        $email = $request->input('email');
+        $password = $request->input('password');
+        $resetPasswordToken = $request->input('reset_password_token');
+
+        $this->service->resetPassword($email, $password, $resetPasswordToken);
+        
         return json();
     }
 }

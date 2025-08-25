@@ -1,7 +1,6 @@
 <?php 
 namespace App\Features\Form\Controllers;
 
-use App\Features\Form\Data\Form;
 use App\Features\Form\Services\IndexService;
 use App\Features\Form\Validators\IndexValidator;
 use Illuminate\Http\Request;
@@ -34,7 +33,15 @@ class IndexController
     public function create(Request $request) : JsonResponse
     {
         $this->validator->scene('create')->validate($request->all());
-        $data = $this->service->create($request->user(), Form::from($request->all()));
+
+        $admin = $request->user();
+        $title = $request->input('title');
+        $description = $request->input('description');
+        $enabled = $request->input('enabled');
+        $numberingStyle = $request->input('numbering_style');
+        $fields = $request->input('fields');
+
+        $data = $this->service->create($admin, $title, $description, $enabled, $numberingStyle, $fields);
         return json($data);
     }
 
@@ -47,7 +54,15 @@ class IndexController
     public function update(Request $request, int $id) : JsonResponse
     {
         $this->validator->scene('update')->validate($request->all());
-        $data = $this->service->update($request->user(), $id, Form::from($request->all()));
+
+        $admin = $request->user();
+        $title = $request->input('title');
+        $description = $request->input('description');
+        $enabled = $request->input('enabled');
+        $numberingStyle = $request->input('numbering_style');
+        $fields = $request->input('fields');
+
+        $data = $this->service->update($admin, $id, $title, $description, $enabled, $numberingStyle, $fields);
         return json($data);
     }
 
@@ -68,9 +83,10 @@ class IndexController
         $submissionsCountEnd = $request->input('submissions_count_end');
         $status = $request->input('status');
         $orderBy = $request->input('order_by');
+        $orderType = $request->input('order_type');
         $admin = $request->user();
 
-        $data = $this->service->list($admin, $keyword, $createdAtStart, $createdAtEnd, $submissionsCountStart, $submissionsCountEnd, $status, $orderBy);
+        $data = $this->service->list($admin, $keyword, $createdAtStart, $createdAtEnd, $submissionsCountStart, $submissionsCountEnd, $status, $orderBy, $orderType);
         return json($data);
     }
 
@@ -83,7 +99,8 @@ class IndexController
      */
     public function detail(Request $request, int $id) : JsonResponse
     {
-        $data = $this->service->detail($request->user(), $id);
+        $admin = $request->user();
+        $data = $this->service->detail($admin, $id);
         return json($data);
     }
 
@@ -95,8 +112,12 @@ class IndexController
      */
     public function delete(Request $request) : JsonResponse
     {   
-        $this->validator->scene('delete')->validate($request->all());
-        $this->service->delete($request->user(), $request->input('ids', []));
+        $this->validator->scene('delete')->validate($request->all());   
+
+        $admin = $request->user();
+        $ids = $request->input('ids', []);
+
+        $this->service->delete($admin, $ids);
         return json();
     }
 }

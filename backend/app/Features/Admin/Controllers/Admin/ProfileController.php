@@ -42,7 +42,10 @@ class ProfileController
     {
         $this->validator->scene('update_avatar')->validate($request->all());
 
-        $user = $this->service->updateAvatar($request->user(), $request->file('avatar'));
+        $admin = $request->user();
+        $avatar = $request->file('avatar');
+
+        $user = $this->service->updateAvatar($admin, $avatar);
 
         return json($user);
     }
@@ -56,7 +59,12 @@ class ProfileController
     public function sendEmailResetCode(Request $request): \Illuminate\Http\JsonResponse
     {
         $this->validator->scene('send_email_reset_code')->validate($request->all());
-        $this->service->sendEmailResetCode($request->user(), $request->input('email'));
+
+        $admin = $request->user();
+        $email = $request->input('email');
+
+        $this->service->sendEmailResetCode($admin, $email);
+
         return json();
     }
 
@@ -69,7 +77,13 @@ class ProfileController
     public function updateEmail(Request $request): \Illuminate\Http\JsonResponse
     {
         $this->validator->scene('update_email')->validate($request->all());
-        $this->service->updateEmail($request->user(), $request->input('email'), $request->input('code'));
+
+        $admin = $request->user();
+        $email = $request->input('email');
+        $code = $request->input('code');
+
+        $this->service->updateEmail($admin, $email, $code);
+        
         return json();
     }
 
@@ -82,7 +96,13 @@ class ProfileController
     public function updatePassword(Request $request): \Illuminate\Http\JsonResponse
     {
         $this->validator->scene('update_password')->validate($request->all());
-        $this->service->updatePassword($request->user(), $request->input('old_password'), $request->input('password'));
+
+        $admin = $request->user();
+        $oldPassword = $request->input('old_password');
+        $password = $request->input('password');
+
+        $this->service->updatePassword($admin, $oldPassword, $password);
+        
         return json();
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace App\Features\Form\Services;
 
-use App\Features\Form\Data\Form as FormData;
 use App\Features\Form\Models\Form;
 use App\Features\Form\Models\FormField;
 use App\Features\Admin\Models\Admin;
@@ -19,13 +18,23 @@ class IndexService
      * create
      * 
      * @param Admin $admin
-     * @param FormData $formData
+     * @param string $title
+     * @param string $description
+     * @param int $enabled
+     * @param int $numberingStyle
+     * @param array $fields
      * @return array
      */
-    public function create(Admin $admin, FormData $formData) : array
+    public function create(Admin $admin, string $title, string $description, int $enabled, int $numberingStyle, array $fields) : array
     {
         // get form data
-        $data = $formData->toArray();
+        $data = [
+            'title' => $title,
+            'description' => $description,
+            'enabled' => $enabled,
+            'numbering_style' => $numberingStyle,
+            'fields' => $fields,
+        ];
 
         // set admin_id
         $data['admin_id'] = $admin->id;
@@ -53,10 +62,14 @@ class IndexService
      * 
      * @param Admin $admin
      * @param int $id
-     * @param FormData $formData
+     * @param string $title
+     * @param string $description
+     * @param int $enabled
+     * @param int $numberingStyle
+     * @param array $fields
      * @return array
      */
-    public function update(Admin $admin, int $id, FormData $formData) : array
+    public function update(Admin $admin, int $id, string $title, string $description, int $enabled, int $numberingStyle, array $fields) : array
     {
         // get form
         $form = Form::with('fields')->find($id);
@@ -67,7 +80,13 @@ class IndexService
         }
 
         // get form data
-        $data = $formData->toArray();
+        $data = [
+            'title' => $title,
+            'description' => $description,
+            'enabled' => $enabled,
+            'numbering_style' => $numberingStyle,
+            'fields' => $fields,
+        ];
 
         // update form
         $form->update($data);
@@ -132,9 +151,10 @@ class IndexService
      * @param int|null $submissionsCountEnd
      * @param array|null $status
      * @param string|null $orderBy
+     * @param string|null $orderType
      * @return array
      */
-    public function list(Admin $admin, ?string $keyword = null, ?string $createdAtStart = null, ?string $createdAtEnd = null, ?int $submissionsCountStart = null, ?int $submissionsCountEnd = null, ?array $status = null, ?string $orderBy = null) : array
+    public function list(Admin $admin, ?string $keyword = null, ?string $createdAtStart = null, ?string $createdAtEnd = null, ?int $submissionsCountStart = null, ?int $submissionsCountEnd = null, ?array $status = null, ?string $orderBy = null, ?string $orderType = null) : array
     {
         $query = Form::select('id', 'uuid', 'title', 'enabled', 'created_at')->withCount('submissions');
 
@@ -173,7 +193,7 @@ class IndexService
 
         // order by
         if ($orderBy) {
-            $query->orderBy($orderBy);
+            $query->orderBy($orderBy, $orderType ?? 'desc');
         } else {
             $query->orderBy('id', 'desc');
         }

@@ -28,14 +28,15 @@ class IndexValidator extends AbstractValidator
             'fields.*.control_name' => 'required|string|max:255',
             'fields.*.sort' => 'required|integer',
 
-            'keyword' => 'string|max:100',
-            'created_at_start' => 'date_format:Y-m-d H:i:s',
-            'created_at_end' => 'date_format:Y-m-d H:i:s',
-            'submissions_count_start' => 'integer',
-            'submissions_count_end' => 'integer',
-            'status' => 'array',
+            'keyword' => 'nullable|string|max:100',
+            'created_at_start' => 'nullable|date_format:Y-m-d H:i:s',
+            'created_at_end' => 'nullable|date_format:Y-m-d H:i:s',
+            'submissions_count_start' => 'nullable|integer',
+            'submissions_count_end' => 'nullable|integer',
+            'status' => 'nullable|array',
             'status.*' => 'in:0,1,3',
-            'order_by' => 'in:id_asc,id_desc,submissions_count_asc,submissions_count_desc,title_asc,title_desc,status_asc,status_desc',
+            'order_by' => 'nullable|in:id,submissions_count,title,status',
+            'order_type' => 'nullable|in:asc,desc',
 
             'ids' => 'required|array',
             'ids.*' => 'required|integer',
@@ -94,7 +95,8 @@ class IndexValidator extends AbstractValidator
             'submissions_count_end.integer' => '提交数量结束必须是整数',
             'status.array' => '状态必须是数组',
             'status.*.in' => '状态必须是0、1、3',
-            'order_by.in' => '排序必须是id_asc、id_desc、submissions_count_asc、submissions_count_desc、title_asc、title_desc、status_asc、status_desc',
+            'order_by.in' => '排序必须是id、submissions_count、title、status',
+            'order_type.in' => '排序类型必须是asc、desc',
             'ids.required' => 'ID不能为空',
             'ids.array' => 'ID必须是数组',
             'ids.*.required' => 'ID不能为空',
@@ -107,7 +109,7 @@ class IndexValidator extends AbstractValidator
         return [
             'create' => ['title', 'description', 'enabled', 'numbering_style', 'fields','fields.*.uuid','fields.*.title','fields.*.description','fields.*.regex','fields.*.required','fields.*.config','fields.*.control_id','fields.*.control_type','fields.*.control_name','fields.*.sort'],
             'update' => ['title', 'description', 'enabled', 'numbering_style', 'fields','fields.*.uuid','fields.*.title','fields.*.description','fields.*.regex','fields.*.required','fields.*.config','fields.*.control_id','fields.*.control_type','fields.*.control_name','fields.*.sort'],
-            'list' => ['keyword', 'created_at_start', 'created_at_end', 'submissions_count_start', 'submissions_count_end', 'status', 'order_by'],
+            'list' => ['keyword', 'created_at_start', 'created_at_end', 'submissions_count_start', 'submissions_count_end', 'status', 'order_by', 'order_type'],
             'delete' => ['ids'],
         ];
     }

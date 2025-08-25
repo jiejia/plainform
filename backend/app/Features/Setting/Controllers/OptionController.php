@@ -25,7 +25,11 @@ class OptionController extends Controller
     public function get(Request $request): \Illuminate\Http\JsonResponse
     {
         $this->validator->scene('get')->validate($request->all());
-        $data = $this->service->get($request->input('group', null), $request->input('name', null));
+
+        $group = $request->input('group', null);
+        $name = $request->input('name', null);
+
+        $data = $this->service->get($group, $name);
         return json($data);
     }
 
@@ -39,7 +43,12 @@ class OptionController extends Controller
     public function set(Request $request): \Illuminate\Http\JsonResponse
     {
         $this->validator->scene('set')->validate($request->all());
-        $data = $this->service->set($request->input('update_group'), $request->input('update_name'), $request->input('update_data'));
+
+        $updateGroup = $request->input('update_group');
+        $updateName = $request->input('update_name');
+        $updateData = $request->input('update_data');
+
+        $data = $this->service->set($updateGroup, $updateName, $updateData);
         return json($data);
     }
 }
