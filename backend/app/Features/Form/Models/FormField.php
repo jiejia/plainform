@@ -26,6 +26,13 @@ class FormField extends Model
         'sort',
     ];
 
+    protected $casts = [
+        'config' => 'array',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'deleted_at' => 'datetime:Y-m-d H:i:s', 
+    ];
+
     public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);

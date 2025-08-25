@@ -16,7 +16,7 @@ return new class extends Migration
             $table->char('uuid', 36)->unique();
             $table->string('title', 255);
             $table->string('description', 255)->nullable();
-            $table->string('regex', 255);
+            $table->string('regex', 255)->nullable();
             $table->boolean('required')->default(false);
             $table->json('config');
             $table->unsignedBigInteger('form_id');

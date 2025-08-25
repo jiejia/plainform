@@ -5,7 +5,7 @@ use App\Features\Core\Abstracts\AbstractValidator;
 
 /**
  * IndexValidator
- * 
+ *
  * @package App\Features\Form\Validators
  */
 class IndexValidator extends AbstractValidator
@@ -17,14 +17,14 @@ class IndexValidator extends AbstractValidator
             'description' => 'required|string|max:255',
             'enabled' => 'required|in:0,1',
             'numbering_style' => 'required|in:1,2,3',
-            'fields' => 'required|array',
-            'fields.*.uuid' => 'required|string|size:36',
+            'fields' => 'required|array|min:1',
+            'fields.*.uuid' => 'required|string|size:36|unique:form_fields,uuid',
             'fields.*.title' => 'required|string|max:255',
-            'fields.*.description' => 'required|string|max:255',
-            'fields.*.regex' => 'required|string|max:255',
+            'fields.*.description' => 'present|nullable|max:255',
+            'fields.*.regex' => 'present|nullable|string|max:255',
             'fields.*.required' => 'required|in:0,1',
-            'fields.*.config' => 'required|array',
-            'fields.*.control_id' => 'required|string|size:36',
+            'fields.*.config' => 'present|nullable|array',
+            'fields.*.control_id' => 'required|integer',
             'fields.*.control_type' => 'required|string|in:text,textarea,select,radio,checkbox,date,time,datetime,number,email,url,file,image,video,audio',
             'fields.*.control_name' => 'required|string|max:255',
             'fields.*.sort' => 'required|integer',
@@ -79,7 +79,7 @@ class IndexValidator extends AbstractValidator
     protected function scenes()
     {
         return [
-            'create' => ['title', 'description', 'enabled', 'numbering_style', 'fields'],
+            'create' => ['title', 'description', 'enabled', 'numbering_style', 'fields','fields.*.uuid','fields.*.title','fields.*.description','fields.*.regex','fields.*.required','fields.*.config','fields.*.control_id','fields.*.control_type','fields.*.control_name','fields.*.sort'],
         ];
     }
 }

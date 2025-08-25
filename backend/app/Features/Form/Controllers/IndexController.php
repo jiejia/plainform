@@ -14,7 +14,6 @@ use Illuminate\Http\JsonResponse;
  */
 class IndexController
 {
-
     /**
      * __construct
      * 
@@ -35,7 +34,7 @@ class IndexController
     public function create(Request $request) : JsonResponse
     {
         $this->validator->scene('create')->validate($request->all());
-        $data = $this->service->create(Form::from($request->all()));
+        $data = $this->service->create($request->user(), Form::from($request->all()));
         return json($data);
     }
 }
