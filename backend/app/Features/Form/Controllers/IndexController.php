@@ -50,4 +50,53 @@ class IndexController
         $data = $this->service->update($request->user(), $id, Form::from($request->all()));
         return json($data);
     }
+
+    /**
+     * list
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function list(Request $request) : JsonResponse
+    {
+        $this->validator->scene('list')->validate($request->all());
+
+        $keyword = $request->input('keyword');
+        $createdAtStart = $request->input('created_at_start');
+        $createdAtEnd = $request->input('created_at_end');
+        $submissionsCountStart = $request->input('submissions_count_start');
+        $submissionsCountEnd = $request->input('submissions_count_end');
+        $status = $request->input('status');
+        $orderBy = $request->input('order_by');
+        $admin = $request->user();
+
+        $data = $this->service->list($admin, $keyword, $createdAtStart, $createdAtEnd, $submissionsCountStart, $submissionsCountEnd, $status, $orderBy);
+        return json($data);
+    }
+
+    /**
+     * detail
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function detail(Request $request, int $id) : JsonResponse
+    {
+        $data = $this->service->detail($request->user(), $id);
+        return json($data);
+    }
+
+    /**
+     * delete
+     *  
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function delete(Request $request) : JsonResponse
+    {   
+        $this->validator->scene('delete')->validate($request->all());
+        $this->service->delete($request->user(), $request->input('ids', []));
+        return json();
+    }
 }

@@ -2,7 +2,6 @@
 namespace App\Features\Form\Validators;
 
 use App\Features\Core\Abstracts\AbstractValidator;
-
 /**
  * IndexValidator
  *
@@ -28,6 +27,18 @@ class IndexValidator extends AbstractValidator
             'fields.*.control_type' => 'required|string|in:text,textarea,select,radio,checkbox,date,time,datetime,number,email,url,file,image,video,audio',
             'fields.*.control_name' => 'required|string|max:255',
             'fields.*.sort' => 'required|integer',
+
+            'keyword' => 'string|max:100',
+            'created_at_start' => 'date_format:Y-m-d H:i:s',
+            'created_at_end' => 'date_format:Y-m-d H:i:s',
+            'submissions_count_start' => 'integer',
+            'submissions_count_end' => 'integer',
+            'status' => 'array',
+            'status.*' => 'in:0,1,3',
+            'order_by' => 'in:id_asc,id_desc,submissions_count_asc,submissions_count_desc,title_asc,title_desc,status_asc,status_desc',
+
+            'ids' => 'required|array',
+            'ids.*' => 'required|integer',
         ];
     }
 
@@ -75,6 +86,19 @@ class IndexValidator extends AbstractValidator
             'fields.*.sort.integer' => '字段排序必须是整数',
             'id.required' => 'ID不能为空',
             'id.integer' => 'ID必须是整数',
+            'keyword.string' => '关键词必须是字符串',
+            'keyword.max' => '关键词不能超过100个字符',
+            'created_at_start.date_format' => '创建时间开始必须是Y-m-d H:i:s格式',
+            'created_at_end.date_format' => '创建时间结束必须是Y-m-d H:i:s格式',
+            'submissions_count_start.integer' => '提交数量开始必须是整数',
+            'submissions_count_end.integer' => '提交数量结束必须是整数',
+            'status.array' => '状态必须是数组',
+            'status.*.in' => '状态必须是0、1、3',
+            'order_by.in' => '排序必须是id_asc、id_desc、submissions_count_asc、submissions_count_desc、title_asc、title_desc、status_asc、status_desc',
+            'ids.required' => 'ID不能为空',
+            'ids.array' => 'ID必须是数组',
+            'ids.*.required' => 'ID不能为空',
+            'ids.*.integer' => 'ID必须是整数',
         ];
     }
 
@@ -83,6 +107,8 @@ class IndexValidator extends AbstractValidator
         return [
             'create' => ['title', 'description', 'enabled', 'numbering_style', 'fields','fields.*.uuid','fields.*.title','fields.*.description','fields.*.regex','fields.*.required','fields.*.config','fields.*.control_id','fields.*.control_type','fields.*.control_name','fields.*.sort'],
             'update' => ['title', 'description', 'enabled', 'numbering_style', 'fields','fields.*.uuid','fields.*.title','fields.*.description','fields.*.regex','fields.*.required','fields.*.config','fields.*.control_id','fields.*.control_type','fields.*.control_name','fields.*.sort'],
+            'list' => ['keyword', 'created_at_start', 'created_at_end', 'submissions_count_start', 'submissions_count_end', 'status', 'order_by'],
+            'delete' => ['ids'],
         ];
     }
 }

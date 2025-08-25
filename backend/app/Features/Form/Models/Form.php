@@ -36,8 +36,23 @@ class Form extends Model
         });
     }
 
+    /**
+     * fields
+     * 
+     * @return HasMany
+     */
     public function fields(): HasMany
     {
         return $this->hasMany(FormField::class);
+    }
+
+    /**
+     * submissions
+     * 
+     * @return HasMany
+     */
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(FormSubmission::class);
     }
 }

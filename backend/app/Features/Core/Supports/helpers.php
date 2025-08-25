@@ -45,7 +45,7 @@ function json(array $data = [], int $code = Code::SUCCESS->value, string $messag
         'data' => $data,
     ];
 
-    if (config('app.debug')) {
+    if (config('app.debug') && $code !== Code::SUCCESS->value) {
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
         $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
         $file = $trace[0]['file'];
@@ -57,4 +57,14 @@ function json(array $data = [], int $code = Code::SUCCESS->value, string $messag
     }
 
     return response()->json($json, $status);
+}
+
+/**
+ * get page limit
+ * 
+ * @return int
+ */
+function getPageLimit(): int
+{
+    return request()->input('page_limit', 10);
 }

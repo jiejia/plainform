@@ -8,5 +8,5 @@ Route::prefix('form')->group(function () {
     Route::get('/{id}', [IndexController::class, 'detail'])->name('admin.form.detail');
     Route::post('/', [IndexController::class, 'create'])->name('admin.form.create');
     Route::put('/{id}', [IndexController::class, 'update'])->name('admin.form.update');
-    Route::delete('/{id}', [IndexController::class, 'delete'])->name('admin.form.delete');
+    Route::delete('/', [IndexController::class, 'delete'])->name('admin.form.delete');
 });
