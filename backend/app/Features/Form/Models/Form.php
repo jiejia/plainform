@@ -6,6 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
+/**
+ * Form
+ * 
+ * @property string $uuid
+ * @property string $title
+ * @property string $description
+ * @property int $enabled
+ * @property int $numbering_style
+ * @property int $admin_id
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $deleted_at
+ */
 class Form extends Model
 {
     use SoftDeletes;
