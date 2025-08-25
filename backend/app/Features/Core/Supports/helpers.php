@@ -39,9 +39,22 @@ function loadFeatureRoutes(string $routeFileName = 'route.php'): void
  */
 function json(array $data = [], int $code = Code::SUCCESS->value, string $message = 'success', int $status = 200): JsonResponse
 {
-    return response()->json([
+    $json = [
         'code' => $code,
         'msg' => $message,
-        'data' => $data
-    ], $status);
+        'data' => $data,
+    ];
+
+    if (config('app.debug')) {
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
+        $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
+        $file = $trace[0]['file'];
+        $line = $trace[0]['line'];
+        $json['trace'] = $trace;
+        $json['stack_trace'] = $stackTrace;
+        $json['file'] = $file;
+        $json['line'] = $line;
+    }
+
+    return response()->json($json, $status);
 }

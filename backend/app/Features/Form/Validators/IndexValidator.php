@@ -18,7 +18,7 @@ class IndexValidator extends AbstractValidator
             'enabled' => 'required|in:0,1',
             'numbering_style' => 'required|in:1,2,3',
             'fields' => 'required|array|min:1',
-            'fields.*.uuid' => 'required|string|size:36|unique:form_fields,uuid',
+            'fields.*.uuid' => 'required|string|size:36',
             'fields.*.title' => 'required|string|max:255',
             'fields.*.description' => 'present|nullable|max:255',
             'fields.*.regex' => 'present|nullable|string|max:255',
@@ -73,6 +73,8 @@ class IndexValidator extends AbstractValidator
             'fields.*.control_name.max' => '字段名称不能超过255个字符',
             'fields.*.sort.required' => '字段排序不能为空',
             'fields.*.sort.integer' => '字段排序必须是整数',
+            'id.required' => 'ID不能为空',
+            'id.integer' => 'ID必须是整数',
         ];
     }
 
@@ -80,6 +82,7 @@ class IndexValidator extends AbstractValidator
     {
         return [
             'create' => ['title', 'description', 'enabled', 'numbering_style', 'fields','fields.*.uuid','fields.*.title','fields.*.description','fields.*.regex','fields.*.required','fields.*.config','fields.*.control_id','fields.*.control_type','fields.*.control_name','fields.*.sort'],
+            'update' => ['title', 'description', 'enabled', 'numbering_style', 'fields','fields.*.uuid','fields.*.title','fields.*.description','fields.*.regex','fields.*.required','fields.*.config','fields.*.control_id','fields.*.control_type','fields.*.control_name','fields.*.sort'],
         ];
     }
 }
