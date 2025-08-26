@@ -1,0 +1,17 @@
+{
+    "type": "textarea",
+    "name": "Textarea",
+    "config": {
+      "regex": "",
+      "cols": 20,
+      "rows": 3,
+      "title": "请输入标题",
+      "length": 255,
+      "required": false,
+      "maxLength": 255,
+      "minLength": 0,
+      "placeholder": "",
+      "defaultValue": ""
+    },
+    "icon": "/svgs/textarea.svg"
+  }
