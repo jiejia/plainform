@@ -9,6 +9,11 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ *  reset password mail
+ *
+ * @package App\Features\Admin\Mail
+ */
 class PasswordReset extends Mailable
 {
     use Queueable, SerializesModels;

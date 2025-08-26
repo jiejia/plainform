@@ -1,6 +1,7 @@
 <?php
 
 use App\Features\Form\Controllers\IndexController;
+use App\Features\Form\Controllers\Admin\SubmissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('form')->group(function () {  
@@ -9,4 +10,14 @@ Route::prefix('form')->group(function () {
     Route::post('/', [IndexController::class, 'create'])->name('admin.form.create');
     Route::put('/{id}', [IndexController::class, 'update'])->name('admin.form.update');
     Route::delete('/', [IndexController::class, 'delete'])->name('admin.form.delete');
+
+    // Submission routes
+    Route::prefix('{formId}/submission')->group(function () {
+        Route::get('/', [SubmissionController::class, 'list'])->name('admin.form.submission.list');
+        Route::get('/versions', [SubmissionController::class, 'versions'])->name('admin.form.submission.versions');
+        Route::get('/fields', [SubmissionController::class, 'fields'])->name('admin.form.submission.fields');
+        Route::get('/{id}', [SubmissionController::class, 'detail'])->name('admin.form.submission.detail');
+        Route::delete('/', [SubmissionController::class, 'delete'])->name('admin.form.submission.delete');
+
+    });
 });
