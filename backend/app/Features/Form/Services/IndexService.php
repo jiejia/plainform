@@ -3,6 +3,7 @@ namespace App\Features\Form\Services;
 
 use App\Features\Form\Models\Form;
 use App\Features\Form\Models\FormField;
+use App\Features\Form\Models\FormSubmission;
 use App\Features\Form\Models\Control;
 use App\Features\Admin\Models\Admin;
 use App\Features\Form\Constants\Code;
@@ -290,6 +291,144 @@ class IndexService
                     ]);
                 }
             }
+        }
+    }
+
+    /**
+     * frontDetail
+     * 
+     * @param string $uuid
+     * @return array
+     */
+    public function frontDetail(string $uuid) : array
+    {
+        // get form with fields
+        $form = Form::with(['fields' => function ($query) {
+            $query->orderBy('sort', 'asc');
+        }])->where('uuid', $uuid)->where('enabled', 1)->first();
+
+        // check form
+        if (!$form) {
+            throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
+        }
+
+        // return form
+        return $form->toArray();
+    }
+
+    /**
+     * submit
+     * 
+     * @param string $uuid
+     * @param array $data
+     * @param int $version
+     * @param string $ipv4
+     * @return void
+     */
+    public function submit(string $uuid, array $data, int $version, string $ipv4) : void
+    {
+        // get form
+        $form = Form::where('uuid', $uuid)->where('enabled', 1)->first();
+
+        // check form
+        if (!$form) {
+            throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
+        }
+
+        // validate form fields data
+        $this->validateFormFieldsData($form, $data);
+
+        // convert data array to associative array for storage using field UUID
+        $storageData = [];
+        $formFields = $form->fields()->get();
+        
+        // create lookup by title for storage conversion
+        $fieldsByTitle = [];
+        foreach ($formFields as $field) {
+            $fieldsByTitle[$field->title] = $field;
+        }
+        
+        foreach ($data as $item) {
+            // find the field by title and use its UUID for storage
+            if (isset($fieldsByTitle[$item['name']])) {
+                $field = $fieldsByTitle[$item['name']];
+                $storageData[$field->uuid] = $item['value'];
+            }
+        }
+
+        // convert ipv4 to integer
+        $ipv4Int = ip2long($ipv4);
+
+        // create form submission
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'data' => $storageData,
+            'version' => $version,
+            'ipv4' => $ipv4Int,
+            'created_at' => now(),
+        ]);
+    }
+
+    /**
+     * validateFormFieldsData
+     * 
+     * @param Form $form
+     * @param array $data
+     * @return void
+     */
+    private function validateFormFieldsData(Form $form, array $data) : void
+    {
+        // get form fields
+        $formFields = $form->fields()->get();
+
+        // convert data array to associative array for easier lookup by name
+        $dataByName = [];
+        foreach ($data as $item) {
+            $dataByName[$item['name']] = $item['value'];
+        }
+
+        // create field lookup by title (name)
+        $fieldsByTitle = [];
+        foreach ($formFields as $field) {
+            $fieldsByTitle[$field->title] = $field;
+        }
+
+        // check required fields and config regex validation
+        foreach ($formFields as $field) {
+            $fieldValue = $dataByName[$field->title] ?? null;
+            
+            // check required fields
+            if ($field->required && empty($fieldValue)) {
+                throw new BusinessException($field->title . ':' . Code::FORM_FIELD_REQUIRED->message(), Code::FORM_FIELD_REQUIRED->value);
+            }
+
+            // validate config regex if field has value
+            if (!is_null($fieldValue) && $fieldValue !== '') {
+                $this->validateConfigRegex($field, $fieldValue);
+            }
+        }
+    }
+
+    /**
+     * validateConfigRegex
+     * 
+     * @param FormField $field
+     * @param mixed $value
+     * @return void
+     */
+    private function validateConfigRegex(FormField $field, $value) : void
+    {
+        // get config regex and warning message
+        $configRegex = $field->config['regex'] ?? '';
+        $regexWarningMessage = $field->config['regex_warning_message'] ?? '';
+        
+        // validate config regex if exists
+        if (!empty($configRegex) && !preg_match($configRegex, $value)) {
+            $errorMessage = $field->title . ' validation failed';
+            if (!empty($regexWarningMessage)) {
+                $errorMessage .= ': ' . $regexWarningMessage;
+            }
+            throw new BusinessException($errorMessage, Code::FORM_FIELD_CONFIG_REGEX_FAILED->value);
         }
     }
 }

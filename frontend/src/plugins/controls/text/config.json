@@ -4,6 +4,7 @@
     "group": "general",
     "config": {
       "regex": "",
+      "regex_warning_message": "",
       "title": "请输入标题",
       "length": [0, 255],
       "required": false,

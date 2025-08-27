@@ -6,6 +6,14 @@ return [
     'form_field_uuid_exists' => 'Form field UUID already exists',
     'form_has_submissions' => 'Form has submissions',
     'submission_not_found' => 'Submission not found',
+    'file_not_found' => 'File not found',
+    'form_field_required' => 'This field is required',
+    'form_field_invalid_email' => 'Please enter a valid email address',
+    'form_field_invalid_url' => 'Please enter a valid URL',
+    'form_field_invalid_number' => 'Please enter a valid number',
+    'form_field_invalid_date' => 'Please enter a valid date',
+    'form_field_invalid_regex' => 'The value does not match the required format',
+    'form_field_config_regex_failed' => 'Field validation failed',
 
     // Validation messages for submission
     'version_required' => 'Version is required',

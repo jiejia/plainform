@@ -3,6 +3,7 @@
     "name": "Datetime",
     "config": {
       "regex": "",
+      "regex_warning_message": "",  
       "title": "请输入标题",
       "required": false,
       "placeholder": "",

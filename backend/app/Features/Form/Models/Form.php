@@ -32,6 +32,7 @@ class Form extends Model
         'enabled',
         'numbering_style',
         'admin_id',
+        'version'
     ];
 
     protected $casts = [

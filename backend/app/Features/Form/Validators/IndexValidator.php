@@ -40,6 +40,11 @@ class IndexValidator extends AbstractValidator
 
             'ids' => 'required|array',
             'ids.*' => 'required|integer',
+
+            'data' => 'present|nullable|array',
+            'data.*.name' => 'required|string',
+            'data.*.value' => 'present',
+            'version' => 'nullable|integer|min:1',
         ];
     }
 
@@ -101,6 +106,14 @@ class IndexValidator extends AbstractValidator
             'ids.array' => 'ID必须是数组',
             'ids.*.required' => 'ID不能为空',
             'ids.*.integer' => 'ID必须是整数',
+
+            'data.required' => 'Data is required',
+            'data.array' => 'Data must be an array',
+            'data.*.name.required' => 'Field name is required',
+            'data.*.name.string' => 'Field name must be a string',
+            'data.*.value.present' => 'Field value must be present',
+            'version.integer' => 'Version must be an integer',
+            'version.min' => 'Version must be at least 1',
         ];
     }
 
@@ -111,6 +124,7 @@ class IndexValidator extends AbstractValidator
             'update' => ['title', 'description', 'enabled', 'numbering_style', 'fields','fields.*.uuid','fields.*.title','fields.*.description','fields.*.regex','fields.*.required','fields.*.config','fields.*.control_id','fields.*.control_type','fields.*.control_name','fields.*.sort'],
             'list' => ['keyword', 'created_at_start', 'created_at_end', 'submissions_count_start', 'submissions_count_end', 'status', 'order_by', 'order_type'],
             'delete' => ['ids'],
+            'submit' => ['data', 'data.*.name', 'data.*.value', 'version'],
         ];
     }
 }
