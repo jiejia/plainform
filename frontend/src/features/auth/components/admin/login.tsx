@@ -1,29 +1,49 @@
 'use client'
 
-import Block from '@/features/core/components/shared/block';
-import { Input, Button, Checkbox,Card, CardHeader, CardBody, CardFooter, Divider} from "@heroui/react";
+import { Input, Button, Checkbox,Card, CardHeader, CardBody, CardFooter, Divider, PressEvent} from "@heroui/react";
 import { Link } from "@heroui/link";
-import { useFormState, useFormStatus } from 'react-dom';
-import { useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Mail, Lock } from "lucide-react";
+import { useState } from "react";
+import api from "@/features/core/library/api";
 
-function SubmitButton() {
-    const { pending } = useFormStatus();
-    
-    return (
-        <Button
-            type="submit"
-            color="primary"
-            isLoading={pending}
-            disabled={pending}
-            className="w-full"
-        >
-            {pending ? '登录中...' : '登录'}
-        </Button>
-    );
-}
+
 
 export default function Login() {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    function handleSubmit(e: PressEvent) {
+        console.log(email, password);
+        api.post('api/admin/auth/login', {
+            json: {
+                email: email,
+                password: password  
+            }
+        }).then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    function SubmitButton() {
+        const { pending } = useFormStatus();
+        
+        return (
+            <Button
+                type="button"
+                color="primary"
+                isLoading={pending}
+                disabled={pending}
+                className="w-full"
+                onPress={handleSubmit}
+            >
+                {pending ? '登录中...' : '登录'}
+            </Button>
+        );
+    }
 
     return (
         <Card className="w-full mt-5">
@@ -32,7 +52,7 @@ export default function Login() {
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
-                <form  className="w-full flex flex-col gap-5">
+                <div  className="w-full flex flex-col gap-5">
                     <Input
                         type="email"
                         name="email"
@@ -42,6 +62,8 @@ export default function Login() {
                         startContent={
                             <Mail size={16} className="content-center text-default-400" />
                         }
+                        defaultValue={email}
+                        onValueChange={(e) => setEmail(e)}
                     />
                     <Input
                         type="password"
@@ -52,6 +74,8 @@ export default function Login() {
                         startContent={
                             <Lock size={16} className="content-center text-default-400" />
                         }
+                        defaultValue={password}
+                        onValueChange={(e) => setPassword(e)}
                     />
                     <div className="text-xs grid grid-flow-col">
                         <Checkbox defaultSelected size="sm">
@@ -62,7 +86,7 @@ export default function Login() {
                         </Link>
                     </div>
                     <SubmitButton />
-                </form>
+                </div>
             </CardBody>
         </Card>
     );

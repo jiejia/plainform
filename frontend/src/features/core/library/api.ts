@@ -1,31 +1,4 @@
-import { cookies } from 'next/headers';
 import ky from 'ky';
-
-
-/**
- * Custom error class for API errors
- */
-export class ApiError extends Error {
-    public status: number;
-    public data: any;
-
-    constructor(status: number, message: string, data?: any) {
-        super(message);
-        this.name = 'ApiError';
-        this.status = status;
-        this.data = data;
-    }
-}
-
-/**
- * API response interface
- */
-export interface ApiResponse<T = any> {
-    data?: T;
-    message?: string;
-    errors?: any;
-    status: number;
-}
 
 const api = ky.create({
     prefixUrl: process.env.API_BASE_URL,
@@ -33,8 +6,20 @@ const api = ky.create({
         beforeRequest: [
             async (request) => {
                 try {
-                    const cookieStore = await cookies();
-                    const token = cookieStore.get('token')?.value;
+                    let token = null;
+
+                    if (typeof window === 'undefined') {
+                        // server side
+                        const { cookies } = await import('next/headers');
+                        const cookieStore = await cookies();
+                        token = cookieStore.get('token')?.value;
+                    } else {
+                        // client side
+                        const cookies = document.cookie.split(';');
+                        token = cookies.find(cookie => cookie.includes('token='));
+                        token = token?.split('=')[1];
+                    }
+
                     if (token) {
                         request.headers.set('Authorization', `Bearer ${token}`);
                     }
