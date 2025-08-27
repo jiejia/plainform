@@ -1,6 +1,7 @@
 {
     "type": "textarea",
     "name": "Textarea",
+    "group": "general",
     "config": {
       "regex": "",
       "cols": 20,
@@ -13,5 +14,5 @@
       "placeholder": "",
       "defaultValue": ""
     },
-    "icon": "/svgs/textarea.svg"
+    "icon": "Text"
   }

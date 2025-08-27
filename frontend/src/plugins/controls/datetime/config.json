@@ -1,0 +1,13 @@
+{
+    "type": "datetime",
+    "name": "Datetime",
+    "config": {
+      "regex": "",
+      "title": "请输入标题",
+      "required": false,
+      "placeholder": "",
+      "defaultValue": "",
+      "format": "YYYY-MM-DD HH:mm:ss"
+    },
+    "icon": "Calendar"
+}

@@ -1,0 +1,20 @@
+{
+    "type": "checkbox",
+    "name": "Checkbox",
+    "group": "general",
+    "config": {
+      "regex": "",
+      "title": "请输入标题",
+      "required": false,
+      "defaultValue": ["option1"],
+      "multiple": true,
+      "options": [
+        {
+          "label": "选项1",
+          "value": "option1",
+          "selected": true
+        }
+      ]
+    },
+    "icon": "CheckSquare"
+}

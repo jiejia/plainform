@@ -1,5 +1,5 @@
 <?php 
-namespace App\Features\Form\Controllers;
+namespace App\Features\Form\Controllers\Admin;
 
 use App\Features\Form\Services\IndexService;
 use App\Features\Form\Validators\IndexValidator;
@@ -119,5 +119,17 @@ class IndexController
 
         $this->service->delete($admin, $ids);
         return json();
+    }
+
+    /**
+     * controls
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function controls(Request $request) : JsonResponse
+    {
+        $data = $this->service->controls();
+        return json($data);
     }
 }

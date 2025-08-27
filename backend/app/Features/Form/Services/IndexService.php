@@ -3,9 +3,11 @@ namespace App\Features\Form\Services;
 
 use App\Features\Form\Models\Form;
 use App\Features\Form\Models\FormField;
+use App\Features\Form\Models\Control;
 use App\Features\Admin\Models\Admin;
 use App\Features\Form\Constants\Code;
 use App\Features\Core\Exceptions\BusinessException;
+use Illuminate\Support\Facades\File;
 
 /**
  * IndexService
@@ -232,6 +234,62 @@ class IndexService
 
             // delete form fields
             $form->fields()->delete();
+        }
+    }
+
+    /**
+     * controls
+     * 
+     * @return array
+     */
+    public function controls() : array
+    {
+        // check if controls table has data
+        $controlsCount = Control::count();
+        
+        if ($controlsCount === 0) {
+            // scan frontend control config files and import to database
+            $this->scanAndImportControls();
+        }
+
+        // get all controls
+        $controls = Control::select('id', 'type', 'name', 'config', 'icon', 'group')->get();
+
+        return $controls->toArray();
+    }
+
+    /**
+     * scanAndImportControls
+     * 
+     * @return void
+     */
+    public function scanAndImportControls() : void
+    {
+        $frontendControlsPath = base_path('../frontend/src/plugins/controls');
+        
+        if (!File::exists($frontendControlsPath)) {
+            throw new BusinessException(Code::FILE_NOT_FOUND->message(), Code::FILE_NOT_FOUND->value);
+        }
+
+        $controlDirectories = File::directories($frontendControlsPath);
+
+        foreach ($controlDirectories as $controlDir) {
+            $configFile = $controlDir . '/config.json';
+            
+            if (File::exists($configFile)) {
+                $configContent = File::get($configFile);
+                $config = json_decode($configContent, true);
+                
+                if ($config && isset($config['type'], $config['name'], $config['config'], $config['icon'])) {
+                    Control::create([
+                        'type' => $config['type'],
+                        'name' => $config['name'],
+                        'config' => $config['config'],
+                        'icon' => $config['icon'],
+                        'group' => $config['group'] ?? 'general',
+                    ]);
+                }
+            }
         }
     }
 }

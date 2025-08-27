@@ -1,0 +1,13 @@
+{
+    "type": "switch",
+    "name": "Switch",
+    "config": {
+      "regex": "",
+      "title": "请输入标题",
+      "required": false,
+      "defaultValue": false,
+      "onText": "是",
+      "offText": "否"
+    },
+    "icon": "ToggleLeft"
+}

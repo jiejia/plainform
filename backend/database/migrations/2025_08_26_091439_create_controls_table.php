@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->json('config');
             $table->string('icon');
+            $table->string('group')->default('general');
             $table->timestamps();
         });
     }

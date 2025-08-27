@@ -1,0 +1,14 @@
+{
+    "type": "text",
+    "name": "Text",
+    "group": "general",
+    "config": {
+      "regex": "",
+      "title": "请输入标题",
+      "length": [0, 255],
+      "required": false,
+      "placeholder": "",
+      "defaultValue": ""
+    },
+    "icon": "Type"
+}
