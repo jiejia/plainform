@@ -86,11 +86,23 @@ class AuthService
             throw new BusinessException(Code::EMAIL_NOT_FOUND->message(), Code::EMAIL_NOT_FOUND->value);
         }
 
+        // check if last token generation was too recent (within 60 seconds)
+        $resetToken = PasswordResetToken::where('email', $email)->first();
+        if ($resetToken) {
+            $tokenCreatedAt = \Carbon\Carbon::parse($resetToken->created_at);
+            $timeDifference = now()->timestamp - $tokenCreatedAt->timestamp;
+            
+            if ($timeDifference < 60) {
+                $remainingSeconds = 60 - $timeDifference;
+                $message = __('auth.token_generation_too_frequent', ['seconds' => $remainingSeconds]);
+                throw new BusinessException($message, Code::TOKEN_GENERATION_TOO_FREQUENT->value);
+            }
+        }
+
         // generate token
         $token = Str::random(60);
 
-        // get reset
-        $resetToken = PasswordResetToken::where('email', $email)->first();
+        // update or create reset token
         if ($resetToken) {
             $resetToken->update([
                 'token' => $token,
@@ -103,7 +115,6 @@ class AuthService
                 'created_at' => now(),
             ]);
         }
-
 
         return $token;
     }
