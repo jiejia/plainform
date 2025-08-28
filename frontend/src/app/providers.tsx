@@ -8,7 +8,7 @@ export function Providers({children}: { children: React.ReactNode }) {
     return (
         <HeroUIProvider>
             {children}
-            <ToastProvider placement={"top-center"} toastOffset={10}/>
+            <ToastProvider placement={"top-right"} toastOffset={10}/>
         </HeroUIProvider>
     )
 }

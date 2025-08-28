@@ -20,21 +20,20 @@ export default function Login() {
         setIsPending(true);
 
         // validate form data
-        const result:any = loginValidator({email, password});
+        const result = loginValidator({email, password});
         if (!result.success) {
             // get first error message
-            msg('login failed', result.error.issues[0].message, 'danger');
+            msg('login failed', result.error.issues[0].message, 'warning');
             setIsPending(false);
             return;
         }
-
 
         // login
         const res = await login(email, password);
         if (res === true) {
             router.push('/dashboard');
         } else {
-            msg('login failed', res, 'danger');
+            msg('login failed', res, 'warning');
         }
 
         setIsPending(false);
@@ -62,7 +61,7 @@ export default function Login() {
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
-                <form  className="w-full flex flex-col gap-5">
+                <form  className="w-full flex flex-col gap-5" noValidate>
                     <Input
                         type="email"
                         name="email"
@@ -74,7 +73,7 @@ export default function Login() {
                         }
                         defaultValue={email}
                         onValueChange={(e) => setEmail(e)}
-                        required
+                        validationBehavior="aria"
                     />
                     <Input
                         type="password"
@@ -87,7 +86,7 @@ export default function Login() {
                         }
                         defaultValue={password}
                         onValueChange={(e) => setPassword(e)}
-                        required
+                        validationBehavior="aria"
                     />
                     <div className="text-xs grid grid-flow-col">
                         <Checkbox defaultSelected size="sm">
