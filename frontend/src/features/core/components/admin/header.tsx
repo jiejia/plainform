@@ -5,6 +5,7 @@ import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Card, Ca
 import { useEffect, useState, useTransition } from 'react'
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
+import { logout } from "@/features/auth/actions/auth-action";
 
 export default function Header({ 
   breadcrumbs = <></>
@@ -16,6 +17,11 @@ export default function Header({
 
   const handleSettingsClick = () => {
     router.push('/dashboard/setting/profile')
+  }
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/auth/login');
   }
 
   return (
@@ -47,6 +53,7 @@ export default function Header({
                                 key="logout"
                                 color="danger"
                                 isDisabled={isPending}
+                                onPress={handleLogout}
                             >
                                 {isPending ? '退出中...' : '登出'}
                             </DropdownItem>

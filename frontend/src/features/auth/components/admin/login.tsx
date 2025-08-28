@@ -1,46 +1,56 @@
 'use client'
 
-import { Input, Button, Checkbox,Card, CardHeader, CardBody, CardFooter, Divider, PressEvent} from "@heroui/react";
+import { Input, Button, Checkbox,Card, CardHeader, CardBody, CardFooter, Divider, PressEvent, addToast, cn} from "@heroui/react";
 import { Link } from "@heroui/link";
-import { useFormStatus } from 'react-dom';
 import { Mail, Lock } from "lucide-react";
 import { useState } from "react";
-import api from "@/features/core/library/api";
-
-
+import { useRouter } from "next/navigation";
+import { msg } from "@/features/core/utils/ui";
+import { login } from "@/features/auth/actions/auth-action";
+import { loginValidator } from "@/features/auth/validators/login-validator";
 
 export default function Login() {
 
+    const router = useRouter();
+    const [isPending, setIsPending] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    function handleSubmit(e: PressEvent) {
-        console.log(email, password);
-        api.post('api/admin/auth/login', {
-            json: {
-                email: email,
-                password: password  
-            }
-        }).then(res => {
-            console.log(res);
-        }).catch(err => {
-            console.log(err);
-        });
+    async function handleSubmit(e: PressEvent) {
+        setIsPending(true);
+
+        // validate form data
+        const result:any = loginValidator({email, password});
+        if (!result.success) {
+            // get first error message
+            msg('login failed', result.error.issues[0].message, 'danger');
+            setIsPending(false);
+            return;
+        }
+
+
+        // login
+        const res = await login(email, password);
+        if (res === true) {
+            router.push('/dashboard');
+        } else {
+            msg('login failed', res, 'danger');
+        }
+
+        setIsPending(false);
     }
 
     function SubmitButton() {
-        const { pending } = useFormStatus();
-        
         return (
             <Button
                 type="button"
                 color="primary"
-                isLoading={pending}
-                disabled={pending}
+                isLoading={isPending}
+                disabled={isPending}
                 className="w-full"
                 onPress={handleSubmit}
             >
-                {pending ? '登录中...' : '登录'}
+                {isPending ? '登录中...' : '登录'}
             </Button>
         );
     }
@@ -52,7 +62,7 @@ export default function Login() {
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
-                <div  className="w-full flex flex-col gap-5">
+                <form  className="w-full flex flex-col gap-5">
                     <Input
                         type="email"
                         name="email"
@@ -64,6 +74,7 @@ export default function Login() {
                         }
                         defaultValue={email}
                         onValueChange={(e) => setEmail(e)}
+                        required
                     />
                     <Input
                         type="password"
@@ -76,6 +87,7 @@ export default function Login() {
                         }
                         defaultValue={password}
                         onValueChange={(e) => setPassword(e)}
+                        required
                     />
                     <div className="text-xs grid grid-flow-col">
                         <Checkbox defaultSelected size="sm">
@@ -86,7 +98,7 @@ export default function Login() {
                         </Link>
                     </div>
                     <SubmitButton />
-                </div>
+                </form>
             </CardBody>
         </Card>
     );

@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // handle ValidationException
         $exceptions->render(function (ValidationException $e, $request) {
             if ($request->expectsJson()) {
-                return json($e->getErrors(), $e->getCode(), $e->getMessage());
+                return json($e->getErrors(), $e->getCode(), array_values($e->getErrors())[0] ?? $e->getMessage());
             }
         });
 

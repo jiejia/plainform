@@ -1,7 +1,7 @@
 import ky from 'ky';
 
 const api = ky.create({
-    prefixUrl: process.env.API_BASE_URL,
+    prefixUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     hooks: {
         beforeRequest: [
             async (request) => {
@@ -15,9 +15,8 @@ const api = ky.create({
                         token = cookieStore.get('token')?.value;
                     } else {
                         // client side
-                        const cookies = document.cookie.split(';');
-                        token = cookies.find(cookie => cookie.includes('token='));
-                        token = token?.split('=')[1];
+                        const Cookies = await import('js-cookie');
+                        token = Cookies.default.get('token');
                     }
 
                     if (token) {

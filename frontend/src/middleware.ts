@@ -33,18 +33,16 @@ export async function middleware(request: NextRequest) {
     // get current route path
     const isAuthRoute = checkIsAuthRoute(request);
 
-    // check if user is authenticated
-    try{
-        const data = await api.get('api/admin/profile/me');
-
-        if (data.status === 0 && isAuthRoute) {
+    try {
+        // 使用await等待API调用完成
+        const res: any = await api.get('api/admin/profile/me').json();
+        
+        if (res.code === 0 && isAuthRoute) {
             return NextResponse.redirect(new URL('/dashboard', request.url));
         }
-    } catch (error) {
-        if (error instanceof HTTPError) {
-            if (error.response.status === 401 && ! isAuthRoute) {
-                return NextResponse.redirect(new URL('/login', request.url));
-            }
+    } catch (err: any) {
+        if (err.response?.status === 401 && !isAuthRoute) {
+            return NextResponse.redirect(new URL('/login', request.url));
         }
     }
 
@@ -60,6 +58,6 @@ export const config = {
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          */
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|\\.well-known).*)',
     ],
 }
