@@ -16,7 +16,12 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    async function handleSubmit(e: PressEvent) {
+    async function handleSubmit(e?: PressEvent | React.FormEvent) {
+        // 阻止表单默认提交行为
+        if (e && 'preventDefault' in e) {
+            e.preventDefault();
+        }
+        
         setIsPending(true);
 
         // validate form data
@@ -42,7 +47,7 @@ export default function Login() {
     function SubmitButton() {
         return (
             <Button
-                type="button"
+                type="submit"
                 color="primary"
                 isLoading={isPending}
                 disabled={isPending}
@@ -61,7 +66,7 @@ export default function Login() {
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
-                <form  className="w-full flex flex-col gap-5" noValidate>
+                <form className="w-full flex flex-col gap-5" noValidate onSubmit={handleSubmit}>
                     <Input
                         type="email"
                         name="email"

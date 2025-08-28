@@ -29,7 +29,12 @@ export default function ForgetPassword() {
         };
     }, [countdown]);
 
-    async function handleSubmit(e: PressEvent) {
+    async function handleSubmit(e?: PressEvent | React.FormEvent) {
+        // 阻止表单默认提交行为
+        if (e && 'preventDefault' in e) {
+            e.preventDefault();
+        }
+        
         setIsPending(true);        
 
         // validate form data
@@ -60,7 +65,7 @@ export default function ForgetPassword() {
                 <Divider />
                 <CardBody className="p-5">
 
-                    <form  className="w-full flex flex-col gap-5">
+                    <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
                         <div>
                             <p className="text-xs text-center text-slate-400"> You will receive a link to create a new password via email.</p>
                         </div>
@@ -78,6 +83,7 @@ export default function ForgetPassword() {
                         />
                         <p className="text-center text-xs"><span>Remember Password?</span> <Link href="/login" className="content-center justify-self-end text-xs">Login</Link></p>
                         <Button 
+                            type="submit"
                             color="primary" 
                             isLoading={isPending} 
                             isDisabled={countdown > 0}
