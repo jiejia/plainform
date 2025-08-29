@@ -81,3 +81,33 @@ export async function forgetPassword(email: string) {
         return err.message;
     }
 }
+
+
+/**
+ * reset password action
+ * 
+ * @param email
+ * @param newPassword
+ * @param confirmPassword
+ * @returns
+ */
+export async function resetPassword(email: string, newPassword: string, confirmPassword: string, resetPasswordToken: string) {
+    try {
+        const res:any = await api.post('api/admin/auth/reset-password', {
+            json: {
+                email: email,
+                password: newPassword,
+                password_confirmation: confirmPassword,
+                reset_password_token: resetPasswordToken
+            }
+        }).json();  
+
+        if (res.code === 0) {
+            return true;
+        } else {
+            return res.msg;
+        }
+    } catch (err: any) {
+        return err.message;
+    }
+}
