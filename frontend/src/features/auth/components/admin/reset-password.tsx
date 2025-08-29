@@ -35,6 +35,10 @@ export default function ResetPassword() {
         const result = resetPasswordValidator({newPassword, confirmPassword});
         if (!result.success) {
             msg('reset failed', result.error.issues[0].message, 'warning');
+
+            // sleep 1 second
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             setIsPending(false);
             return;
         }

@@ -29,6 +29,10 @@ export default function Login() {
         if (!result.success) {
             // get first error message
             msg('login failed', result.error.issues[0].message, 'warning');
+
+            // sleep 1 second
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             setIsPending(false);
             return;
         }

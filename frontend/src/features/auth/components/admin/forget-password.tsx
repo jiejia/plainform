@@ -41,6 +41,10 @@ export default function ForgetPassword() {
         const result = forgetPasswordValidator({email});
         if (!result.success) {
             msg('send failed', result.error.issues[0].message, 'warning');
+
+            // sleep 1 second
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             setIsPending(false);
             return;
         }
