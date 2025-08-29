@@ -1,4 +1,5 @@
 import ky from 'ky';
+import { CookieKey } from '@/features/core/constants/cookie-key';
 
 const api = ky.create({
     prefixUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -12,11 +13,11 @@ const api = ky.create({
                         // server side
                         const { cookies } = await import('next/headers');
                         const cookieStore = await cookies();
-                        token = cookieStore.get('token')?.value;
+                        token = cookieStore.get(CookieKey.ADMIN_TOKEN)?.value;
                     } else {
                         // client side
                         const Cookies = await import('js-cookie');
-                        token = Cookies.default.get('token');
+                        token = Cookies.default.get(CookieKey.ADMIN_TOKEN);
                     }
 
                     if (token) {

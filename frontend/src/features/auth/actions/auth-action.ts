@@ -1,6 +1,7 @@
 'use server'
 
 import api from "@/features/core/library/api";
+import { CookieKey } from "@/features/core/constants/cookie-key";
 import { cookies } from "next/headers";
 
 /**
@@ -26,7 +27,7 @@ export async function login(email: string, password: string) {
 
             // set token to cookies
             const cookieStore = await cookies();
-            cookieStore.set('token', token, {
+            cookieStore.set(CookieKey.ADMIN_TOKEN, token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
@@ -52,8 +53,8 @@ export async function logout() {
     const res:any = await api.post('api/admin/auth/logout').json();
 
     const cookieStore = await cookies();
-    cookieStore.delete('token');
-
+    cookieStore.delete(CookieKey.ADMIN_TOKEN);
+    cookieStore.delete(CookieKey.ADMIN);
 
     return true;
 }
