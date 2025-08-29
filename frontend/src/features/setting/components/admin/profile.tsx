@@ -6,9 +6,10 @@ import {Select, SelectItem} from "@heroui/react";
 import Menu from './menu';
 import {SquarePen} from "lucide-react";
 import FormModal from "@/features/core/components/admin/form-modal";
+import { useAppContext } from "@/features/core/context/AppContext"; 
 
 export default function General() {
-
+    const { admin } = useAppContext();
     const languages = [
         {key: "zh-CN", label: "简体中文"},
         {key: "en-US", label: "English"},
@@ -36,9 +37,11 @@ export default function General() {
                                     <Avatar
                                         as="button"
                                         className="transition-transform"
-                                        src="https://i.pravatar.cc/150?u=default"
+                                        src={admin.avatar || ''}
+                                        name={admin.avatar ? undefined : admin.username?.charAt(0).toUpperCase()}
                                         size="md"
                                         isBordered
+                                        title={admin.username}
                                     />
                                 </div>
                             </li>

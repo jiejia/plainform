@@ -6,6 +6,7 @@ import { useEffect, useState, useTransition } from 'react'
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
 import { logout } from "@/features/auth/actions/auth-action";
+import { useAppContext } from "@/features/core/context/AppContext";
 
 export default function Header({ 
   breadcrumbs = <></>
@@ -14,7 +15,7 @@ export default function Header({
 }) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-
+  const { admin } = useAppContext();
   const handleSettingsClick = () => {
     router.push('/dashboard/setting/profile')
   }
@@ -37,14 +38,16 @@ export default function Header({
                             <Avatar
                                 as="button"
                                 className="transition-transform"
-                                src="https://i.pravatar.cc/150?u=default"
+                                src={admin.avatar || ''}
+                                name={admin.avatar ? undefined : admin.username?.charAt(0).toUpperCase()}
                                 size="sm"
+                                title={admin.username}
                             />
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Profile Actions" variant="flat">
                             <DropdownItem key="profile" className="h-14 gap-2">
                                 <p className="font-semibold">已登录为</p>
-                                <p className="font-semibold"></p>
+                                <p className="font-semibold">{admin.username}</p>
                             </DropdownItem>
                             <DropdownItem key="settings" onPress={handleSettingsClick}>
                                 设置
