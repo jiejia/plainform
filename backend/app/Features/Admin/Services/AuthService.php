@@ -128,7 +128,7 @@ class AuthService
      */
     public function generatePasswordResetUrl(string $email, string $token): string
     {
-        return config('app.url') . '/admin/password-reset?email=' . $email . '&token=' . $token;
+        return config('app.front_url') . '/reset-password?email=' . $email . '&token=' . $token;
     }
 
     /**
