@@ -5,7 +5,7 @@ import { Lock } from "lucide-react";
 import { Link } from "@heroui/link";
 import { useState, useEffect } from "react";
 import { msg } from "@/features/core/utils/ui";
-import { resetPassword } from "@/features/auth/actions/auth-action";
+import { resetPasswordByEmail } from "@/features/auth/actions/auth-action";
 import { resetPasswordValidator } from "@/features/auth/validators/reset-password-validator";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -44,7 +44,7 @@ export default function ResetPassword() {
         }
 
         // reset password
-        const res = await resetPassword(email, newPassword, confirmPassword, resetPasswordToken);
+        const res = await resetPasswordByEmail(email, newPassword, confirmPassword, resetPasswordToken);
         if (res === true) {
             msg('reset success', 'Please login', 'success');
             router.push('/login');

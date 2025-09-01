@@ -17,9 +17,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     // const [setting, setSetting] = useState<any>({} as any);
 
     useEffect(() => {
-        const admin = Cookies.get(CookieKey.ADMIN);
-        if (admin) {
-            setAdmin(JSON.parse(admin));
+        const adminJson = Cookies.get(CookieKey.ADMIN);
+        if (adminJson) {
+            setAdmin(JSON.parse(adminJson));
         }
     }, []);
 

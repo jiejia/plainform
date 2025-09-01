@@ -1,3 +1,5 @@
+'use client'
+
 import {
     Modal,
     ModalContent,
@@ -35,7 +37,7 @@ export default function FormModal({children, title, footer, button}: FormModalPr
     return (
         <>    
               {triggerButton}
-              <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+              <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
                 <ModalContent>
                 {(onClose) => (
                     <>

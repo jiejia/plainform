@@ -92,7 +92,7 @@ export async function forgetPassword(email: string) {
  * @param confirmPassword
  * @returns
  */
-export async function resetPassword(email: string, newPassword: string, confirmPassword: string, resetPasswordToken: string) {
+export async function resetPasswordByEmail(email: string, newPassword: string, confirmPassword: string, resetPasswordToken: string) {
     try {
         const res:any = await api.post('api/admin/auth/reset-password', {
             json: {
@@ -102,6 +102,84 @@ export async function resetPassword(email: string, newPassword: string, confirmP
                 reset_password_token: resetPasswordToken
             }
         }).json();  
+
+        if (res.code === 0) {
+            return true;
+        } else {
+            return res.msg;
+        }
+    } catch (err: any) {
+        return err.message;
+    }
+}
+
+/**
+ * reset password action
+ * 
+ * @param oldPassword 
+ * @param newPassword 
+ * @param confirmPassword 
+ * @returns 
+ */
+export async function resetPassword(oldPassword: string, newPassword: string, confirmPassword: string) {
+    try {
+        const res:any = await api.post('api/admin/profile/update-password', {
+            json: {
+                old_password: oldPassword,
+                password: newPassword,
+                password_confirmation: confirmPassword
+            }
+        }).json();
+
+        if (res.code === 0) {
+            return true;
+        } else {
+            return res.msg;
+        }
+    } catch (err: any) {
+        return err.message;
+    }
+}
+
+/**
+ * update email action
+ * 
+ * @param email
+ * @param code
+ * @returns
+ */
+export async function updateEmail(email: string, code: string) {
+    try {
+        const res:any = await api.post('api/admin/profile/update-email', {
+            json: {
+                email: email,
+                code: code
+            }
+        }).json();
+
+        if (res.code === 0) {
+            return true;
+        } else {
+            return res.msg;
+        }
+    } catch (err: any) {
+        return err.message;
+    }
+}
+
+/**
+ * send email reset code action
+ * 
+ * @param email
+ * @returns
+ */
+export async function sendEmailResetCode(email: string) {
+    try {
+        const res:any = await api.post('api/admin/profile/send-email-reset-code', {
+            json: {
+                email: email
+            }
+        }).json();
 
         if (res.code === 0) {
             return true;
