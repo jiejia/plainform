@@ -1,12 +1,28 @@
 'use client'
 
-import Block from '@/features/core/components/shared/block';
-import {Button, Switch, Input, Textarea, Card, CardBody, CardHeader, CardFooter,Divider} from "@heroui/react";
-import React from "react";
+import {Button, Switch, Input, Card, CardBody, CardHeader,Divider} from "@heroui/react";
+import React, { useEffect, useState } from "react";
 import {Select, SelectItem} from "@heroui/react";
 import Menu from './menu';
 import {SquarePen} from "lucide-react";
 import FormModal from '@/features/core/components/admin/form-modal';
+import { getOptions } from '@/features/setting/actions/setting-action';
+
+interface Option {
+    app_name: {
+        value: string;
+    };
+    app_description: {
+        value: string;
+    };
+    language: {
+        value: string;
+    };
+    maintance: {
+        value: boolean;
+    };
+}
+
 
 export default function General() {
 
@@ -16,6 +32,47 @@ export default function General() {
         {key: "ja-JP", label: "日本語"},
         {key: "ko-KR", label: "한국어"},
     ];
+
+    const [options, setOptions] = useState<Option>({
+        app_name: {
+            value: '',
+        },
+        app_description: {
+            value: '',
+        },
+        language: {
+            value: 'zh-CN',
+        },
+        maintance: {
+            value: false,
+        },
+    });
+
+    const [loading, setLoading] = useState(true);
+
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                setLoading(true);
+                const res: any = await getOptions('general');
+                console.log("res", res);
+                
+                // 检查返回数据是否有效
+                if (res && res.general) {
+                    setOptions(res.general as Option);
+                } else {
+                    console.warn('No general options found in response:', res);
+                }
+            } catch (error) {
+                console.error('Failed to fetch options:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOptions();
+    }, []);
 
     return (
         <div className="h-full grid grid-rows-[1fr] gap-4">
@@ -42,7 +99,7 @@ export default function General() {
                                         variant="flat"
                                     >编辑</Button>
                                     }>
-                                        <Input type="text" placeholder="请输入应用名称" />
+                                        <Input type="text" placeholder="请输入应用名称" value={options.app_name.value} />
                                     </FormModal>
                                 </div>
                             </li>
