@@ -19,6 +19,10 @@ enum Code: int
 
     case TOKEN_GENERATION_TOO_FREQUENT = 20008;
 
+    case EMAIL_SAME = 20009;
+
+    case EMAIL_OTHER_FOUND = 20010;
+
     public function message(): string
     {
         $key = match($this) {
@@ -30,6 +34,8 @@ enum Code: int
             self::PASSWORD_ERROR => __('auth.password_error'),
             self::PASSWORD_SAME => __('auth.password_same'),
             self::TOKEN_GENERATION_TOO_FREQUENT => __('auth.token_generation_too_frequent'),
+            self::EMAIL_SAME => __('auth.email_same'),
+            self::EMAIL_OTHER_FOUND => __('auth.email_other_found'),
         };
 
         return __($key);

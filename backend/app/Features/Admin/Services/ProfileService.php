@@ -55,6 +55,17 @@ class ProfileService
      */
     public function updateEmail(Admin $admin, string $email, string $code): void
     {
+        // email can not be the same
+        if ($admin->email === $email) {
+            throw new BusinessException(Code::EMAIL_SAME->message(), Code::EMAIL_SAME->value);
+        }
+
+        // email can not be other's email
+        $otherAdmin = Admin::where('email', $email)->where('id', '!=', $admin->id)->first();
+        if ($otherAdmin) {
+            throw new BusinessException(Code::EMAIL_OTHER_FOUND->message(), Code::EMAIL_OTHER_FOUND->value);
+        }
+
         // verify code
         $mailService = app(MailCodeService::class)->scene('email_reset');
         if (! $mailService->verifyCode($email, $code)) {

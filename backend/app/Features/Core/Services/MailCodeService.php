@@ -67,7 +67,7 @@ class MailCodeService
     {
         // check limit
         if (!$this->limitUnExpired($email)) {
-            throw new BusinessException(Code::EMAIL_VERIFY_CODE_ERROR->message(), Code::EMAIL_VERIFY_CODE_ERROR->value);
+            throw new BusinessException(Code::FREQUENCY_LIMIT_ERROR->message(), Code::FREQUENCY_LIMIT_ERROR->value);
         }
 
         $code = $this->generateCode();

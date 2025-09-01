@@ -7,7 +7,7 @@ enum Code: int
     case INVALID_TOKEN = 10001;
     case VALIDATION_ERROR = 10002;
     case SUCCESS = 0;
-    case EMAIL_VERIFY_CODE_ERROR = 10003;
+    case FREQUENCY_LIMIT_ERROR = 10003;
 
     public function message(): string
     {
@@ -16,7 +16,7 @@ enum Code: int
             self::INVALID_TOKEN => 'core.invalid_token',
             self::VALIDATION_ERROR => 'core.validation_error',
             self::SUCCESS => 'core.success',
-            self::EMAIL_VERIFY_CODE_ERROR => __('core.email_verify_code_error'),
+            self::FREQUENCY_LIMIT_ERROR => __('core.frequency_limit_error'),
         };
 
         return __($key);
