@@ -4,6 +4,9 @@ import { Avatar, Button } from "@heroui/react";
 import { Admin } from "@/features/core/types/app";
 import FormModal from "@/features/core/components/admin/form-modal";
 import { useRef, useState } from "react";
+import { uploadAvatar } from "@/features/setting/actions/setting-action";
+import { msg } from "@/features/core/utils/ui";
+
 
 export default function EditAvatar({ admin }: { admin: Admin }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -13,14 +16,16 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
         fileInputRef.current?.click();
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
+        
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setSelectedImage(e.target?.result as string);
-            };  
-            reader.readAsDataURL(file);
+            const res = await uploadAvatar(file);
+            if (res.code === 0) {
+                setSelectedImage(res.data.avatar_url);
+            } else {
+                msg("上传失败", res.msg, 'warning');
+            }
         }
     };
 

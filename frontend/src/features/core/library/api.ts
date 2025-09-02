@@ -27,7 +27,10 @@ const api = ky.create({
                     // Handle error silently in middleware context
                 }
                 
-                request.headers.set('Content-Type', 'application/json');
+                if (!(request.body instanceof FormData)) {
+                    request.headers.set('Content-Type', 'application/json');
+                }
+                
                 request.headers.set('X-Requested-With', 'XMLHttpRequest');
             }
         ],
