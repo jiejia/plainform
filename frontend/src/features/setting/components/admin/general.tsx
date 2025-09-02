@@ -1,12 +1,13 @@
 'use client'
 
-import {Button, Switch, Input, Card, CardBody, CardHeader,Divider} from "@heroui/react";
+import {Card, CardBody, CardHeader,Divider} from "@heroui/react";
 import React, { useEffect, useState } from "react";
-import {Select, SelectItem} from "@heroui/react";
 import Menu from './menu';
-import {SquarePen} from "lucide-react";
-import FormModal from '@/features/core/components/admin/form-modal';
 import { getOptions } from '@/features/setting/actions/setting-action';
+import DefaultLanguage from '@/features/setting/components/admin/general/default-language';
+import MaintanceMode from '@/features/setting/components/admin/general/maintance-mode';
+import AppName from '@/features/setting/components/admin/general/app-name';
+import AppDescription from '@/features/setting/components/admin/general/app-description';
 
 interface Option {
     app_name: {
@@ -15,24 +16,17 @@ interface Option {
     app_description: {
         value: string;
     };
-    language: {
+    default_language: {
         value: string;
     };
-    maintance: {
-        value: boolean;
+    maintenance_mode: {
+        value: boolean | string;
     };
 }
 
 
 export default function General() {
-
-    const languages = [
-        {key: "zh-CN", label: "简体中文"},
-        {key: "en-US", label: "English"},
-        {key: "ja-JP", label: "日本語"},
-        {key: "ko-KR", label: "한국어"},
-    ];
-
+    
     const [options, setOptions] = useState<Option>({
         app_name: {
             value: '',
@@ -40,10 +34,10 @@ export default function General() {
         app_description: {
             value: '',
         },
-        language: {
+        default_language: {
             value: 'zh-CN',
         },
-        maintance: {
+        maintenance_mode: {
             value: false,
         },
     });
@@ -56,7 +50,7 @@ export default function General() {
             try {
                 setLoading(true);
                 const res: any = await getOptions('general');
-                console.log("res", res);
+                console.log("res.general", res.general);
                 
                 // 检查返回数据是否有效
                 if (res && res.general) {
@@ -74,6 +68,7 @@ export default function General() {
         fetchOptions();
     }, []);
 
+
     return (
         <div className="h-full grid grid-rows-[1fr] gap-4">
             <div className="h-full grid grid-cols-[75px_1fr] sm:grid-cols-[250px_1fr] gap-4">
@@ -84,6 +79,11 @@ export default function General() {
                     </CardHeader>
                     <Divider/>
                     <CardBody>
+                    {loading ? (
+                        <div className="flex justify-center items-center h-32">
+                            <span>加载中...</span>
+                        </div>
+                    ) : (   
                         <ul className="h-full grid gap-2 content-start">
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
                                 <div>
@@ -91,16 +91,7 @@ export default function General() {
                                     <span className="text-default-400 text-xs">设置应用名称</span>
                                 </div>
                                 <div>
-                                    <FormModal title="编辑应用名称" footer={null} button={
-                                    <Button
-                                        startContent={<SquarePen size={16}/>}
-                                        size="sm"
-                                        color="default"
-                                        variant="flat"
-                                    >编辑</Button>
-                                    }>
-                                        <Input type="text" placeholder="请输入应用名称" value={options.app_name.value} />
-                                    </FormModal>
+                                   <AppName options={options} setOptions={setOptions} />
                                 </div>
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
@@ -109,15 +100,7 @@ export default function General() {
                                     <span className="text-default-400 text-xs">设置应用描述</span>
                                 </div>
                                 <div>
-                                    <FormModal title="编辑应用描述" footer={null} button={
-                                    <Button
-                                        startContent={<SquarePen size={16}/>}
-                                        size="sm"
-                                        color="default" variant="flat"
-                                    >编辑</Button>
-                                    }>
-                                        <Input type="text" placeholder="请输入应用描述" />
-                                    </FormModal>
+                                    <AppDescription options={options} setOptions={setOptions} />
                                 </div>
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
@@ -126,20 +109,7 @@ export default function General() {
                                     <span className="text-default-400 text-xs">设置站点语言</span>
                                 </div>
                                 <div>
-                                    <Select
-                                        className="w-40"
-                                        placeholder="请选择语言"
-                                        id="language"
-                                        name="language"
-                                        size="sm"
-                                        defaultSelectedKeys={["zh-CN"]}
-                                    >
-                                        {languages.map((language) => (
-                                            <SelectItem key={language.key}>
-                                                {language.label}
-                                            </SelectItem>
-                                        ))}
-                                    </Select>
+                                    <DefaultLanguage options={options} setOptions={setOptions} />
                                 </div>
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
@@ -148,11 +118,12 @@ export default function General() {
                                     <span className="text-default-400 text-xs">是否开启站点维护模式</span>
                                 </label>
                                 <div>
-                                    <Switch defaultSelected aria-label="Automatic updates" size="sm" id="maintance"/>
+                                        <MaintanceMode options={options} setOptions={setOptions} />
                                 </div>
                             </li>
                         </ul>
 
+                    )}
                     </CardBody>
                 </Card>
             </div>

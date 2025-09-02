@@ -12,7 +12,7 @@ import api from "@/features/core/library/api";
 export async function getOptions(group: string = 'general', name: string = '') {
     try {
         const res:any = await api.get('api/admin/option/get', {
-            json: {
+            searchParams: {
                 group: group,
                 name: name
             }
@@ -37,13 +37,15 @@ export async function getOptions(group: string = 'general', name: string = '') {
  * @param value 
  * @returns 
  */
-export async function setOptions(group: string = 'general', name: string = '', value: string = '') {    
+export async function setOptions(group: string, name: string, value: any) {    
     try {
         const res:any = await api.post('api/admin/option/set', {
             json: {
-                group: group,
-                name: name,
-                value: value
+                update_group: group,
+                update_name: name,
+                update_data: {
+                    "value": value
+                }
             }
         }).json();
 
