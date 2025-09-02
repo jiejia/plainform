@@ -31,6 +31,14 @@ export default function FormModal({children, title, footer, button}: FormModalPr
                 props.onPress()
             }
             onOpen()
+        },
+        onClick: () => {
+            // 如果原来的button已经有onClick，先调用它
+            const props = button.props as any
+            if (props?.onClick && typeof props.onClick === 'function') {
+                props.onClick()
+            }
+            onOpen()
         }
     })
     
