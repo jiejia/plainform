@@ -8,7 +8,8 @@ class ProfileValidator extends AbstractValidator
     protected function rules()
     {
         return [
-            'avatar' => 'required|string|max:255|url',
+            'avatar' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar_url' => 'required|string|max:255|url',
             'email' => 'required|email|max:255',
             'code' => 'required|string|max:255',
             'old_password' => 'required|string|max:100',
@@ -20,10 +21,15 @@ class ProfileValidator extends AbstractValidator
     protected function messages()
     {
         return [
-            'avatar.required' => '头像不能为空',
-            'avatar.string' => '头像必须是字符串',
-            'avatar.max' => '头像不能超过255个字符',
-            'avatar.url' => '头像必须是有效的URL',
+            'avatar.required' => '头像文件不能为空',
+            'avatar.file' => '头像必须是文件',
+            'avatar.image' => '头像必须是图片文件',
+            'avatar.mimes' => '头像文件格式必须是: jpeg, png, jpg, gif, svg',
+            'avatar.max' => '头像文件大小不能超过2MB',
+            'avatar_url.required' => '头像URL不能为空',
+            'avatar_url.string' => '头像URL必须是字符串',
+            'avatar_url.max' => '头像URL不能超过255个字符',
+            'avatar_url.url' => '头像URL必须是有效的URL',
             'email.required' => '邮箱不能为空',
             'email.email' => '邮箱格式不正确',
             'email.max' => '邮箱不能超过255个字符',
@@ -46,7 +52,8 @@ class ProfileValidator extends AbstractValidator
     protected function scenes()
     {
         return [
-            'update_avatar' => ['avatar'],
+            'upload_avatar' => ['avatar'],
+            'update_avatar' => ['avatar_url'],
             'send_email_reset_code' => ['email'],
             'update_email' => ['email', 'code'],
             'update_password' => ['old_password', 'password', 'password_confirmation'],

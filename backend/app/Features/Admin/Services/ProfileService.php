@@ -5,10 +5,30 @@ use App\Features\Admin\Models\Admin;
 use App\Features\Core\Exceptions\BusinessException;
 use App\Features\Core\Services\MailCodeService;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use App\Features\Admin\Constants\Code;
 
 class ProfileService
 {
+    /**
+     * Upload avatar file and return the URL
+     * 
+     * @param UploadedFile $avatarFile
+     * @return string
+     */
+    public function uploadAvatar(UploadedFile $avatarFile): string
+    {
+        // Generate unique filename
+        $filename = time() . '_' . uniqid() . '.' . $avatarFile->getClientOriginalExtension();
+        
+        // Store file to public disk under avatars directory
+        $path = $avatarFile->storeAs('avatars', $filename, 'public');
+        
+        // Return full URL
+        return config('app.url') . Storage::url($path);
+    }
+
     /**
      * Update the avatar for the given admin.
      * 
@@ -18,10 +38,38 @@ class ProfileService
      */
     public function updateAvatar(Admin $admin, string $avatar): array
     {
+        // Delete old avatar file if exists
+        if ($admin->avatar) {
+            $this->deleteOldAvatar($admin->avatar);
+        }
+
         $admin->avatar = $avatar;
         $admin->save();
 
         return $admin->toArray();
+    }
+
+    /**
+     * Delete old avatar file from storage
+     * 
+     * @param string $avatarUrl
+     * @return void
+     */
+    private function deleteOldAvatar(string $avatarUrl): void
+    {
+        // Extract path from URL
+        $urlParts = parse_url($avatarUrl);
+        if (!isset($urlParts['path'])) {
+            return;
+        }
+
+        // Remove '/storage/' prefix to get the actual path
+        $path = str_replace('/storage/', '', $urlParts['path']);
+        
+        // Delete file if exists
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     /**

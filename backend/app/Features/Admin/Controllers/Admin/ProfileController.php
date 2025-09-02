@@ -33,6 +33,23 @@ class ProfileController
     }
 
     /**
+     * Upload avatar file
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadAvatar(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $this->validator->scene('upload_avatar')->validate($request->all());
+
+        $avatarFile = $request->file('avatar');
+
+        $avatarUrl = $this->service->uploadAvatar($avatarFile);
+
+        return json(['avatar_url' => $avatarUrl]);
+    }
+
+    /**
      * Update avatar
      * 
      * @param Request $request
@@ -43,7 +60,7 @@ class ProfileController
         $this->validator->scene('update_avatar')->validate($request->all());
 
         $admin = $request->user();
-        $avatar = $request->file('avatar');
+        $avatar = $request->input('avatar_url');
 
         $user = $this->service->updateAvatar($admin, $avatar);
 
