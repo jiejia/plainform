@@ -58,3 +58,21 @@ export async function setOptions(group: string, name: string, value: any) {
         return err.message;
     }
 }
+
+/**
+ * get profile
+ * 
+ * @returns 
+ */
+export async function getProfile() {
+    try {
+        const res:any = await api.get('api/admin/profile/me').json();
+        if (res.code === 0) {
+            return res.data;
+        } else {
+            return res.msg;
+        }
+    } catch (err: any) {
+        return err.message;
+    }
+}

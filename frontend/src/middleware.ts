@@ -51,6 +51,7 @@ export async function middleware(request: NextRequest) {
                 id: res.data.id,
                 username: res.data.username,
                 avatar: res.data.avatar,
+                email: res.data.email,
               }),
               maxAge: 60 * 60 * 24 * 30,
               path: '/',

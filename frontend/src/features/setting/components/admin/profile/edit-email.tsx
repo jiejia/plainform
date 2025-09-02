@@ -8,7 +8,7 @@ import { updateEmailValidator ,  sendEmailResetCodeValidator} from "@/features/s
 import { msg } from "@/features/core/utils/ui";
 import { updateEmail, sendEmailResetCode } from "@/features/auth/actions/auth-action";
 
-export default function UpdateEmail() {
+export default function EditEmail() {
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
 
