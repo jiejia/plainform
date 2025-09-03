@@ -39,7 +39,7 @@ class ProfileService
     public function updateAvatar(Admin $admin, string $avatar): array
     {
         // Delete old avatar file if exists
-        if ($admin->avatar) {
+        if ($admin->avatar && $admin->avatar !== $avatar) {
             $this->deleteOldAvatar($admin->avatar);
         }
 

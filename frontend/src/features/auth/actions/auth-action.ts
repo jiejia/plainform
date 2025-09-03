@@ -28,7 +28,7 @@ export async function login(email: string, password: string) {
             // set token to cookies
             const cookieStore = await cookies();
             cookieStore.set(CookieKey.ADMIN_TOKEN, token, {
-                httpOnly: true,
+                httpOnly: false,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
                 maxAge: 60 * 60 * 24 * 7, // 7 days

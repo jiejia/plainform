@@ -3,6 +3,7 @@ import { CookieKey } from '@/features/core/constants/cookie-key';
 
 const api = ky.create({
     prefixUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+    // credentials: 'include',
     hooks: {
         beforeRequest: [
             async (request) => {
@@ -18,6 +19,7 @@ const api = ky.create({
                         // client side
                         const Cookies = await import('js-cookie');
                         token = Cookies.default.get(CookieKey.ADMIN_TOKEN);
+                        console.log(token);
                     }
 
                     if (token) {
@@ -26,11 +28,8 @@ const api = ky.create({
                 } catch (error) {
                     // Handle error silently in middleware context
                 }
-                
-                if (!(request.body instanceof FormData)) {
-                    request.headers.set('Content-Type', 'application/json');
-                }
-                
+
+
                 request.headers.set('X-Requested-With', 'XMLHttpRequest');
             }
         ],

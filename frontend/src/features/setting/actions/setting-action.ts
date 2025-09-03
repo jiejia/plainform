@@ -1,3 +1,4 @@
+
 'use server'
 
 import api from "@/features/core/library/api";
@@ -78,23 +79,24 @@ export async function getProfile() {
 }
 
 /**
- * upload avatar
+ * update avatar
  * 
  * @param avatar 
  * @returns 
  */
-export async function uploadAvatar(avatar: File) {
-    const formData = new FormData();
-    formData.append('avatar', avatar);
-    
+export async function updateAvatar(avatar: string) {
     try {
-        const res:any = await api.post('api/admin/profile/upload-avatar', {
-            body: formData
+        const res:any = await api.post('api/admin/profile/update-avatar', {
+            json: {
+                avatar_url: avatar
+            }
         }).json();
-
-        return res;
-
-    }  catch (err: any) {
-        return err;
+        if (res.code === 0) {
+            return true;
+        } else {
+            return res.msg;
+        }
+    } catch (err: any) {
+        return err.message;
     }
 }

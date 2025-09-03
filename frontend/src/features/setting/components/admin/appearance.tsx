@@ -1,7 +1,7 @@
 'use client'
 
-import {Button, Switch, Input, Textarea, Card, CardBody, CardHeader, CardFooter,Divider, Select, SelectItem, Skeleton} from "@heroui/react";
-import React, {useEffect, useState} from "react";
+import { Button, Switch, Input, Textarea, Card, CardBody, CardHeader, CardFooter, Divider, Select, SelectItem, Skeleton } from "@heroui/react";
+import React, { useEffect, useState } from "react";
 import Menu from './menu';
 import { getOptions } from "../../actions/setting-action";
 import Theme from "./appearance/theme";
@@ -44,20 +44,23 @@ export default function Appearance() {
                     <CardHeader>
                         <h2>Appearance</h2>
                     </CardHeader>
-                    <Divider/>
+                    <Divider />
                     <CardBody>
-                        {loading ? <Skeleton className="h-10 w-full" /> : (
-                        <ul className="h-full grid gap-2 content-start">
-                            <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
-                                <div>
-                                    <h3 className="text-sm">主题</h3>
-                                    <span className="text-default-400 text-xs">设置站点主题</span>
-                                </div>
-                                <div>
-                                    <Theme options={options} setOptions={setOptions} />
-                                </div>
-                            </li>
-                        </ul>
+                        {loading ? 
+                        <div className="flex justify-center items-center h-32">
+                            <span>加载中...</span>
+                        </div> : (
+                            <ul className="h-full grid gap-2 content-start">
+                                <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
+                                    <div>
+                                        <h3 className="text-sm">主题</h3>
+                                        <span className="text-default-400 text-xs">设置站点主题</span>
+                                    </div>
+                                    <div>
+                                        <Theme options={options} setOptions={setOptions} />
+                                    </div>
+                                </li>
+                            </ul>
                         )}
 
                     </CardBody>
