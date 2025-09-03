@@ -53,8 +53,8 @@ export default function Appearance() {
                             <ul className="h-full grid gap-2 content-start">
                                 <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
                                     <div>
-                                        <h3 className="text-sm">主题</h3>
-                                        <span className="text-default-400 text-xs">设置站点主题</span>
+                                        <h3 className="text-sm">默认主题</h3>
+                                        <span className="text-default-400 text-xs">设置默认主题</span>
                                     </div>
                                     <div>
                                         <Theme options={options} setOptions={setOptions} />
