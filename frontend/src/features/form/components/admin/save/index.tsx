@@ -9,8 +9,9 @@ import Fields from "./fields";
 import FormSetting from "./form-setting"
 import FieldSetting from "./field-setting"
 import { Control } from "@/features/form/types/control";
+import { Field } from "@/features/form/types/field";
 
-export default function Save({ controls }: { controls: Control[] }) {
+export default function Save({ controls, fields }: { controls: Control[], fields: Field[] }) {
     return (<div
         className="grid  gap-4 grid-cols-[1fr] sm:grid-cols-[1fr_300px] xl:grid-cols-[300px_1fr_300px] grid-rows-[1fr_1fr_56px] sm:grid-rows-[1fr_56px] h-full">
         <Card className="xl:block hidden">
@@ -37,7 +38,7 @@ export default function Save({ controls }: { controls: Control[] }) {
             <Divider />
             <CardBody className="h-full">
                 <Scroll>
-                    <Fields />
+                    <Fields fields={fields} />
                 </Scroll>
             </CardBody>
             <CardFooter>
