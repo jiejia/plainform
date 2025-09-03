@@ -8,8 +8,9 @@ import Controls from "./controls";
 import Fields from "./fields";
 import FormSetting from "./form-setting"
 import FieldSetting from "./field-setting"
+import { Control } from "@/features/form/types/control";
 
-export default function Save() {
+export default function Save({ controls }: { controls: Control[] }) {
     return (<div
         className="grid  gap-4 grid-cols-[1fr] sm:grid-cols-[1fr_300px] xl:grid-cols-[300px_1fr_300px] grid-rows-[1fr_1fr_56px] sm:grid-rows-[1fr_56px] h-full">
         <Card className="xl:block hidden">
@@ -22,7 +23,7 @@ export default function Save() {
             <Divider />
             <CardBody className="h-full">
                 <Scroll>
-                    <Controls />
+                    <Controls controls={controls} />
                 </Scroll>
             </CardBody>
         </Card>
@@ -50,7 +51,7 @@ export default function Save() {
         </Card>
         <Card>
             <CardBody className="h-full">
-                <Tabs fullWidth variant="solid" color="default" size="sm">
+                <Tabs fullWidth size="sm">
                     <Tab key="controls"
                         title={<div className="flex items-center space-x-1">
                             <ListPlus size={16} />
@@ -59,7 +60,7 @@ export default function Save() {
                         className="xl:hidden block h-full"
                     >
                         <Scroll>
-                            <Controls />
+                            <Controls controls={controls} />
                         </Scroll>
                     </Tab>
                     <Tab key="form"
