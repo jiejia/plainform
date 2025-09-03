@@ -15,9 +15,9 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedImage, setSelectedImage] = useState<string>(admin.avatar as string);
 
-    // 当 admin.avatar 更新时，同步到本地状态
+    // update selected image when admin.avatar changes
     useEffect(() => {
-        setSelectedImage(admin.avatar ?? '');
+        setSelectedImage(admin.avatar as string);
     }, [admin.avatar]);
 
     const handleAvatarClick = () => {
@@ -42,8 +42,7 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
 
     const handleSave = async () => {
         setIsPending(true);
-        console.log('admin.avatar', admin.avatar)
-        console.log('selectedImage', selectedImage)
+        
         const res = await updateAvatar(selectedImage);
         if (res === true) {
             msg("更新成功", res.msg, 'success');
