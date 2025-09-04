@@ -1,7 +1,7 @@
 'use client'
 
 import React from "react";
-import { DraggableItem } from ".";
+import { DraggableItem } from "@/features/form/types/draggable-item";
 import { Field } from "@/features/form/types/field";
 import { Control } from "@/features/form/types/control";
 import { DragOverlay } from "@dnd-kit/core";
@@ -9,10 +9,10 @@ import { Item } from "@/features/core/components/shared/item";
 import clsx from "clsx";
 import * as Icons from 'lucide-react'
 
-
-
 export default function Overlay({ activeItem, fields, controls }: { activeItem: DraggableItem, fields: Field[], controls: Control[] }) {
+
     const Icon = (Icons as any)[controls[activeItem.id].icon] ?? Icons.Circle
+    
     return (
         <DragOverlay>
             {activeItem &&

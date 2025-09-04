@@ -7,7 +7,7 @@ import { ListPlus, Settings, Settings2, StickyNote, Trash2 } from "lucide-react"
 import Controls from "./controls";
 import Fields from "./fields";
 import FormSetting from "./form-setting"
-import FieldSetting from "./field-setting"
+import FieldSetting from "./fields-setting/index"
 import { Control } from "@/features/form/types/control";
 import { Field } from "@/features/form/types/field";
 import DndWrapper from "@/features/core/components/shared/dnd-wrapper";
@@ -15,15 +15,11 @@ import { DragStartEvent, DragEndEvent, DragMoveEvent } from "@dnd-kit/core";
 import Overlay from "./overlay";
 import Recycle from "./recycle";
 import {v4 as uuidV4} from "uuid";
+import { Form } from "@/features/form/types/form";
+import { DraggableItem } from "@/features/form/types/draggable-item";
 
 
-export interface DraggableItem {
-    id: number;
-    area: string | null;
-}
-
-
-export default function Save({ initialControls, initialFields }: { initialControls: Control[], initialFields: Field[] }) {
+export default function Save({ initialControls, initialFields, initialForm }: { initialControls: Control[], initialFields: Field[], initialForm: Form }) {
 
     const [controls, setControls] = useState<Control[]>(initialControls);
     const [fields, setFields] = useState<Field[]>(initialFields);
@@ -31,6 +27,7 @@ export default function Save({ initialControls, initialFields }: { initialContro
     const [overItem, setOverItem] = useState<DraggableItem | null>(null);
     const [currentField, setCurrentField] = useState<Field | null>(null);
     const [tabSelectedKey, setTabSelectedKey] = useState<string | number>("form-property");
+    const [form, setForm] = useState<Form>(initialForm);
 
 
     // get draggable item
@@ -237,7 +234,7 @@ export default function Save({ initialControls, initialFields }: { initialContro
                                 </div>}
                                 className="h-full">
                                 <Scroll>
-                                    <FormSetting />
+                                    <FormSetting form={form} setForm={setForm} />
                                 </Scroll>
                             </Tab>
                             <Tab key="field-property"
