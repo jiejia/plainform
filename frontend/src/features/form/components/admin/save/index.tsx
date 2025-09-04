@@ -30,6 +30,8 @@ export default function Save({ initialControls, initialFields }: { initialContro
     const [activeItem, setActiveItem] = useState<DraggableItem | null>(null);
     const [overItem, setOverItem] = useState<DraggableItem | null>(null);
     const [currentField, setCurrentField] = useState<Field | null>(null);
+    const [tabSelectedKey, setTabSelectedKey] = useState<string | number>("form-property");
+
 
     // get draggable item
     const getDraggableItem = (currentId: string): DraggableItem => {
@@ -207,7 +209,7 @@ export default function Save({ initialControls, initialFields }: { initialContro
                     <Divider />
                     <CardBody className="h-full">
                         <Scroll>
-                            <Fields fields={fields} />
+                            <Fields fields={fields} setCurrentField={setCurrentField} setFields={setFields} setTabSelectedKey={setTabSelectedKey} />
                         </Scroll>
                     </CardBody>
                     <CardFooter>
@@ -216,7 +218,7 @@ export default function Save({ initialControls, initialFields }: { initialContro
                 </Card>
                 <Card>
                     <CardBody className="h-full">
-                        <Tabs fullWidth size="sm">
+                        <Tabs fullWidth size="sm" selectedKey={tabSelectedKey} onSelectionChange={setTabSelectedKey}>
                             <Tab key="controls"
                                 title={<div className="flex items-center space-x-1">
                                     <ListPlus size={16} />
@@ -228,20 +230,20 @@ export default function Save({ initialControls, initialFields }: { initialContro
                                     <Controls controls={controls} />
                                 </Scroll>
                             </Tab>
-                            <Tab key="form"
+                            <Tab key="form-property"
                                 title={<div className="flex items-center space-x-1">
                                     <Settings size={16} />
-                                    <span>表单设置</span>
+                                    <span>表单</span>
                                 </div>}
                                 className="h-full">
                                 <Scroll>
                                     <FormSetting />
                                 </Scroll>
                             </Tab>
-                            <Tab key="property"
+                            <Tab key="field-property"
                                 title={<div className="flex items-center space-x-1">
                                     <Settings2 size={16} />
-                                    <span>字段设置</span>
+                                    <span>字段</span>
                                 </div>}
                                 className="h-full"
                             >
