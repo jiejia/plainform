@@ -1,104 +1,277 @@
 'use client'
 
 import Scroll from "@/features/core/components/shared/scroll";
-import React from "react";
+import React, { useState } from "react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Tab, Tabs } from "@heroui/react";
-import {ListPlus,Settings,Settings2,StickyNote,Trash2} from "lucide-react"
+import { ListPlus, Settings, Settings2, StickyNote, Trash2 } from "lucide-react"
 import Controls from "./controls";
 import Fields from "./fields";
 import FormSetting from "./form-setting"
 import FieldSetting from "./field-setting"
 import { Control } from "@/features/form/types/control";
 import { Field } from "@/features/form/types/field";
+import DndWrapper from "@/features/core/components/shared/dnd-wrapper";
+import { DragStartEvent, DragEndEvent, DragMoveEvent } from "@dnd-kit/core";
+import Overlay from "./overlay";
+import Recycle from "./recycle";
+import {v4 as uuidV4} from "uuid";
 
-export default function Save({ controls, fields }: { controls: Control[], fields: Field[] }) {
-    return (<div
-        className="grid  gap-4 grid-cols-[1fr] sm:grid-cols-[1fr_300px] xl:grid-cols-[300px_1fr_300px] grid-rows-[1fr_1fr_56px] sm:grid-rows-[1fr_56px] h-full">
-        <Card className="xl:block hidden">
-            <CardHeader>
-                <h2 className="flex items-center space-x-2">
-                    <ListPlus size={16} />
-                    <span>控件</span>
-                </h2>
-            </CardHeader>
-            <Divider />
-            <CardBody className="h-full">
-                <Scroll>
-                    <Controls controls={controls} />
-                </Scroll>
-            </CardBody>
-        </Card>
-        <Card className="">
-            <CardHeader>
-                <h2 className="flex items-center space-x-2">
-                    <StickyNote size={16} />
-                    <span>字段</span>
-                </h2>
-            </CardHeader>
-            <Divider />
-            <CardBody className="h-full">
-                <Scroll>
-                    <Fields fields={fields} />
-                </Scroll>
-            </CardBody>
-            <CardFooter>
-                <div
-                    id="recycle"
-                    className="p-6 bg-danger-50 rounded-lg flex justify-center items-center h-8 w-full cursor-pointer hover:bg-danger-150"
-                >
-                    <Trash2 size={16} />
-                </div>
-            </CardFooter>
-        </Card>
-        <Card>
-            <CardBody className="h-full">
-                <Tabs fullWidth size="sm">
-                    <Tab key="controls"
-                        title={<div className="flex items-center space-x-1">
+
+export interface DraggableItem {
+    id: number;
+    area: string | null;
+}
+
+
+export default function Save({ initialControls, initialFields }: { initialControls: Control[], initialFields: Field[] }) {
+
+    const [controls, setControls] = useState<Control[]>(initialControls);
+    const [fields, setFields] = useState<Field[]>(initialFields);
+    const [activeItem, setActiveItem] = useState<DraggableItem | null>(null);
+    const [overItem, setOverItem] = useState<DraggableItem | null>(null);
+    const [currentField, setCurrentField] = useState<Field | null>(null);
+
+    // get draggable item
+    const getDraggableItem = (currentId: string): DraggableItem => {
+        let area = null;
+        if (currentId.toString().includes("field")) {
+            area = "field";
+        } else if (currentId.toString().includes("control")) {
+            area = "control";
+        } else if (currentId.toString().includes("recycle")) {
+            area = "recycle";
+        }
+
+        let id = currentId.split("-").pop();
+
+        if (!id) {
+            id = "0";
+        }
+
+        return {
+            id: parseInt(id),
+            area: area,
+        };
+    };
+
+    const getInsertPosition = (activeRect: DOMRect, overRect: DOMRect) => {
+        if (activeRect.bottom <= overRect.bottom) {
+            return "before";
+        }
+        if (activeRect.top >= overRect.top) {
+            return "after";
+        }
+        return "after";
+    };
+
+    const handleDragStart = (event: DragStartEvent) => {
+        // get active item
+        const { active } = event;
+
+        setActiveItem(getDraggableItem(active.id.toString()));
+    }
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const {active, over} = event;
+
+        const currentActiveItem = getDraggableItem(active.id.toString());
+        setActiveItem(currentActiveItem);
+
+        if (over) {
+            const currentOverItem = getDraggableItem(over.id.toString());
+            setOverItem(currentOverItem);
+            console.log(currentActiveItem, currentOverItem);
+
+            const activeRect = active.rect.current.translated;
+            const overRect = over.rect;
+
+            // drag control to field
+            if (
+                currentActiveItem.area == "control" &&
+                currentOverItem.area == "field"
+            ) {
+                if (activeRect && overRect) {
+                    const insertPosition = getInsertPosition(activeRect as DOMRect, overRect as DOMRect);
+                    console.log(insertPosition);
+
+                    const newFiledItems = [...fields];
+
+                    const field: Field = {
+                        uuid: uuidV4(),
+                        control_id: controls[currentActiveItem.id].id,
+                        control_name: controls[currentActiveItem.id].name,
+                        control_type: controls[currentActiveItem.id].type,
+                        active: false,
+                        title: controls[currentActiveItem.id].config.title,
+                        description: controls[currentActiveItem.id].config.description,
+                        required: controls[currentActiveItem.id].config.required,
+                        regex: controls[currentActiveItem.id].config.regex,
+                        config: controls[currentActiveItem.id].config,
+                        sort: 0,
+                    };
+
+                    if (insertPosition === "before") {
+                        newFiledItems.splice(currentOverItem.id, 0, field);
+                    } else {
+                        newFiledItems.splice(currentOverItem.id + 1, 0, field);
+                    }
+                    setFields(newFiledItems);
+                }
+            }
+
+            // drag field to field
+            if (
+                currentActiveItem.area == "field" &&
+                currentOverItem.area == "field" &&
+                currentActiveItem.id != currentOverItem.id
+            ) {
+                if (activeRect && overRect) {
+                    const insertPosition = getInsertPosition(activeRect as DOMRect, overRect as DOMRect);
+                    const newFiledItems = [...fields];
+                    const [removed] = newFiledItems.splice(currentActiveItem.id, 1);
+                    if (insertPosition === "before") {
+                        if (currentActiveItem.id < currentOverItem.id) {
+                            newFiledItems.splice(currentOverItem.id - 1, 0, removed);
+                        } else {
+                            newFiledItems.splice(currentOverItem.id, 0, removed);
+                        }
+                    } else {
+                        if (currentActiveItem.id < currentOverItem.id) {
+                            newFiledItems.splice(currentOverItem.id, 0, removed);
+                        } else {
+                            newFiledItems.splice(currentOverItem.id + 1, 0, removed);
+                        }
+                    }
+                    setFields(newFiledItems);
+                }
+            }
+
+            // drag field to recycle(remove field)
+            if (
+                currentActiveItem.area == "field" &&
+                currentOverItem.area == "recycle"
+            ) {
+                // Prevent deletion if only one element remains
+                if (fields.length <= 1) {
+                    return; // Return directly, skip deletion
+                }
+
+                const newFiledItems = [...fields];
+                const removedField = newFiledItems[currentActiveItem.id];
+                newFiledItems.splice(currentActiveItem.id, 1);
+
+                // If the deleted field was active, activate the first field
+                if (removedField.active && newFiledItems.length > 0) {
+                    newFiledItems[0] = {...newFiledItems[0], active: true};
+                    setCurrentField(newFiledItems[0]);
+                }
+
+                setFields(newFiledItems);
+            }
+        }
+    }
+
+    const handleDragMove = (event: DragMoveEvent) => {
+
+    }
+
+    return (
+        <DndWrapper
+            handleDragEnd={handleDragEnd}
+            handleDragStart={handleDragStart}
+            handleDragMove={handleDragMove}
+        >
+            <div
+                className="grid  gap-4 grid-cols-[1fr] sm:grid-cols-[1fr_300px] xl:grid-cols-[300px_1fr_300px] grid-rows-[1fr_1fr_56px] sm:grid-rows-[1fr_56px] h-full">
+                <Card className="xl:block hidden">
+                    <CardHeader>
+                        <h2 className="flex items-center space-x-2">
                             <ListPlus size={16} />
                             <span>控件</span>
-                        </div>}
-                        className="xl:hidden block h-full"
-                    >
+                        </h2>
+                    </CardHeader>
+                    <Divider />
+                    <CardBody className="h-full">
                         <Scroll>
                             <Controls controls={controls} />
                         </Scroll>
-                    </Tab>
-                    <Tab key="form"
-                        title={<div className="flex items-center space-x-1">
-                            <Settings size={16} />
-                            <span>表单设置</span>
-                        </div>}
-                        className="h-full">
+                    </CardBody>
+                </Card>
+                <Card className="">
+                    <CardHeader>
+                        <h2 className="flex items-center space-x-2">
+                            <StickyNote size={16} />
+                            <span>字段</span>
+                        </h2>
+                    </CardHeader>
+                    <Divider />
+                    <CardBody className="h-full">
                         <Scroll>
-                            <FormSetting />
+                            <Fields fields={fields} />
                         </Scroll>
-                    </Tab>
-                    <Tab key="property"
-                        title={<div className="flex items-center space-x-1">
-                            <Settings2 size={16} />
-                            <span>字段设置</span>
-                        </div>}
-                        className="h-full"
-                    >
-                        <Scroll>
-                            <FieldSetting />
-                        </Scroll>
-                    </Tab>
-                </Tabs>
-            </CardBody>
-        </Card>
-        <Card
-            className={"col-span-1 sm:col-span-2 xl:col-span-3"}
-        >
-            <CardBody className="flex flex-row justify-center gap-2">
-                <Button className="w-auto" color="primary" radius="sm" size="sm" variant="flat">
-                    Reset
-                </Button>
-                <Button className="w-auto" color="primary" size="sm" variant="shadow" radius="sm">
-                    Submit
-                </Button>
-            </CardBody>
-        </Card>
-    </div>);
+                    </CardBody>
+                    <CardFooter>
+                        <Recycle />
+                    </CardFooter>
+                </Card>
+                <Card>
+                    <CardBody className="h-full">
+                        <Tabs fullWidth size="sm">
+                            <Tab key="controls"
+                                title={<div className="flex items-center space-x-1">
+                                    <ListPlus size={16} />
+                                    <span>控件</span>
+                                </div>}
+                                className="xl:hidden block h-full"
+                            >
+                                <Scroll>
+                                    <Controls controls={controls} />
+                                </Scroll>
+                            </Tab>
+                            <Tab key="form"
+                                title={<div className="flex items-center space-x-1">
+                                    <Settings size={16} />
+                                    <span>表单设置</span>
+                                </div>}
+                                className="h-full">
+                                <Scroll>
+                                    <FormSetting />
+                                </Scroll>
+                            </Tab>
+                            <Tab key="property"
+                                title={<div className="flex items-center space-x-1">
+                                    <Settings2 size={16} />
+                                    <span>字段设置</span>
+                                </div>}
+                                className="h-full"
+                            >
+                                <Scroll>
+                                    <FieldSetting />
+                                </Scroll>
+                            </Tab>
+                        </Tabs>
+                    </CardBody>
+                </Card>
+                <Card
+                    className={"col-span-1 sm:col-span-2 xl:col-span-3"}
+                >
+                    <CardBody className="flex flex-row justify-center gap-2">
+                        <Button className="w-auto" color="primary" radius="sm" size="sm" variant="flat">
+                            Reset
+                        </Button>
+                        <Button className="w-auto" color="primary" size="sm" variant="shadow" radius="sm">
+                            Submit
+                        </Button>
+                    </CardBody>
+                </Card>
+            </div>
+            {activeItem && (
+                <Overlay
+                    activeItem={activeItem}
+                    fields={fields}
+                    controls={controls}
+                />
+            )}
+        </DndWrapper>
+    );
 }

@@ -8,13 +8,13 @@ import { Field } from '@/features/form/types/field';
 
 export default async function Create() {
 
-    const controls: Control[] = await getControls();
+    const initialControls: Control[] = await getControls();
 
-    const fields: Field[] = [];
+    const initialFields: Field[] = [];
 
     return (
         <DashboardLayout breadcrumbs={<><Link href={"/dashboard"}>Dashboard</Link> / <Link href={"/dashboard/form"}>Form</Link> / <span>Create</span></>} menuItemId={2}>
-            <Save controls={controls} fields={fields}/>
+            <Save initialControls={initialControls} initialFields={initialFields}/>
         </DashboardLayout>
     );
 }

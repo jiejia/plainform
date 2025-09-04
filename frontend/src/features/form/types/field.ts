@@ -6,9 +6,10 @@ export type Field = {
     regex?: string;
     required: boolean;
     config: object;
-    form_id: number;
+    form_id?: number;
     control_id: number;
     control_type: string;
     control_name: string;
     sort: number;
+    active: boolean;
 }

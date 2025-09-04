@@ -12,7 +12,7 @@ export function DndSortableItem({
   children,
   id,
   className,
-  ...props
+  ...props // 使用剩余参数接收其他所有属性
 }: DndSortableItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
