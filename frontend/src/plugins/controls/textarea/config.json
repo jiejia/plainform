@@ -8,12 +8,11 @@
       "cols": 20,
       "rows": 3,
       "title": "请输入标题",
-      "length": 255,
+      "description": "请输入描述",
+      "length": [0, 255],
       "required": false,
-      "maxLength": 255,
-      "minLength": 0,
       "placeholder": "",
-      "defaultValue": ""
+      "default_value": ""
     },
     "icon": "Text"
   }

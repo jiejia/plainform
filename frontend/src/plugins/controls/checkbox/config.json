@@ -6,8 +6,9 @@
       "regex": "",
       "regex_warning_message": "",
       "title": "请输入标题",
+      "description": "请输入描述",
       "required": false,
-      "defaultValue": ["option1"],
+      "default_value": ["option1"],
       "multiple": true,
       "options": [
         {

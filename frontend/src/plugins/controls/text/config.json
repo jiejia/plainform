@@ -6,10 +6,11 @@
       "regex": "",
       "regex_warning_message": "",
       "title": "请输入标题",
+      "description": "请输入描述",
       "length": [0, 255],
       "required": false,
       "placeholder": "",
-      "defaultValue": ""
+      "default_value": ""
     },
     "icon": "Type"
 }

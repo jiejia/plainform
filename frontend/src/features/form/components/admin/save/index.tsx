@@ -21,7 +21,6 @@ import { DraggableItem } from "@/features/form/types/draggable-item";
 
 export default function Save({ initialControls, initialFields, initialForm }: { initialControls: Control[], initialFields: Field[], initialForm: Form }) {
 
-    const [controls, setControls] = useState<Control[]>(initialControls);
     const [fields, setFields] = useState<Field[]>(initialFields);
     const [activeItem, setActiveItem] = useState<DraggableItem | null>(null);
     const [overItem, setOverItem] = useState<DraggableItem | null>(null);
@@ -97,15 +96,15 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
 
                     const field: Field = {
                         uuid: uuidV4(),
-                        control_id: controls[currentActiveItem.id].id,
-                        control_name: controls[currentActiveItem.id].name,
-                        control_type: controls[currentActiveItem.id].type,
+                        control_id: initialControls[currentActiveItem.id].id,
+                        control_name: initialControls[currentActiveItem.id].name,
+                        control_type: initialControls[currentActiveItem.id].type,
                         active: false,
-                        title: controls[currentActiveItem.id].config.title,
-                        description: controls[currentActiveItem.id].config.description,
-                        required: controls[currentActiveItem.id].config.required,
-                        regex: controls[currentActiveItem.id].config.regex,
-                        config: controls[currentActiveItem.id].config,
+                        title: initialControls[currentActiveItem.id].config.title,
+                        description: initialControls[currentActiveItem.id].config.description,
+                        required: initialControls[currentActiveItem.id].config.required,
+                        regex: initialControls[currentActiveItem.id].config.regex,
+                        config: initialControls[currentActiveItem.id].config,
                         sort: 0,
                     };
 
@@ -192,7 +191,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                     <Divider />
                     <CardBody className="h-full">
                         <Scroll>
-                            <Controls controls={controls} />
+                            <Controls controls={initialControls} />
                         </Scroll>
                     </CardBody>
                 </Card>
@@ -224,7 +223,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                                 className="xl:hidden block h-full"
                             >
                                 <Scroll>
-                                    <Controls controls={controls} />
+                                    <Controls controls={initialControls} />
                                 </Scroll>
                             </Tab>
                             <Tab key="form-property"
@@ -245,7 +244,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                                 className="h-full"
                             >
                                 <Scroll>
-                                    <FieldSetting />
+                                    <FieldSetting fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                                 </Scroll>
                             </Tab>
                         </Tabs>
@@ -268,7 +267,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                 <Overlay
                     activeItem={activeItem}
                     fields={fields}
-                    controls={controls}
+                    controls={initialControls}
                 />
             )}
         </DndWrapper>

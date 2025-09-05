@@ -1,3 +1,6 @@
+import { config } from "./config";
+
+
 export type Field = {
     id?: number;
     uuid: string;
@@ -5,7 +8,7 @@ export type Field = {
     description?: string;
     regex?: string;
     required: boolean;
-    config: object;
+    config: config;
     form_id?: number;
     control_id: number;
     control_type: string;

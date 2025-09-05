@@ -4,10 +4,9 @@
     "config": {
       "regex": "",
       "title": "请输入标题",
+      "description": "请输入描述",
       "required": false,
-      "defaultValue": false,
-      "onText": "是",
-      "offText": "否"
+      "default_value": false
     },
     "icon": "ToggleLeft"
 }

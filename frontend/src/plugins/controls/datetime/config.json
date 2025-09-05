@@ -6,9 +6,10 @@
       "regex_warning_message": "",  
       "title": "请输入标题",
       "required": false,
+      "description": "请输入描述",
       "placeholder": "",
       "defaultValue": "",
-      "format": "YYYY-MM-DD HH:mm:ss"
+      "datetime_format": "YYYY-MM-DD HH:mm:ss"
     },
     "icon": "Calendar"
 }
