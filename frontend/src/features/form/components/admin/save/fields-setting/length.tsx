@@ -3,7 +3,7 @@
 import { Slider } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 
-export default function Options({
+export default function Length({
     fields,
     setFields,
     currentField,
