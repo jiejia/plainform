@@ -6,11 +6,7 @@ import { Checkbox } from "@heroui/react";
 import { Input } from "@heroui/react";
 import { Button } from "@heroui/react";
 import clsx from "clsx";
-
-interface FieldOption {
-    val: string;
-    selected: boolean;
-}
+import { Option } from "@/features/form/types/config/option";
 
 export default function Options({
     fields,
@@ -30,7 +26,7 @@ export default function Options({
 
         fields.forEach((item: Field) => {
             if (item.uuid == uuid && item.config.options !== undefined) {
-                const options = item.config.options.default_options as FieldOption[];
+                const options = item.config.options.default_options as Option[];
                 options.splice(index + 1, 0, {
                     val: "option",
                     selected: false,
@@ -59,7 +55,7 @@ export default function Options({
 
         fields.forEach((item: Field) => {
             if (item.uuid == uuid && item.config.options !== undefined) {
-                const options = item.config.options.default_options as FieldOption[];
+                const options = item.config.options.default_options as Option[];
                 options.forEach((option, index) => {
                     if (index === key) {
                         if (item.config.options?.multiple) {
@@ -99,7 +95,7 @@ export default function Options({
 
         fields.forEach((item: Field) => {
             if (item.uuid == uuid && item.config.options !== undefined) {
-                const options = item.config.options.default_options as FieldOption[];
+                const options = item.config.options.default_options as Option[];
                 options.forEach((option, index) => {
                     if (index === key) {
                         options[index].val = e.target.value;
@@ -130,7 +126,7 @@ export default function Options({
         fields.forEach((item: Field) => {
             if (item.uuid == uuid && item.config.options !== undefined) {
                 // remove option from options
-                const options = item.config.options.default_options  as FieldOption[];
+                const options = item.config.options.default_options  as Option[];
                 options.forEach((option, index) => {
                     if (index === key) {
                         options.splice(index, 1);
@@ -163,8 +159,8 @@ export default function Options({
                     <div className="grid grid-cols-1 gap-1">
                         <span className="text-xs font-semibold">Options</span>
                         <ul className="max-w-full grid grid-flow-row gap-1 bg-white">
-                            {(currentField.config.options.default_options as FieldOption[] | undefined)?.map(
-                                (option: FieldOption, index: number) => (
+                            {(currentField.config.options.default_options as Option[] | undefined)?.map(
+                                (option: Option, index: number) => (
                                     <li
                                         className="max-w-full flex items-center gap-1 bg-content2 p-1 rounded-lg"
                                         key={index}
