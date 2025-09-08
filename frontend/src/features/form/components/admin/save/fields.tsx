@@ -40,8 +40,9 @@ export default function Fields({ fields, setCurrentField, setFields, setTabSelec
                             className={clsx("flex items-center justify-between p-3 rounded-lg border border-gray-400 hover:bg-gray-100 transition-colors", { "outline -outline-offset-2 outline-2 outline-primary": fields[index].active })}
                             key={index}
                             onClick={(e) => handleFieldClick(e, index)}
+                            title={field.title}
                         >
-                            <span className="text-sm font-medium text-gray-700">{field.title}</span>
+                            <span className="text-sm font-medium text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap">{field.title}</span>
                             <span className="text-xs text-gray-500 px-2 py-1 rounded-full">{field.control_name}</span>
                         </DndSortableItem>
                     ))}

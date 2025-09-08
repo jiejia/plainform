@@ -8,7 +8,6 @@
       "title": "请输入标题",
       "description": "请输入描述",
       "required": false,
-      "default_value": ["option1"],
       "multiple": true,
       "options": [
         {

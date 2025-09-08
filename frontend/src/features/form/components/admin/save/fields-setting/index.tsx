@@ -11,6 +11,7 @@ import Required from "./required";
 import Length from "./length";
 import DefaultValue from "./default-value";
 import Options from "./options";
+import SwitchDefaultValue from "./switch-default-value";
 
 export default function Index({
     fields,
@@ -38,6 +39,7 @@ export default function Index({
                         <Length fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <DefaultValue fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />    
                         <Options fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
+                        <SwitchDefaultValue fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                     </>
                 )
             }

@@ -140,7 +140,7 @@ export default function Options({
     return (
         <>
             {
-                currentField.config.length !== 0 && (
+                currentField.config.options && (
                     <div className="grid grid-cols-1 gap-1">
                         <span className="text-xs font-semibold">Options</span>
                         <ul className="max-w-full grid grid-flow-row gap-1 bg-white">

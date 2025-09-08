@@ -17,15 +17,29 @@ export default function DatetimeFormat({
 
     const handleDatetimeFormatChange = (e: any) => {
         const datetimeFormat = e.target.value;
-        setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, datetime_format: datetimeFormat } : field));
-        setCurrentField({ ...currentField, config: { ...currentField.config, datetime_format: datetimeFormat } });
+        
+        // 更新当前字段的 config.datetime_format
+        const updatedCurrentField = { 
+            ...currentField, 
+            config: { ...currentField.config, datetime_format: datetimeFormat } 
+        };
+        
+        // 更新字段列表中对应字段的 config.datetime_format
+        const updatedFields = fields.map(field => 
+            field.uuid === currentField.uuid 
+                ? { ...field, config: { ...field.config, datetime_format: datetimeFormat } }
+                : field
+        );
+        
+        setCurrentField(updatedCurrentField);
+        setFields(updatedFields);
     }
 
     // get current datetime
     const currentDatetime = function (dateFormat: string) {
         const now = new Date();
         
-        // 格式化映射
+        // format map
         const formatMap: { [key: string]: string | number } = {
             'Y': now.getFullYear(),
             'm': String(now.getMonth() + 1).padStart(2, '0'),
@@ -35,7 +49,7 @@ export default function DatetimeFormat({
             's': String(now.getSeconds()).padStart(2, '0')
         };
         
-        // 替换格式字符
+        // replace format characters
         return dateFormat.replace(/[YmdHis]/g, (match) => {
             return String(formatMap[match] || match);
         });
@@ -51,7 +65,7 @@ export default function DatetimeFormat({
                         label="Date Format" 
                         placeholder="Please select" 
                         className="max-w-full" 
-                        selectedKeys={[(currentField.config.datetime_format as string) || "Y-m-d H:i:s"]} 
+                        selectedKeys={[(currentField.config.datetime_format as string)]} 
                         onChange={handleDatetimeFormatChange} 
                         labelPlacement="outside" 
                         classNames={{

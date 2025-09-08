@@ -6,7 +6,7 @@
       "title": "请输入标题",
       "description": "请输入描述",
       "required": false,
-      "default_value": false
+      "switch_default_value": false
     },
     "icon": "ToggleLeft"
 }
