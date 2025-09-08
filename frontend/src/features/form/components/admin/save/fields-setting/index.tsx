@@ -12,6 +12,8 @@ import Length from "./length";
 import DefaultValue from "./default-value";
 import Options from "./options";
 import SwitchDefaultValue from "./switch-default-value";
+import Cols from "./cols";
+import Rows from "./rows";
 
 export default function Index({
     fields,
@@ -37,6 +39,8 @@ export default function Index({
                         <DatetimeFormat fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <Required fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <Length fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
+                        <Cols fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
+                        <Rows fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <DefaultValue fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />    
                         <Options fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <SwitchDefaultValue fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
