@@ -42,10 +42,10 @@ export default function Length({
                 currentField.config.length !== null && currentField.config.length !== undefined && (
                     <Slider
                         classNames={{
-                            base: "w-full px-1", // 确保基础容器有足够宽度，添加一点内边距
-                            track: "w-full", // 确保轨道占满宽度
-                            filler: "w-full", // 确保填充器占满宽度
-                            labelWrapper: "w-full", // 确保标签容器占满宽度
+                            base: "w-full px-1", 
+                            track: "w-full",    
+                            filler: "w-full",
+                            labelWrapper: "w-full",
                             label: "text-xs font-semibold"
                         }}
                         label="Length Range"

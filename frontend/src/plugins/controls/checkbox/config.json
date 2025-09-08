@@ -9,13 +9,16 @@
       "description": "请输入描述",
       "required": false,
       "multiple": true,
-      "options": [
-        {
-          "label": "选项1",
-          "value": "option1",
-          "selected": true
-        }
-      ]
+      "options": {
+        "default_options": [
+          {
+            "val": "option1",
+            "selected": true
+          }
+        ],
+        "multiple": true,
+        "api_url": ""
+      }
     },
     "icon": "CheckSquare"
 }

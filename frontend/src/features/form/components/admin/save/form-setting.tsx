@@ -91,7 +91,7 @@ export default function FormSetting({ form, setForm }: { form: Form, setForm: (f
                     }}
                     size="sm"
                     onChange={handleEnabledChange}
-                    checked={form.enabled}
+                    isSelected={form.enabled as boolean}
                 >
                     <div className="flex flex-col gap-1">
                         <p className="text-tiny text-default-400 ms-0">whether the form is enabled</p>

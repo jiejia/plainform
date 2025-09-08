@@ -30,7 +30,7 @@ export default function Options({
 
         fields.forEach((item: Field) => {
             if (item.uuid == uuid && item.config.options !== undefined) {
-                const options = item.config.options as FieldOption[];
+                const options = item.config.options.default_options as FieldOption[];
                 options.splice(index + 1, 0, {
                     val: "option",
                     selected: false,
@@ -40,7 +40,10 @@ export default function Options({
                     ...currentField,
                     config: {
                         ...currentField.config,
-                        options: options,
+                        options: {
+                            ...currentField.config.options!,
+                            default_options: options,
+                        },
                     },
                 });
             }
@@ -56,10 +59,17 @@ export default function Options({
 
         fields.forEach((item: Field) => {
             if (item.uuid == uuid && item.config.options !== undefined) {
-                const options = item.config.options as FieldOption[];
+                const options = item.config.options.default_options as FieldOption[];
                 options.forEach((option, index) => {
                     if (index === key) {
-                        options[index].selected = !options[index].selected;
+                        if (item.config.options?.multiple) {
+                            options[index].selected = !options[index].selected;
+                        } else {
+                            options.forEach((option, index) => {
+                                option.selected = false;
+                            });
+                            options[index].selected = true;
+                        }
                     }
                 });
 
@@ -67,7 +77,10 @@ export default function Options({
                     ...currentField,
                     config: {
                         ...currentField.config,
-                        options: options,
+                        options: {
+                            ...currentField.config.options!,
+                            default_options: options,
+                        },
                     },
                 });
             }
@@ -86,7 +99,7 @@ export default function Options({
 
         fields.forEach((item: Field) => {
             if (item.uuid == uuid && item.config.options !== undefined) {
-                const options = item.config.options as FieldOption[];
+                const options = item.config.options.default_options as FieldOption[];
                 options.forEach((option, index) => {
                     if (index === key) {
                         options[index].val = e.target.value;
@@ -97,7 +110,10 @@ export default function Options({
                     ...currentField,
                     config: {
                         ...currentField.config,
-                        options: options,
+                        options: {
+                            ...currentField.config.options!,
+                            default_options: options,
+                        },
                     },
                 });
             }
@@ -114,7 +130,7 @@ export default function Options({
         fields.forEach((item: Field) => {
             if (item.uuid == uuid && item.config.options !== undefined) {
                 // remove option from options
-                const options = item.config.options as FieldOption[];
+                const options = item.config.options.default_options  as FieldOption[];
                 options.forEach((option, index) => {
                     if (index === key) {
                         options.splice(index, 1);
@@ -126,7 +142,10 @@ export default function Options({
                     ...currentField,
                     config: {
                         ...currentField.config,
-                        options: options,
+                        options: {
+                            ...currentField.config.options!,
+                            default_options: options,
+                        },
                     },
                 });
                 console.log("remove");
@@ -144,7 +163,7 @@ export default function Options({
                     <div className="grid grid-cols-1 gap-1">
                         <span className="text-xs font-semibold">Options</span>
                         <ul className="max-w-full grid grid-flow-row gap-1 bg-white">
-                            {(currentField.config.options as FieldOption[] | undefined)?.map(
+                            {(currentField.config.options.default_options as FieldOption[] | undefined)?.map(
                                 (option: FieldOption, index: number) => (
                                     <li
                                         className="max-w-full flex items-center gap-1 bg-content2 p-1 rounded-lg"

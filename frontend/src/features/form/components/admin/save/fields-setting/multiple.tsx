@@ -2,8 +2,9 @@
 
 import { cn, form, Switch } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
+import { Option } from "@/features/form/types/config/option";
 
-export default function Required({
+export default function Multiple({
     fields,
     setFields,
     currentField,
@@ -15,17 +16,37 @@ export default function Required({
     setCurrentField: (field: Field) => void
 }) {
 
-    const handleRequiredChange = (e: any) => {
-        const required = e.target.checked;
-        setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, required: required } : field));
-        setCurrentField({ ...currentField, required: required });
+    const handleMultipleChange = (e: any) => {
+        const multiple = e.target.checked;
+        fields.forEach((item: Field) => {
+            if (item.uuid == currentField.uuid && item.config.options !== undefined) {
+                item.config.options.multiple = multiple;
+                const firstIndex = item.config.options.default_options.findIndex((option: Option) => option.selected);
+
+                item.config.options.default_options.forEach((option: Option, index: number) => {
+                    if (multiple == false) {
+                        if (option.selected) {
+                            option.selected = false;
+                        }
+                    }
+                });
+                // only first option is selected
+                item.config.options.default_options.forEach((option: Option, index: number) => {
+                    if (index == firstIndex) {
+                        option.selected = true;
+                    }
+                })
+            }
+        });
+        setFields(fields);
+        setCurrentField({ ...currentField, config: { ...currentField.config, multiple: multiple } });
     }
     return (
         <>
             {
-                currentField.config.required !== undefined && (
+                currentField.config.multiple !== undefined && (
                     <div className="grid grid-cols-1 gap-1">
-                        <span className="text-xs font-semibold">Required</span>
+                        <span className="text-xs font-semibold">Multiple</span>
                         <Switch
                             classNames={{
                                 base: cn(
@@ -44,11 +65,11 @@ export default function Required({
                                 )
                             }}
                             size="sm"
-                            onChange={handleRequiredChange}
-                            isSelected={currentField.required as boolean}
+                            onChange={handleMultipleChange}
+                            isSelected={currentField.config.multiple as boolean}
                         >
                             <div className="flex flex-col gap-1">
-                                <p className="text-tiny text-default-400 ms-0">whether the field is required</p>
+                                <p className="text-tiny text-default-400 ms-0">whether the field is multiple</p>
                             </div>
                         </Switch>
                     </div>

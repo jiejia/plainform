@@ -8,13 +8,16 @@
       "title": "请输入标题",
       "description": "请输入描述",
       "required": false,
-      "options": [
-        {
-          "label": "选项1",
-          "value": "option1",
-          "selected": true
-        }
-      ]
+      "options": {
+        "default_options": [
+          {
+            "val": "option1",
+            "selected": true
+          }
+        ],
+        "multiple": false,
+        "api_url": ""
+      }
     },
     "icon": "Circle"
 }

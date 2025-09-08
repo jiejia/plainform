@@ -14,6 +14,7 @@ import Options from "./options";
 import SwitchDefaultValue from "./switch-default-value";
 import Cols from "./cols";
 import Rows from "./rows";
+import Multiple from "./multiple";
 
 export default function Index({
     fields,
@@ -38,6 +39,7 @@ export default function Index({
                         <Regrex fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <DatetimeFormat fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <Required fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
+                        <Multiple fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <Length fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <Cols fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
                         <Rows fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
