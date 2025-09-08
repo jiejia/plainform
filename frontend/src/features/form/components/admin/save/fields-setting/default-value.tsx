@@ -27,11 +27,16 @@ export default function DefaultValue({
                 currentField.config.default_value !== undefined && (
                     <Input
                         label="Default Value"
-                        placeholder="enter default value"
+                        placeholder="Please enter"
                         type="text"
                         size="sm"
                         value={currentField.config.default_value as string}
                         onChange={handleDefaultValueChange}
+                        labelPlacement="outside"
+                        classNames={{
+                            // 文字更深更粗：根据主题语义色或自定义颜色选择
+                            label: "text-foreground font-semibold", // 或如 "text-zinc-800 dark:text-zinc-100 font-bold"
+                        }}
                     />
                 )
             }

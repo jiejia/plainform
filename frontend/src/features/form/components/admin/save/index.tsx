@@ -214,7 +214,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                 </Card>
                 <Card>
                     <CardBody className="h-full">
-                        <Tabs fullWidth size="sm" selectedKey={tabSelectedKey} onSelectionChange={setTabSelectedKey}>
+                        <Tabs fullWidth size="md" selectedKey={tabSelectedKey} onSelectionChange={setTabSelectedKey}>
                             <Tab key="controls"
                                 title={<div className="flex items-center space-x-1">
                                     <ListPlus size={16} />

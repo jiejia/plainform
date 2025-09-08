@@ -20,13 +20,75 @@ export default function DatetimeFormat({
         setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, datetime_format: datetimeFormat } : field));
         setCurrentField({ ...currentField, config: { ...currentField.config, datetime_format: datetimeFormat } });
     }
+
+    // get current datetime
+    const currentDatetime = function (dateFormat: string) {
+        const now = new Date();
+        
+        // 格式化映射
+        const formatMap: { [key: string]: string | number } = {
+            'Y': now.getFullYear(),
+            'm': String(now.getMonth() + 1).padStart(2, '0'),
+            'd': String(now.getDate()).padStart(2, '0'),
+            'H': String(now.getHours()).padStart(2, '0'),
+            'i': String(now.getMinutes()).padStart(2, '0'),
+            's': String(now.getSeconds()).padStart(2, '0')
+        };
+        
+        // 替换格式字符
+        return dateFormat.replace(/[YmdHis]/g, (match) => {
+            return String(formatMap[match] || match);
+        });
+    }
+
+
+    
     return (
         <>
             {
                 currentField.config.datetime_format !== undefined && (
-                    <Select label="Date Format" placeholder="" className="max-w-full" selectedKeys={[0]} onChange={handleDatetimeFormatChange}>
-                        <SelectItem key={0}>None</SelectItem>
-                        <SelectItem key={1}>Arabic numerals</SelectItem>
+                    <Select 
+                        label="Date Format" 
+                        placeholder="Please select" 
+                        className="max-w-full" 
+                        selectedKeys={[(currentField.config.datetime_format as string) || "Y-m-d H:i:s"]} 
+                        onChange={handleDatetimeFormatChange} 
+                        labelPlacement="outside" 
+                        classNames={{
+                            label: "text-foreground font-semibold",
+                        }}
+                    >
+                        {/* Full Date & Time Formats */}
+                        <SelectItem key={"Y-m-d H:i:s"}>{currentDatetime("Y-m-d H:i:s")}</SelectItem>
+                        <SelectItem key={"Y-m-d H:i"}>{currentDatetime("Y-m-d H:i")}</SelectItem>
+                        <SelectItem key={"Y/m/d H:i:s"}>{currentDatetime("Y/m/d H:i:s")}</SelectItem>
+                        <SelectItem key={"Y/m/d H:i"}>{currentDatetime("Y/m/d H:i")}</SelectItem>
+                        <SelectItem key={"m/d/Y H:i:s"}>{currentDatetime("m/d/Y H:i:s")}</SelectItem>
+                        <SelectItem key={"m/d/Y H:i"}>{currentDatetime("m/d/Y H:i")}</SelectItem>
+                        <SelectItem key={"d/m/Y H:i:s"}>{currentDatetime("d/m/Y H:i:s")}</SelectItem>
+                        <SelectItem key={"d/m/Y H:i"}>{currentDatetime("d/m/Y H:i")}</SelectItem>
+                        
+                        {/* Date Only Formats */}
+                        <SelectItem key={"Y-m-d"}>{currentDatetime("Y-m-d")}</SelectItem>
+                        <SelectItem key={"Y/m/d"}>{currentDatetime("Y/m/d")}</SelectItem>
+                        <SelectItem key={"m/d/Y"}>{currentDatetime("m/d/Y")}</SelectItem>
+                        <SelectItem key={"d/m/Y"}>{currentDatetime("d/m/Y")}</SelectItem>
+                        <SelectItem key={"m-d-Y"}>{currentDatetime("m-d-Y")}</SelectItem>
+                        <SelectItem key={"d-m-Y"}>{currentDatetime("d-m-Y")}</SelectItem>
+                        
+                        {/* Time Only Formats */}
+                        <SelectItem key={"H:i:s"}>{currentDatetime("H:i:s")}</SelectItem>
+                        <SelectItem key={"H:i"}>{currentDatetime("H:i")}</SelectItem>
+                        
+                        {/* Year/Month Only */}
+                        <SelectItem key={"Y-m"}>{currentDatetime("Y-m")}</SelectItem>
+                        <SelectItem key={"Y/m"}>{currentDatetime("Y/m")}</SelectItem>
+                        <SelectItem key={"m/Y"}>{currentDatetime("m/Y")}</SelectItem>
+                        
+                        {/* Single Components */}
+                        <SelectItem key={"Y"}>{currentDatetime("Y")}</SelectItem>
+                        <SelectItem key={"m"}>{currentDatetime("m")}</SelectItem>
+                        <SelectItem key={"d"}>{currentDatetime("d")}</SelectItem>
                     </Select>
                 )
             }

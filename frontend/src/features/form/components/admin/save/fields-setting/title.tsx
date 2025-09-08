@@ -31,12 +31,17 @@ export default function Title({
                 currentField.config.title !== undefined && (
                     <Input
                         label="Title"
-                        placeholder="enter title"
+                        placeholder="Please enter"
                         type="text"
                         isRequired
                         size="sm"
                         value={currentField.title}
                         onChange={handleTitleChange}
+                        labelPlacement="outside"
+                        classNames={{
+                            // 文字更深更粗：根据主题语义色或自定义颜色选择
+                            label: "text-foreground font-semibold", // 或如 "text-zinc-800 dark:text-zinc-100 font-bold"
+                        }}
                     />
                 )
             }
