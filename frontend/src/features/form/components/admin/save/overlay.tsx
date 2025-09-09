@@ -11,6 +11,7 @@ import * as Icons from 'lucide-react'
 
 export default function Overlay({ activeItem, fields, controls }: { activeItem: DraggableItem, fields: Field[], controls: Control[] }) {
 
+    // get control icon component
     let Icon = Icons.Circle;
     if (activeItem && activeItem.area === "control" && controls[activeItem.id]) {
         Icon = (Icons as any)[controls[activeItem.id].icon]
