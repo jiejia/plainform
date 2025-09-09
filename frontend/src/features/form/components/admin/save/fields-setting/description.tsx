@@ -19,9 +19,9 @@ export default function Description({
 
         const description = e.target.value;
 
-        setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, description: description } : field));
+        setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, description: description, config: { ...field.config, description: description } } : field));
 
-        setCurrentField({ ...currentField, description: description });
+        setCurrentField({ ...currentField, description: description, config: { ...currentField.config, description: description } });
     }
     return (
         <>

@@ -17,8 +17,8 @@ export default function Regrex({
 
     const handleRegrexChange = (e: any) => {
         const regex = e.target.value;
-        setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, regex: regex } : field));
-        setCurrentField({ ...currentField, regex: regex });
+        setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, regex: regex, config: { ...field.config, regex: regex } } : field));
+        setCurrentField({ ...currentField, regex: regex, config: { ...currentField.config, regex: regex } });
     }
     return (
         <>

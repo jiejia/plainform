@@ -3,6 +3,7 @@
 import { cn, form, Switch } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 import { Option } from "@/features/form/types/config/option";
+import _ from "lodash";
 
 export default function Multiple({
     fields,
@@ -18,28 +19,42 @@ export default function Multiple({
 
     const handleMultipleChange = (e: any) => {
         const multiple = e.target.checked;
-        fields.forEach((item: Field) => {
-            if (item.uuid == currentField.uuid && item.config.options !== undefined) {
-                item.config.options.multiple = multiple;
-                const firstIndex = item.config.options.default_options.findIndex((option: Option) => option.selected);
+        const uuid = currentField.uuid;
 
-                item.config.options.default_options.forEach((option: Option, index: number) => {
-                    if (multiple == false) {
-                        if (option.selected) {
-                            option.selected = false;
-                        }
-                    }
-                });
-                // only first option is selected
-                item.config.options.default_options.forEach((option: Option, index: number) => {
-                    if (index == firstIndex) {
-                        option.selected = true;
-                    }
-                })
+        const newFields = fields.map((item: Field) => {
+            if (item.uuid === uuid && item.config.options !== undefined) {
+                const options = _.cloneDeep(item.config.options.default_options) as Option[];
+                const firstIndex = options.findIndex((option: Option) => option.selected);
+
+                if (multiple === false) {
+                    // 如果设置为非多选，清除所有选中状态，然后只选中第一个
+                    options.forEach((option: Option, index: number) => {
+                        option.selected = index === firstIndex && firstIndex !== -1;
+                    });
+                }
+
+                return {
+                    ...item,
+                    config: {
+                        ...item.config,
+                        multiple: multiple,
+                        options: {
+                            ...item.config.options,
+                            multiple: multiple,
+                            default_options: options,
+                        },
+                    },
+                };
             }
+            return item;
         });
-        setFields(fields);
-        setCurrentField({ ...currentField, config: { ...currentField.config, multiple: multiple } });
+
+        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
+        if (updatedCurrentField) {
+            setCurrentField(updatedCurrentField);
+        }
+
+        setFields(newFields);
     }
     return (
         <>

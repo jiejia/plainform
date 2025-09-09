@@ -17,8 +17,8 @@ export default function Required({
 
     const handleRequiredChange = (e: any) => {
         const required = e.target.checked;
-        setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, required: required } : field));
-        setCurrentField({ ...currentField, required: required });
+        setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, required: required, config: { ...field.config, required: required } } : field));
+        setCurrentField({ ...currentField, required: required, config: { ...currentField.config, required: required } });
     }
     return (
         <>

@@ -7,6 +7,8 @@ import { Input } from "@heroui/react";
 import { Button } from "@heroui/react";
 import clsx from "clsx";
 import { Option } from "@/features/form/types/config/option";
+import _ from "lodash";
+
 
 export default function Options({
     fields,
@@ -24,65 +26,72 @@ export default function Options({
     const handleOptionAddClick = (index: number) => {
         const uuid = currentField.uuid;
 
-        fields.forEach((item: Field) => {
-            if (item.uuid == uuid && item.config.options !== undefined) {
-                const options = item.config.options.default_options as Option[];
+        const newFields = fields.map((item: Field) => {
+            if (item.uuid === uuid && item.config.options !== undefined) {
+                const options = _.cloneDeep(item.config.options.default_options) as Option[];
                 options.splice(index + 1, 0, {
                     val: "option",
                     selected: false,
                 });
-
-                setCurrentField({
-                    ...currentField,
+    
+                return {
+                    ...item,
                     config: {
-                        ...currentField.config,
+                        ...item.config,
                         options: {
-                            ...currentField.config.options!,
+                            ...item.config.options,
                             default_options: options,
                         },
                     },
-                });
+                };
             }
+            return item;
         });
+    
+        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
+        if (updatedCurrentField) {
+            setCurrentField(updatedCurrentField);
+        }
 
-        setFields(fields);
+        setFields(newFields);
 
-        console.log(currentField.config.options);
     };
 
     const handleOptionCheckClick = (key: number) => {
         const uuid = currentField.uuid;
 
-        fields.forEach((item: Field) => {
-            if (item.uuid == uuid && item.config.options !== undefined) {
-                const options = item.config.options.default_options as Option[];
-                options.forEach((option, index) => {
-                    if (index === key) {
-                        if (item.config.options?.multiple) {
-                            options[index].selected = !options[index].selected;
-                        } else {
-                            options.forEach((option, index) => {
-                                option.selected = false;
-                            });
-                            options[index].selected = true;
-                        }
-                    }
-                });
+        const newFields = fields.map((item: Field) => {
+            if (item.uuid === uuid && item.config.options !== undefined) {
+                const options = _.cloneDeep(item.config.options.default_options) as Option[];
+                
+                if (item.config.options?.multiple) {
+                    options[key].selected = !options[key].selected;
+                } else {
+                    options.forEach((option, index) => {
+                        option.selected = index === key;
+                    });
+                }
 
-                setCurrentField({
-                    ...currentField,
+                return {
+                    ...item,
                     config: {
-                        ...currentField.config,
+                        ...item.config,
                         options: {
-                            ...currentField.config.options!,
+                            ...item.config.options,
                             default_options: options,
                         },
                     },
-                });
+                };
             }
+            return item;
         });
 
-        setFields(fields);
+        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
+        if (updatedCurrentField) {
+            setCurrentField(updatedCurrentField);
+        }
+
+        setFields(newFields);
 
         console.log(currentField.config.options);
     };
@@ -93,29 +102,31 @@ export default function Options({
     ) => {
         const uuid = currentField.uuid;
 
-        fields.forEach((item: Field) => {
-            if (item.uuid == uuid && item.config.options !== undefined) {
-                const options = item.config.options.default_options as Option[];
-                options.forEach((option, index) => {
-                    if (index === key) {
-                        options[index].val = e.target.value;
-                    }
-                });
+        const newFields = fields.map((item: Field) => {
+            if (item.uuid === uuid && item.config.options !== undefined) {
+                const options = _.cloneDeep(item.config.options.default_options) as Option[];
+                options[key].val = e.target.value;
 
-                setCurrentField({
-                    ...currentField,
+                return {
+                    ...item,
                     config: {
-                        ...currentField.config,
+                        ...item.config,
                         options: {
-                            ...currentField.config.options!,
+                            ...item.config.options,
                             default_options: options,
                         },
                     },
-                });
+                };
             }
+            return item;
         });
 
-        setFields(fields);
+        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
+        if (updatedCurrentField) {
+            setCurrentField(updatedCurrentField);
+        }
+
+        setFields(newFields);
 
         console.log(currentField.config.options);
     };
@@ -123,32 +134,32 @@ export default function Options({
     const handleOptionRemoveClick = (key: number) => {
         const uuid = currentField.uuid;
 
-        fields.forEach((item: Field) => {
-            if (item.uuid == uuid && item.config.options !== undefined) {
-                // remove option from options
-                const options = item.config.options.default_options  as Option[];
-                options.forEach((option, index) => {
-                    if (index === key) {
-                        options.splice(index, 1);
-                    }
-                });
+        const newFields = fields.map((item: Field) => {
+            if (item.uuid === uuid && item.config.options !== undefined) {
+                const options = _.cloneDeep(item.config.options.default_options) as Option[];
+                options.splice(key, 1);
 
-                // setState
-                setCurrentField({
-                    ...currentField,
+                return {
+                    ...item,
                     config: {
-                        ...currentField.config,
+                        ...item.config,
                         options: {
-                            ...currentField.config.options!,
+                            ...item.config.options,
                             default_options: options,
                         },
                     },
-                });
-                console.log("remove");
+                };
             }
+            return item;
         });
 
-        setFields(fields);
+        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
+        if (updatedCurrentField) {
+            setCurrentField(updatedCurrentField);
+        }
+
+        setFields(newFields);
+        console.log("remove");
     };
 
 

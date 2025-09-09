@@ -20,9 +20,26 @@ export default function Title({
 
         const title = e.target.value;
 
-        setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, title: title } : field));
+        setFields(fields.map(field => field.uuid === currentField.uuid ? 
+            { 
+                ...field, 
+                title: title ,
+                config: {
+                    ...field.config,
+                    title: title,
+                }
+            } : field));
 
-        setCurrentField({ ...currentField, title: title });
+        setCurrentField(
+            { 
+                ...currentField, 
+                title: title ,
+                config: {
+                    ...currentField.config,
+                    title: title,
+                }
+            }
+        );
     }
 
     return (
