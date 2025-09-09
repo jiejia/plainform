@@ -17,9 +17,14 @@ import Recycle from "./recycle";
 import {v4 as uuidV4} from "uuid";
 import { Form } from "@/features/form/types/form";
 import { DraggableItem } from "@/features/form/types/draggable-item";
+import { create, update } from "@/features/form/actions/form-action";
+import { msg } from "@/features/core/utils/ui";
+import { useRouter } from "next/navigation";
 
 
 export default function Save({ initialControls, initialFields, initialForm }: { initialControls: Control[], initialFields: Field[], initialForm: Form }) {
+
+    const router = useRouter();
 
     const [fields, setFields] = useState<Field[]>(initialFields);
     const [activeItem, setActiveItem] = useState<DraggableItem | null>(null);
@@ -27,6 +32,44 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
     const [currentField, setCurrentField] = useState<Field | null>(null);
     const [tabSelectedKey, setTabSelectedKey] = useState<string | number>("form-property");
     const [form, setForm] = useState<Form>(initialForm);
+
+    const [isPending, setIsPending] = useState(false);
+
+    const handleSubmit = async () => {
+        setIsPending(true);
+
+        // get form data
+        const formData = {
+            ...form,
+            fields: fields
+        };
+
+        // create or update form
+        let res;
+        if (form.id) {
+            res = await update(form.id, formData);
+        } else {
+            res = await create(formData);
+        }
+
+        // if success, redirect to form list
+        if (res.code === 0) {
+            if (form.id) {
+                msg('update form success', '', 'success');
+            } else {
+                msg('create form success', '', 'success');
+            }   
+            router.push(`/dashboard/form`);  
+        } else {
+            if (form.id) {
+                msg('update form failed', res.msg, 'warning');
+            } else {
+                msg('create form failed', res.msg, 'warning');
+            }
+        }
+
+        setIsPending(false);
+    }
 
 
     // get draggable item
@@ -257,8 +300,8 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                         <Button className="w-auto" color="primary" radius="sm" size="sm" variant="flat">
                             Reset
                         </Button>
-                        <Button className="w-auto" color="primary" size="sm" variant="shadow" radius="sm">
-                            Submit
+                        <Button className="w-auto" color="primary" size="sm" variant="shadow" radius="sm" onPress={handleSubmit} isLoading={isPending} disabled={isPending} >
+                            {isPending ? 'Submitting...' : 'Submit'}
                         </Button>
                     </CardBody>
                 </Card>

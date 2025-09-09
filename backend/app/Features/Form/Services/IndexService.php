@@ -12,14 +12,14 @@ use Illuminate\Support\Facades\File;
 
 /**
  * IndexService
- * 
+ *
  * @package App\Features\Form\Services
  */
 class IndexService
-{   
+{
     /**
      * create
-     * 
+     *
      * @param Admin $admin
      * @param string $title
      * @param string $description
@@ -49,20 +49,20 @@ class IndexService
         foreach ($data['fields'] as $field) {
             // validate uuid
             if (FormField::where('uuid', $field['uuid'])->exists()) {
-                throw new BusinessException(Code::FORM_FIELD_UUID_EXISTS->value, Code::FORM_FIELD_UUID_EXISTS->message());
+                throw new BusinessException(Code::FORM_FIELD_UUID_EXISTS->message(), Code::FORM_FIELD_UUID_EXISTS->value);
             }
 
-            $field['form_id'] = $form->id;  
+            $field['form_id'] = $form->id;
             FormField::create($field);
         }
 
         // get form with fields
         return $form->with('fields')->first()->toArray();
-    }   
+    }
 
     /**
      * update
-     * 
+     *
      * @param Admin $admin
      * @param int $id
      * @param string $title
@@ -113,7 +113,7 @@ class IndexService
                     throw new BusinessException(Code::FORM_FIELD_UUID_EXISTS->message(), Code::FORM_FIELD_UUID_EXISTS->value);
                 }
 
-                $field['form_id'] = $form->id;  
+                $field['form_id'] = $form->id;
                 FormField::create($field);
             }
         }
@@ -124,7 +124,7 @@ class IndexService
 
     /**
      * detail
-     * 
+     *
      * @param Admin $admin
      * @param int $id
      * @return array
@@ -132,7 +132,7 @@ class IndexService
     public function detail(Admin $admin, int $id) : array
     {
         // get form
-        $form = Form::with('fields')->find($id);
+        $form = Form::where('id', $id)->with('fields')->first();
 
         // check form
         if (!$form) {
@@ -140,12 +140,12 @@ class IndexService
         }
 
         // return form
-        return $form->with('fields')->first()->toArray();
+        return $form->toArray();
     }
 
     /**
      * list
-     * 
+     *
      * @param Admin $admin
      * @param string|null $keyword
      * @param string|null $createdAtStart
@@ -210,7 +210,7 @@ class IndexService
 
     /**
      * delete
-     * 
+     *
      * @param Admin $admin
      * @param array $ids
      */
@@ -240,14 +240,14 @@ class IndexService
 
     /**
      * controls
-     * 
+     *
      * @return array
      */
     public function controls() : array
     {
         // check if controls table has data
         $controlsCount = Control::count();
-        
+
         if ($controlsCount === 0) {
             // scan frontend control config files and import to database
             $this->scanAndImportControls();
@@ -261,13 +261,13 @@ class IndexService
 
     /**
      * scanAndImportControls
-     * 
+     *
      * @return void
      */
     public function scanAndImportControls() : void
     {
         $frontendControlsPath = base_path('../frontend/src/plugins/controls');
-        
+
         if (!File::exists($frontendControlsPath)) {
             throw new BusinessException(Code::FILE_NOT_FOUND->message(), Code::FILE_NOT_FOUND->value);
         }
@@ -276,11 +276,11 @@ class IndexService
 
         foreach ($controlDirectories as $controlDir) {
             $configFile = $controlDir . '/config.json';
-            
+
             if (File::exists($configFile)) {
                 $configContent = File::get($configFile);
                 $config = json_decode($configContent, true);
-                
+
                 if ($config && isset($config['type'], $config['name'], $config['config'], $config['icon'])) {
                     Control::create([
                         'type' => $config['type'],
@@ -296,7 +296,7 @@ class IndexService
 
     /**
      * frontDetail
-     * 
+     *
      * @param string $uuid
      * @return array
      */
@@ -318,7 +318,7 @@ class IndexService
 
     /**
      * submit
-     * 
+     *
      * @param string $uuid
      * @param array $data
      * @param int $version
@@ -341,13 +341,13 @@ class IndexService
         // convert data array to associative array for storage using field UUID
         $storageData = [];
         $formFields = $form->fields()->get();
-        
+
         // create lookup by title for storage conversion
         $fieldsByTitle = [];
         foreach ($formFields as $field) {
             $fieldsByTitle[$field->title] = $field;
         }
-        
+
         foreach ($data as $item) {
             // find the field by title and use its UUID for storage
             if (isset($fieldsByTitle[$item['name']])) {
@@ -371,7 +371,7 @@ class IndexService
 
     /**
      * validateFormFieldsData
-     * 
+     *
      * @param Form $form
      * @param array $data
      * @return void
@@ -396,7 +396,7 @@ class IndexService
         // check required fields and config regex validation
         foreach ($formFields as $field) {
             $fieldValue = $dataByName[$field->title] ?? null;
-            
+
             // check required fields
             if ($field->required && empty($fieldValue)) {
                 throw new BusinessException($field->title . ':' . Code::FORM_FIELD_REQUIRED->message(), Code::FORM_FIELD_REQUIRED->value);
@@ -411,7 +411,7 @@ class IndexService
 
     /**
      * validateConfigRegex
-     * 
+     *
      * @param FormField $field
      * @param mixed $value
      * @return void
@@ -421,7 +421,7 @@ class IndexService
         // get config regex and warning message
         $configRegex = $field->config['regex'] ?? '';
         $regexWarningMessage = $field->config['regex_warning_message'] ?? '';
-        
+
         // validate config regex if exists
         if (!empty($configRegex) && !preg_match($configRegex, $value)) {
             $errorMessage = $field->title . ' validation failed';
