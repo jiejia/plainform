@@ -46,7 +46,10 @@ class IndexService
         $form = Form::create($data);
 
         // create fields
-        foreach ($data['fields'] as $field) {
+        foreach ($data['fields'] as $k => $field) {
+            // set sort
+            $field['sort'] = $k;
+
             // validate uuid
             if (FormField::where('uuid', $field['uuid'])->exists()) {
                 throw new BusinessException(Code::FORM_FIELD_UUID_EXISTS->message(), Code::FORM_FIELD_UUID_EXISTS->value);
@@ -98,7 +101,10 @@ class IndexService
         $form->fields()->whereNotIn('uuid', array_column($data['fields'], 'uuid'))->delete();
 
         // update fields
-        foreach ($data['fields'] as $field) {
+        foreach ($data['fields'] as $k => $field) {
+            // set sort
+            $field['sort'] = $k;
+
             if (isset($field['id'])) {
                 // validate uuid
                 if (FormField::where('uuid', $field['uuid'])->where('id', '!=', $field['id'])->exists()) {
@@ -132,7 +138,9 @@ class IndexService
     public function detail(Admin $admin, int $id) : array
     {
         // get form
-        $form = Form::where('id', $id)->with('fields')->first();
+        $form = Form::where('id', $id)->with(['fields' => function ($query) {
+            $query->orderBy('sort', 'asc');
+        }])->first();
 
         // check form
         if (!$form) {

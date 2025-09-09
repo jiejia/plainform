@@ -13,6 +13,7 @@ interface EditProps {
     params: Promise<{ id: string }>;
 }
 
+
 export default async function Edit({ params }: EditProps) {
     // get controls
     const initialControls: Control[] = await getControls();

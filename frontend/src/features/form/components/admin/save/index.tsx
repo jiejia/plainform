@@ -1,7 +1,7 @@
 'use client'
 
 import Scroll from "@/features/core/components/shared/scroll";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Tab, Tabs } from "@heroui/react";
 import { ListPlus, Settings, Settings2, StickyNote, Trash2 } from "lucide-react"
 import Controls from "./controls";
@@ -215,6 +215,11 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
     const handleDragMove = (event: DragMoveEvent) => {
 
     }
+
+    // only client side render
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+    if (!mounted) return null;
 
     return (
         <DndWrapper
