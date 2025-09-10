@@ -15,6 +15,8 @@ import { useState, useEffect } from "react";
 import { SearchParams } from "@/features/form/types/list/search-params";
 import { list } from "@/features/form/actions/form-action";
 import { msg } from "@/features/core/utils/ui";
+import { PaginationParams } from "@/features/core/types/pagination-params";
+import { Form } from "@/features/form/types/form";
 
 export default function Index() {
 
@@ -29,6 +31,22 @@ export default function Index() {
         status: [],
         orderBy: 'id',
         orderType: 'desc',
+    });
+
+    const [pagination, setPagination] = useState<PaginationParams<Form>>({
+        current_page: 1,
+        data: [],
+        first_page_url: '',
+        last_page: 1,
+        last_page_url: '',
+        from: 1,
+        links: [],
+        next_page_url: '',
+        path: '',
+        per_page: 10,
+        prev_page_url: '',
+        to: 1,
+        total: 1,
     });
 
     const fetchList = async () => {
