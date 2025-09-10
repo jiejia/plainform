@@ -187,19 +187,20 @@ class IndexService
             $query->where('created_at', '<=', $createdAtEnd);
         }
 
-        // where submissions_count >= submissionsCountStart
-        if ($submissionsCountStart) {
-            $query->where('submissions_count', '>=', $submissionsCountStart);
+        // filter by submissions count range
+        $submissionsCountSubquery = '(SELECT COUNT(*) FROM form_submissions WHERE forms.id = form_submissions.form_id AND form_submissions.deleted_at IS NULL)';
+        
+        if ($submissionsCountStart !== null) {
+            $query->whereRaw($submissionsCountSubquery . ' >= ?', [$submissionsCountStart]);
         }
 
-        // where submissions_count <= submissionsCountEnd
-        if ($submissionsCountEnd) {
-            $query->where('submissions_count', '<=', $submissionsCountEnd);
+        if ($submissionsCountEnd !== null) {
+            $query->whereRaw($submissionsCountSubquery . ' <= ?', [$submissionsCountEnd]);
         }
 
         // where status in status
         if ($status) {
-            $query->whereIn('status', $status);
+            $query->whereIn('enabled', $status);
         }
 
         // order by

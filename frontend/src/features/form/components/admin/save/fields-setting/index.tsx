@@ -14,7 +14,6 @@ import Options from "./options";
 import SwitchDefaultValue from "./switch-default-value";
 import Cols from "./cols";
 import Rows from "./rows";
-import Multiple from "./multiple";
 
 export default function Index({
     fields,
