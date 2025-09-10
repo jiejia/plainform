@@ -5,7 +5,7 @@ use App\Features\Form\Controllers\Admin\SubmissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('form')->group(function () {  
-    Route::get('/', [IndexController::class, 'list'])->name('admin.form.list');
+    Route::post('/list', [IndexController::class, 'list'])->name('admin.form.list');
     Route::get('/controls', [IndexController::class, 'controls'])->name('admin.form.controls');
     Route::get('/{id}', [IndexController::class, 'detail'])->name('admin.form.detail');
     Route::post('/', [IndexController::class, 'create'])->name('admin.form.create');
