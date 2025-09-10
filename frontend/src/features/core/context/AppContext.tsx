@@ -12,7 +12,11 @@ export const AppContext = createContext({
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const [admin, setAdmin] = useState<Admin>({} as Admin);
+    const [admin, setAdmin] = useState<Admin>({
+        username: '',
+        avatar: null,
+        email: '',
+    } );
     
     // const [setting, setSetting] = useState<any>({} as any);
 

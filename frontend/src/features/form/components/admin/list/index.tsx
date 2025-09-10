@@ -13,7 +13,8 @@ import TableList from "./table-list";
 import Pagenate from "./pagenate";
 import { useState, useEffect } from "react";
 import { SearchParams } from "@/features/form/types/list/search-params";
-import {list} from "@/features/form/actions/form-action";
+import { list } from "@/features/form/actions/form-action";
+import { msg } from "@/features/core/utils/ui";
 
 export default function Index() {
 
@@ -30,10 +31,17 @@ export default function Index() {
         orderType: 'desc',
     });
 
-    useEffect(() => {
-        list(params).then((res) => {
+    const fetchList = async () => {
+        try {
+            const res = await list(params);
             console.log(res);
-        });
+        } catch (error: any) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {   
+        fetchList();
     }, [params]);
 
     return (

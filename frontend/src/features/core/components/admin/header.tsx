@@ -41,13 +41,13 @@ export default function Header({
                                 src={admin.avatar || ''}
                                 name={admin.avatar ? undefined : admin.username?.charAt(0).toUpperCase()}
                                 size="sm"
-                                title={admin.username}
+                                title={admin.username || ''}
                             />
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Profile Actions" variant="flat">
                             <DropdownItem key="profile" className="h-14 gap-2">
                                 <p className="font-semibold">已登录为</p>
-                                <p className="font-semibold">{admin.username}</p>
+                                <p className="font-semibold">{admin.username || ''}</p>
                             </DropdownItem>
                             <DropdownItem key="settings" onPress={handleSettingsClick}>
                                 设置

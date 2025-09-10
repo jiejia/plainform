@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Button,
     Dropdown,
@@ -20,8 +20,11 @@ import {
 import { getKeyValue } from "@heroui/table";
 import { EllipsisVertical, Pencil, Eye, Trash2 } from "lucide-react";
 import { Link } from "@heroui/react";
+import { useState } from "react";
 
 export default function TableList() {
+    const [mounted, setMounted] = useState(false);
+
 
     const rows = [{
         key: "1",
@@ -32,120 +35,120 @@ export default function TableList() {
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "2",
+        id: 2,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 50032,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "3",
+        id: 3,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "4",
+        id: 4,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "5",
+        id: 5,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "6",
+        id: 6,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "7",
+        id: 7,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "8",
+        id: 8,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "9",
+        id: 9,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "10",
+        id: 10,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "11",
+        id: 11,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "12",
+        id: 12,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "13",
+        id: 13,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "14",
+        id: 14,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "15",
+        id: 15,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
         status: "active",
         action: "edit",
     }, {
-        key: "1",
-        id: 1,
+        key: "16",
+        id: 16,
         name: "Tony Reichert",
         created_at: "CEO",
         submission_count: 10,
@@ -169,6 +172,15 @@ export default function TableList() {
 
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set(["2"]));
 
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return <div>Loading...</div>;
+    }
+    
     return (
         <Table
             aria-label="Controlled table example with dynamic content"
@@ -241,5 +253,6 @@ export default function TableList() {
                     </TableRow>
                 )}
             </TableBody>
-        </Table>);
+        </Table>
+    );
 }
