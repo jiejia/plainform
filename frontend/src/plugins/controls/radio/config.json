@@ -16,6 +16,7 @@
           }
         ],
         "multiple": false,
+        "hide_multiple": true,
         "api_url": ""
       }
     },

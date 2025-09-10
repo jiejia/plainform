@@ -8,7 +8,6 @@
       "title": "请输入标题",
       "description": "请输入描述",
       "required": false,
-      "multiple": false,
       "options": {
         "default_options": [
           {
@@ -17,6 +16,7 @@
           }
         ],
         "multiple": false,
+        "hide_multiple": false,
         "api_url": ""
       }
     },

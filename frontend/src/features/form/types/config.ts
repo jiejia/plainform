@@ -10,13 +10,13 @@ export type config = {
     length?: number[];
     rows?: number;
     cols?: number;
-    multiple?: boolean;
     options?: {
         default_options: {
             val: string;
             selected: boolean;
         }[];
         multiple: boolean;
+        hide_multiple: boolean;
         api_url: string;
     };
     [propName: string]: unknown;
