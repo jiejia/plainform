@@ -7,6 +7,7 @@ import { Form } from "@/features/form/types/form";
 import { SearchParams} from "@/features/form/types/list/search-params";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Form as FormInList } from "@/features/form/types/list/form";
+import { initialSearchParams } from "@/features/form/data/initial-search-params";
 
 /**
  * get controls
@@ -76,18 +77,7 @@ export async function update(id: number, form: Form) {
  * @param orderType 
  * @returns 
  */
-export async function list(args: SearchParams = {
-    page: 1,
-    limit: 10,
-    keyword: '',
-    createdAtStart: '',
-    createdAtEnd: '',
-    submissionsCountStart: null,
-    submissionsCountEnd: null,
-    status: [],
-    orderBy: 'id',
-    orderType: 'desc'
-}): Promise<Result<PaginationParams<FormInList>>> {
+export async function list(args: SearchParams = initialSearchParams): Promise<Result<PaginationParams<FormInList>>> {
     const res = await api.post('api/admin/form/list', {
          json: {
             page: args.page,

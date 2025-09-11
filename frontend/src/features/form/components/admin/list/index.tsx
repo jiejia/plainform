@@ -5,7 +5,10 @@ import Scroll from "@/features/core/components/shared/scroll";
 import {
     Card,
     CardBody,
-
+    Select,
+    SelectItem,
+    Selection,
+    SharedSelection,
 } from "@heroui/react";
 
 import Actions from "./actions";
@@ -17,21 +20,11 @@ import { list } from "@/features/form/actions/form-action";
 import { msg } from "@/features/core/utils/ui";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Form as FormInList } from "@/features/form/types/list/form";
+import { initialSearchParams } from "@/features/form/data/initial-search-params";
 
 export default function Index() {
 
-    const [params, setParams] = useState<SearchParams>({
-        page: 1,
-        limit: 10,
-        keyword: '',
-        createdAtStart: '',
-        createdAtEnd: '',
-        submissionsCountStart: null,
-        submissionsCountEnd: null,
-        status: [],
-        orderBy: 'id',
-        orderType: 'desc',
-    });
+    const [params, setParams] = useState<SearchParams>(initialSearchParams);
 
     const [data, setData] = useState<PaginationParams<FormInList>>({
         current_page: 1,
@@ -66,7 +59,7 @@ export default function Index() {
         <div className="grid grid-rows-[56px_1fr_56px] gap-4 h-full">
             <Card className="h-full">
                 <CardBody className="pt-3">
-                    <Actions />
+                    <Actions params={params} setParams={setParams}/>
                 </CardBody>
             </Card>
             <Card className="h-full">
