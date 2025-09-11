@@ -15,7 +15,7 @@ import { SearchParams } from "@/features/form/types/list/search-params";
 import { useState } from "react";
 
 type AdvancedSearchProps = {
-    keywords: string;
+    keyword: string;
     createdAtStart: string;
     createdAtEnd: string;
     submissionsCountStart: number | null;
@@ -27,7 +27,7 @@ export default function AdvancedSearch({params, setParams}: {params: SearchParam
     const [pending, setPending] = useState(false);
     
     const [innerParams, setInnerParams] = useState<AdvancedSearchProps>({
-        keywords: params.keyword,
+        keyword: params.keyword,
         createdAtStart: params.createdAtStart,
         createdAtEnd: params.createdAtEnd,
         submissionsCountStart: params.submissionsCountStart,
@@ -36,7 +36,7 @@ export default function AdvancedSearch({params, setParams}: {params: SearchParam
     });
 
     const handleKeywordsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInnerParams({...innerParams, keywords: e.target.value});
+        setInnerParams({...innerParams, keyword: e.target.value});
     }
 
     const handleCreatedAtStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,7 +96,7 @@ export default function AdvancedSearch({params, setParams}: {params: SearchParam
                         placeholder="输入表单名称关键词..."
                         startContent={<Search size="16" className="text-default-400" />}
                         labelPlacement="outside"
-                        value={innerParams.keywords}
+                        value={innerParams.keyword}
                         onChange={handleKeywordsChange}
                     />
                 </div>
