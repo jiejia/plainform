@@ -16,7 +16,7 @@ import { SearchParams } from "@/features/form/types/list/search-params";
 import { list } from "@/features/form/actions/form-action";
 import { msg } from "@/features/core/utils/ui";
 import { PaginationParams } from "@/features/core/types/pagination-params";
-import { Form } from "@/features/form/types/form";
+import { Form as FormInList } from "@/features/form/types/list/form";
 
 export default function Index() {
 
@@ -26,14 +26,14 @@ export default function Index() {
         keyword: '',
         createdAtStart: '',
         createdAtEnd: '',
-        submissionsCountStart: 0,
-        submissionsCountEnd: 0,
+        submissionsCountStart: null,
+        submissionsCountEnd: null,
         status: [],
         orderBy: 'id',
         orderType: 'desc',
     });
 
-    const [pagination, setPagination] = useState<PaginationParams<Form>>({
+    const [data, setData] = useState<PaginationParams<FormInList>>({
         current_page: 1,
         data: [],
         first_page_url: '',
@@ -52,7 +52,7 @@ export default function Index() {
     const fetchList = async () => {
         try {
             const res = await list(params);
-            console.log(res);
+            setData(res.data as PaginationParams<FormInList>);   
         } catch (error: any) {
             console.log(error)
         }
@@ -72,13 +72,13 @@ export default function Index() {
             <Card className="h-full">
                 <CardBody className="h-full">
                     <Scroll>
-                        <TableList />
+                        <TableList list={data.data}/>
                     </Scroll>
                 </CardBody>
             </Card>
             <Card>
                 <CardBody className="grid sm:grid-cols-[80px_1fr_80px] grid-cols-[1fr] pt-3 gap-2">
-                    <Pagenate />
+                    <Pagenate data={data} params={params} setParams={setParams}/>
                 </CardBody>
             </Card>
         </div>

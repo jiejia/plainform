@@ -4,8 +4,8 @@ export type SearchParams = {
     keyword: string;
     createdAtStart: string;
     createdAtEnd: string;
-    submissionsCountStart: number;
-    submissionsCountEnd: number;
+    submissionsCountStart: number | null;
+    submissionsCountEnd: number | null;
     status: number[];
     orderBy: string;
     orderType: string;

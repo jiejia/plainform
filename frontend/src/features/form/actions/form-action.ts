@@ -82,12 +82,12 @@ export async function list(args: SearchParams = {
     keyword: '',
     createdAtStart: '',
     createdAtEnd: '',
-    submissionsCountStart: 0,
-    submissionsCountEnd: 0,
+    submissionsCountStart: null,
+    submissionsCountEnd: null,
     status: [],
     orderBy: 'id',
     orderType: 'desc'
-}): Promise<PaginationParams<FormInList>> {
+}): Promise<Result<PaginationParams<FormInList>>> {
     const res = await api.post('api/admin/form/list', {
          json: {
             page: args.page,
@@ -103,5 +103,5 @@ export async function list(args: SearchParams = {
         }
     }).json();
 
-    return res as PaginationParams<FormInList>;
+    return res as Result<PaginationParams<FormInList>>;
 }

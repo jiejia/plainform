@@ -66,5 +66,5 @@ function json(array $data = [], int $code = Code::SUCCESS->value, string $messag
  */
 function getPageLimit(): int
 {
-    return request()->input('page_limit', 10);
+    return request()->input('limit', 10);
 }
