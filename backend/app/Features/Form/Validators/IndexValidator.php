@@ -14,7 +14,7 @@ class IndexValidator extends AbstractValidator
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'enabled' => 'required|in:0,1',
+            'enabled' => 'required|boolean',
             'numbering_style' => 'required|in:0,1',
             'fields' => 'required|array|min:1',
             'fields.*.uuid' => 'required|string|size:36',
@@ -58,7 +58,7 @@ class IndexValidator extends AbstractValidator
             'description.string' => '表单描述必须是字符串',
             'description.max' => '表单描述不能超过255个字符',
             'enabled.required' => '表单是否启用不能为空',
-            'enabled.in' => '表单是否启用必须是0或1',
+            'enabled.boolean' => '表单是否启用必须是布尔值',
             'numbering_style.required' => '表单编号样式不能为空',
             'numbering_style.in' => '表单编号样式必须是0、1',
             'fields.required' => '表单字段不能为空',
