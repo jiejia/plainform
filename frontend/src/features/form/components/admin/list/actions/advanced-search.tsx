@@ -8,6 +8,7 @@ import {
     Select,
     SelectItem,
     DateRangePicker,
+    SharedSelection,
 } from "@heroui/react";
 import { parseDateTime } from "@internationalized/date";
 import { Search, ListFilterPlus, Hash, Activity } from "lucide-react";
@@ -20,12 +21,12 @@ type AdvancedSearchProps = {
     createdAtEnd: string;
     submissionsCountStart: number | null;
     submissionsCountEnd: number | null;
-    status: number[];
+    status: number | null;
 }
 
-export default function AdvancedSearch({params, setParams}: {params: SearchParams, setParams: (params: SearchParams) => void}) {
+export default function AdvancedSearch({ params, setParams }: { params: SearchParams, setParams: (params: SearchParams) => void }) {
     const [pending, setPending] = useState(false);
-    
+
     const [innerParams, setInnerParams] = useState<AdvancedSearchProps>({
         keyword: params.keyword,
         createdAtStart: params.createdAtStart,
@@ -36,49 +37,51 @@ export default function AdvancedSearch({params, setParams}: {params: SearchParam
     });
 
     const handleKeywordsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInnerParams({...innerParams, keyword: e.target.value});
+        setInnerParams({ ...innerParams, keyword: e.target.value });
     }
 
     const handleCreatedAtStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInnerParams({...innerParams, createdAtStart: e.target.value});
+        setInnerParams({ ...innerParams, createdAtStart: e.target.value });
     }
 
     const handleCreatedAtEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInnerParams({...innerParams, createdAtEnd: e.target.value});
+        setInnerParams({ ...innerParams, createdAtEnd: e.target.value });
     }
 
     const handleSubmissionsCountStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInnerParams({...innerParams, submissionsCountStart: parseInt(e.target.value)});
+        setInnerParams({ ...innerParams, submissionsCountStart: parseInt(e.target.value) });
     }
 
     const handleSubmissionsCountEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInnerParams({...innerParams, submissionsCountEnd: parseInt(e.target.value)});
+        setInnerParams({ ...innerParams, submissionsCountEnd: parseInt(e.target.value) });
     }
 
-    const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setInnerParams({...innerParams, status: e.target.value.split(',').map(Number)});
+    const handleStatusChange = (e: SharedSelection) => {
+        const selectedKey = Array.from(e)[0]?.toString();
+        const statusValue = selectedKey === 'all' ? null : parseInt(selectedKey);
+        setInnerParams({ ...innerParams, status: statusValue });
     }
 
     const handleSearch = () => {
         setPending(true);
-        setParams({...params, ...innerParams});
+        setParams({ ...params, ...innerParams });
         setPending(false);
     }
 
     return (
         <FormModal title="高级搜索"
-            footer={
+            footer={(onClose) => (
                 <Button
                     size="sm"
                     color="primary"
                     variant="solid"
-                    onPress={handleSearch}
+                    onPress={() => { handleSearch(); onClose(); }}
                     isLoading={pending}
                     isDisabled={pending}
                 >
                     {pending ? '搜索中...' : '搜索'}
                 </Button>
-            }
+            )}
             button={
                 <Button
                     isIconOnly
@@ -146,14 +149,18 @@ export default function AdvancedSearch({params, setParams}: {params: SearchParam
                         placeholder="选择状态"
                         startContent={<Activity size="16" className="text-default-400" />}
                         labelPlacement="outside"
-                        selectionMode="multiple"
-                        selectedKeys={[]}
-                        onChange={handleStatusChange}
+                        selectionMode="single"
+                        selectedKeys={new Set([innerParams.status === null ? 'all' : innerParams.status.toString()])}
+                        onSelectionChange={handleStatusChange}
+                        defaultSelectedKeys={new Set(['all'])}
                     >
-                        <SelectItem key="true">
+                        <SelectItem key="all">
+                            全部
+                        </SelectItem>
+                        <SelectItem key="1">
                             启用
                         </SelectItem>
-                        <SelectItem key="false">
+                        <SelectItem key="0">
                             禁用
                         </SelectItem>
                     </Select>

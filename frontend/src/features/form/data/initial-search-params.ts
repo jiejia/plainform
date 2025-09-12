@@ -8,7 +8,7 @@ export const initialSearchParams: SearchParams = {
     createdAtEnd: '',
     submissionsCountStart: null,
     submissionsCountEnd: null,
-    status: [],
+    status: null,
     orderBy: 'id',
     orderType: 'desc',
 }

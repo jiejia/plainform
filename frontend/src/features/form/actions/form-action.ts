@@ -87,7 +87,7 @@ export async function list(args: SearchParams = initialSearchParams): Promise<Re
             created_at_end: args.createdAtEnd,
             submissions_count_start: args.submissionsCountStart,
             submissions_count_end: args.submissionsCountEnd,
-            status: args.status.join,
+            status: args.status,
             order_by: args.orderBy,
             order_type: args.orderType
         }

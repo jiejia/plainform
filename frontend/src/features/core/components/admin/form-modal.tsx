@@ -14,7 +14,7 @@ import React from "react"
 interface FormModalProps {
     children: React.ReactNode
     title: string
-    footer: React.ReactNode|null
+    footer: React.ReactNode|null|((onClose: () => void) => React.ReactNode)
     button: React.ReactElement
 }
 
@@ -54,9 +54,10 @@ export default function FormModal({children, title, footer, button}: FormModalPr
                         {children}
                     </ModalBody>
                     <ModalFooter>
-                        {footer || <Button color="danger" variant="light" onPress={onClose}>
-                        Close
-                        </Button>}
+                        {(typeof footer === 'function')
+                            ? (footer as (onClose: () => void) => React.ReactNode)(onClose)
+                            : (footer || <Button color="danger" variant="light" onPress={onClose}>Close</Button>)
+                        }
                     </ModalFooter>
                     </>
                 )}

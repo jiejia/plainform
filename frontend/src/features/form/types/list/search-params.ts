@@ -6,7 +6,7 @@ export type SearchParams = {
     createdAtEnd: string;
     submissionsCountStart: number | null;
     submissionsCountEnd: number | null;
-    status: number[];
+    status: number | null;
     orderBy: string;
     orderType: string;
 }

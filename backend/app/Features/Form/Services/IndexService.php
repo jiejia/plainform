@@ -160,12 +160,12 @@ class IndexService
      * @param string|null $createdAtEnd
      * @param int|null $submissionsCountStart
      * @param int|null $submissionsCountEnd
-     * @param array|null $status
+     * @param int|null $status
      * @param string|null $orderBy
      * @param string|null $orderType
      * @return array
      */
-    public function list(Admin $admin, ?string $keyword = null, ?string $createdAtStart = null, ?string $createdAtEnd = null, ?int $submissionsCountStart = null, ?int $submissionsCountEnd = null, ?array $status = null, ?string $orderBy = null, ?string $orderType = null) : array
+    public function list(Admin $admin, ?string $keyword = null, ?string $createdAtStart = null, ?string $createdAtEnd = null, ?int $submissionsCountStart = null, ?int $submissionsCountEnd = null, ?int $status = null, ?string $orderBy = null, ?string $orderType = null) : array
     {
         $query = Form::select('id', 'uuid', 'title', 'enabled', 'created_at')->withCount('submissions');
 
@@ -198,9 +198,9 @@ class IndexService
             $query->whereRaw($submissionsCountSubquery . ' <= ?', [$submissionsCountEnd]);
         }
 
-        // where status in status
-        if ($status) {
-            $query->whereIn('enabled', $status);
+        // where status equals status
+        if ($status !== null) {
+            $query->where('enabled', $status);
         }
 
         // order by
