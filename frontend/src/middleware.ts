@@ -15,14 +15,15 @@ function checkIsAuthRoute(request: NextRequest) {
     const path = request.nextUrl.pathname;
 
     // check path's prefix
-    let isAuthRoute = false;
+    let isAuthRoute = null;
     const prefix = path.split('/')[1];
 
-    console.log("prefix", prefix);
     if (prefix === 'dashboard') {
-        isAuthRoute = false;
-    } else if (prefix === 'login' || prefix === 'forget-password' || prefix === 'reset-password' || prefix === 'form') {
-        isAuthRoute = true;
+        isAuthRoute = 'admin';
+    } else if (prefix === 'login' || prefix === 'forget-password' || prefix === 'reset-password') {
+        isAuthRoute = 'admin_login';
+    } else if (prefix === 'form') {
+        isAuthRoute = 'user';
     }
 
     return isAuthRoute;
@@ -40,7 +41,7 @@ export async function middleware(request: NextRequest) {
 
         if (res.code === 0) {
             // generate a response object
-            const response = isAuthRoute
+            const response = isAuthRoute === 'admin_login'
               ? NextResponse.redirect(new URL('/dashboard', request.url))
               : NextResponse.next()
       
@@ -63,7 +64,7 @@ export async function middleware(request: NextRequest) {
             return response 
           }
     } catch (err: any) {
-        if (err.response?.status === 401 && !isAuthRoute) {
+        if (err.response?.status === 401 && isAuthRoute === 'admin') {
             return NextResponse.redirect(new URL('/login', request.url));
         }
     }

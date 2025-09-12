@@ -17,7 +17,7 @@ import Recycle from "./recycle";
 import {v4 as uuidV4} from "uuid";
 import { Form } from "@/features/form/types/form";
 import { DraggableItem } from "@/features/form/types/draggable-item";
-import { create, update } from "@/features/form/actions/form-action";
+import { create, update } from "@/features/form/actions/admin/form-action";
 import { msg } from "@/features/core/utils/ui";
 import { useRouter } from "next/navigation";
 

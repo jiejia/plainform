@@ -2,11 +2,11 @@ import DashboardLayout from '@/app/dashboard/dashboard-layout';
 import React from "react";
 import Link from "next/link";
 import Save from "@/features/form/components/admin/save";
-import { getControls } from '@/features/form/actions/form-action';
+import { getControls } from '@/features/form/actions/admin/form-action';
 import { Control } from '@/features/form/types/control';
 import { Field } from '@/features/form/types/field';
 import { Form } from '@/features/form/types/form';
-import { get } from '@/features/form/actions/form-action';
+import { get } from '@/features/form/actions/admin/form-action';
 import { notFound } from 'next/navigation';
 
 interface EditProps {

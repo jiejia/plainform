@@ -16,7 +16,7 @@ import TableList from "./table-list";
 import Pagenate from "./pagenate";
 import { useState, useEffect } from "react";
 import { SearchParams } from "@/features/form/types/list/search-params";
-import { list } from "@/features/form/actions/form-action";
+import { list } from "@/features/form/actions/admin/form-action";
 import { msg } from "@/features/core/utils/ui";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Form as FormInList } from "@/features/form/types/list/form";

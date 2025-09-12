@@ -41,7 +41,7 @@ export default function TableList({ list }: { list: FormInList[] }) {
         key: "actions", label: "操作"
     }];
 
-    const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set(["2"]));
+    const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
 
 
     useEffect(() => {
@@ -105,6 +105,14 @@ export default function TableList({ list }: { list: FormInList[] }) {
                                             </DropdownItem>
                                         </DropdownMenu>
                                     </Dropdown>
+                                ) : columnKey === "title" ? (
+                                    <Link
+                                        href={`/form/${item.uuid}`}
+                                        target="_blank"
+                        
+                                    >
+                                        {getKeyValue(item, columnKey)}
+                                    </Link>
                                 ) : columnKey === "submissions_count" ? (
                                     <Button
                                         as={Link}
