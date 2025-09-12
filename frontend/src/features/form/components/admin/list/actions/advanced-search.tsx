@@ -10,10 +10,11 @@ import {
     DateRangePicker,
     SharedSelection,
 } from "@heroui/react";
-import { parseDateTime } from "@internationalized/date";
+import { parseDate, CalendarDate } from "@internationalized/date";
 import { Search, ListFilterPlus, Hash, Activity } from "lucide-react";
 import { SearchParams } from "@/features/form/types/list/search-params";
 import { useState } from "react";
+import { initialSearchParams } from "@/features/form/data/initial-search-params";
 
 type AdvancedSearchProps = {
     keyword: string;
@@ -40,12 +41,20 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
         setInnerParams({ ...innerParams, keyword: e.target.value });
     }
 
-    const handleCreatedAtStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInnerParams({ ...innerParams, createdAtStart: e.target.value });
-    }
-
-    const handleCreatedAtEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInnerParams({ ...innerParams, createdAtEnd: e.target.value });
+    const handleDateRangeChange = (value: { start: CalendarDate; end: CalendarDate } | null) => {
+        if (value && value.start && value.end) {
+            setInnerParams({
+                ...innerParams,
+                createdAtStart: value.start.toString(),
+                createdAtEnd: value.end.toString()
+            });
+        } else {
+            setInnerParams({
+                ...innerParams,
+                createdAtStart: '',
+                createdAtEnd: ''
+            });
+        }
     }
 
     const handleSubmissionsCountStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,19 +77,35 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
         setPending(false);
     }
 
+    const handleReset = () => {
+        setInnerParams({ ...innerParams, keyword: '', createdAtStart: '', createdAtEnd: '', submissionsCountStart: null, submissionsCountEnd: null, status: null });
+        setParams(initialSearchParams);
+    }
+
     return (
         <FormModal title="高级搜索"
             footer={(onClose) => (
-                <Button
-                    size="sm"
-                    color="primary"
-                    variant="solid"
-                    onPress={() => { handleSearch(); onClose(); }}
-                    isLoading={pending}
-                    isDisabled={pending}
-                >
-                    {pending ? '搜索中...' : '搜索'}
-                </Button>
+                <>
+                    <Button
+                        size="sm"
+                        color="default"
+                        variant="flat"
+                        onPress={() => { handleReset(); }}
+                    >
+                        重置
+                    </Button>
+                    <Button
+                        size="sm"
+                        color="primary"
+                        variant="solid"
+                        onPress={() => { handleSearch(); onClose(); }}
+                        isLoading={pending}
+                        isDisabled={pending}
+                    >
+                        {pending ? '搜索中...' : '搜索'}
+                    </Button>
+                </>
+
             )}
             button={
                 <Button
@@ -110,10 +135,26 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
                     <div className="grid w-full">
                         <DateRangePicker
                             labelPlacement="outside"
-                            defaultValue={{
-                                start: parseDateTime("2025-08-13T14:00:00"),
-                                end: parseDateTime("2025-08-13T18:00:00"),
-                            }}
+                            value={(() => {
+                                try {
+                                    if (innerParams.createdAtStart && innerParams.createdAtEnd) {
+                                        const startDate = innerParams.createdAtStart.includes(' ')
+                                            ? innerParams.createdAtStart.split(' ')[0]
+                                            : innerParams.createdAtStart;
+                                        const endDate = innerParams.createdAtEnd.includes(' ')
+                                            ? innerParams.createdAtEnd.split(' ')[0]
+                                            : innerParams.createdAtEnd;
+                                        return {
+                                            start: parseDate(startDate),
+                                            end: parseDate(endDate)
+                                        };
+                                    }
+                                } catch (error) {
+                                    console.warn('Failed to parse date range:', error);
+                                }
+                                return null;
+                            })()}
+                            onChange={handleDateRangeChange}
                         />
                     </div>
                 </div>
