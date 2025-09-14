@@ -52,9 +52,6 @@ export default function ForgetPassword() {
                 email: fieldErrors.email?.[0] ?? '',
             });
 
-            // sleep 1 second
-            await new Promise(resolve => setTimeout(resolve, 500));
-
             setIsPending(false);
             return;
         }
@@ -78,7 +75,6 @@ export default function ForgetPassword() {
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
-
                 <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
                     <div>
                         <p className="text-xs text-center text-slate-400"> You will receive a link to create a new password via email.</p>

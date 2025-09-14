@@ -8,25 +8,36 @@ import { setOptions as setOptionsAction } from '@/features/setting/actions/setti
 import { msg } from "@/features/core/utils/ui";
 import { appDescriptionValidator } from "@/features/setting/validators/general-validator";
 
+type appDescriptionError = {
+    app_description: string;
+}
+
 export default function AppDescription({ options, setOptions }: { options: any, setOptions: any }) {
 
     const [isPending, setIsPending] = useState(false);
 
+    const [errors, setErrors] = useState<appDescriptionError>({
+        app_description: '',
+    });
+
     const handleUpdateAppDescriptionChange = async (value: string) => {
         setIsPending(true);
 
-        const result = appDescriptionValidator({app_description: value});
+        const result = appDescriptionValidator({ app_description: value });
         if (!result.success) {
-            msg('应用描述不能为空', result.error.issues[0].message, 'warning');
+            const { fieldErrors } = result.error.flatten();
+            setErrors({
+                app_description: fieldErrors.app_description?.[0] ?? '',
+            });
 
             // sleep 0.5 second
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // await new Promise(resolve => setTimeout(resolve, 500));
 
             setIsPending(false);
             return;
         }
 
-        setOptions({...options, app_description: value});
+        setOptions({ ...options, app_description: value });
 
         const res = await setOptionsAction('general', 'app_description', value);
         if (res === true) {
@@ -38,17 +49,17 @@ export default function AppDescription({ options, setOptions }: { options: any, 
     };
 
     const handleAppDescriptionChange = (value: string) => {
-        setOptions({...options, app_description: value});
+        setOptions({ ...options, app_description: value });
     };
 
     return (
         <FormModal title="编辑应用描述" button={
             <Button
-                startContent={<SquarePen size={16}/>}
+                startContent={<SquarePen size={16} />}
                 size="sm"
                 color="default" variant="flat"
             >编辑</Button>
-            }
+        }
             footer={
                 <Button
                     type="submit"
@@ -60,7 +71,17 @@ export default function AppDescription({ options, setOptions }: { options: any, 
                     onPress={() => handleUpdateAppDescriptionChange(options.app_description)}
                 >{isPending ? '保存中...' : '保存'}</Button>
             }>
-                <Input type="text" placeholder="请输入应用描述" value={options.app_description} onValueChange={handleAppDescriptionChange} />
-            </FormModal>
+            <Input
+                type="text"
+                placeholder="请输入应用描述"
+                value={options.app_description} onValueChange={handleAppDescriptionChange}
+                onFocus={() => setErrors({ ...errors, app_description: '' })} endContent={
+                    errors.app_description && (
+                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                            {errors.app_description}
+                        </span>
+                    )
+                } />
+        </FormModal>
     );
 }

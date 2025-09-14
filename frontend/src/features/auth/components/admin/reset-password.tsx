@@ -49,8 +49,6 @@ export default function ResetPassword() {
                 confirmPassword: fieldErrors.confirmPassword?.[0] ?? '',
             });
 
-            // sleep 1 second
-            await new Promise(resolve => setTimeout(resolve, 500));
 
             setIsPending(false);
             return;
