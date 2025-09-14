@@ -1,13 +1,18 @@
 'use client'
 
-import { Input, Button, Checkbox,Card, CardHeader, CardBody, CardFooter, Divider, PressEvent, addToast, cn} from "@heroui/react";
+import { Input, Button, Checkbox, Card, CardHeader, CardBody, CardFooter, Divider, PressEvent, addToast, cn } from "@heroui/react";
 import { Link } from "@heroui/link";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, Eye } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { msg } from "@/features/core/utils/ui";
 import { login } from "@/features/auth/actions/auth-action";
 import { loginValidator } from "@/features/auth/validators/login-validator";
+
+type loginError = {
+    email: string;
+    password: string;
+}
 
 export default function Login() {
 
@@ -15,23 +20,27 @@ export default function Login() {
     const [isPending, setIsPending] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState<loginError>({
+        email: '',
+        password: ''
+    });
 
     async function handleSubmit(e?: PressEvent | React.FormEvent) {
         // 阻止表单默认提交行为
         if (e && 'preventDefault' in e) {
             e.preventDefault();
         }
-        
+
         setIsPending(true);
 
         // validate form data
-        const result = loginValidator({email, password});
+        const result = loginValidator({ email, password });
         if (!result.success) {
-            // get first error message
-            msg('login failed', result.error.issues[0].message, 'warning');
-
-            // sleep 1 second
-            await new Promise(resolve => setTimeout(resolve, 500));
+            const { fieldErrors } = result.error.flatten();
+            setErrors({
+                email: fieldErrors.email?.[0] ?? '',
+                password: fieldErrors.password?.[0] ?? '',
+            });
 
             setIsPending(false);
             return;
@@ -78,12 +87,23 @@ export default function Login() {
                         placeholder="邮箱"
                         labelPlacement="outside"
                         startContent={
-                            <Mail size={16} className="content-center text-default-400" />
+                            <span className="shrink-0">
+                                <Mail size={16} className="content-center text-default-400" aria-label="Email" />
+                            </span>
                         }
                         defaultValue={email}
                         onValueChange={(e) => setEmail(e)}
                         validationBehavior="aria"
+                        onFocus={() => setErrors({ ...errors, email: '' })}
+                        endContent={
+                            errors.email && (
+                                <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                                    {errors.email}
+                                </span>
+                            )
+                        }
                     />
+
                     <Input
                         type="password"
                         name="password"
@@ -91,11 +111,21 @@ export default function Login() {
                         placeholder="密码"
                         labelPlacement="outside"
                         startContent={
-                            <Lock size={16} className="content-center text-default-400" />
+                            <span className="shrink-0">
+                                <Lock size={16} className="content-center text-default-400" aria-label="Password" />
+                            </span>
                         }
                         defaultValue={password}
                         onValueChange={(e) => setPassword(e)}
                         validationBehavior="aria"
+                        onFocus={() => setErrors({ ...errors, password: '' })}
+                        endContent={
+                            errors.password && (
+                                <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                                    {errors.password}
+                                </span>
+                            )
+                        }
                     />
                     <div className="text-xs grid grid-flow-col">
                         <Checkbox defaultSelected size="sm">

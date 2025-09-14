@@ -1,8 +1,8 @@
 import * as z from "zod"; 
 
 const schema = z.object({ 
-    newPassword: z.string().nonempty("新密码不能为空").min(6, "新密码不能少于6位").max(100, "新密码不能超过100位"),
-    confirmPassword: z.string().nonempty("确认密码不能为空").min(6, "确认密码不能少于6位").max(100, "确认密码不能超过100位")
+    newPassword: z.string().nonempty("new password is required").min(6, "new password must be at least 6 characters").max(100, "new password must be less than 100 characters"),
+    confirmPassword: z.string().nonempty("confirm password is required").min(6, "confirm password must be at least 6 characters").max(100, "confirm password must be less than 100 characters")
 });
 
 export const resetPasswordValidator = schema.safeParse;
