@@ -53,14 +53,14 @@ export default function Theme({ options, setOptions }: { options: any, setOption
 
     const handleChange = (keys: SharedSelection) => {
         const selected = keys.currentKey as string;
-        setOptions({ ...options, theme: { value: selected } });
+        setOptions({ ...options, theme: selected });
         setOptionsAction('appearances', 'theme', selected);
     }   
 
     return (
         <Select
             placeholder="选择主题"
-            selectedKeys={[options.theme.value]}
+            selectedKeys={[options.theme]}
             onSelectionChange={handleChange}
             className="w-48"
             size="sm"

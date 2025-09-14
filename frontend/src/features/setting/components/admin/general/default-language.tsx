@@ -13,7 +13,7 @@ export default function DefaultLanguage({ options, setOptions }: { options: any,
     ];
 
     const handleLanguageChange = (value: SharedSelection) => {
-        setOptions({ ...options, default_language: { value: value.currentKey as string } });
+        setOptions({ ...options, default_language: value.currentKey as string });
         setOptionsAction('general', 'default_language', value.currentKey as string);
     };
 
@@ -24,7 +24,7 @@ export default function DefaultLanguage({ options, setOptions }: { options: any,
             id="language"
             name="language"
             size="sm"
-            selectedKeys={[options.default_language.value]}
+            selectedKeys={[options.default_language]}
             onSelectionChange={handleLanguageChange}
         >
             {languages.map((language) => (

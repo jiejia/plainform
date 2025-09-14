@@ -13,7 +13,7 @@ export default function AppName({ options, setOptions }: { options: any, setOpti
     const [isPending, setIsPending] = useState(false);
 
     const handleAppNameChange = (value: string) => {
-        setOptions({...options, app_name: {value: value}});
+        setOptions({...options, app_name: value});
     };
 
     const handleUpdateAppNameChange = async (value: string) => {
@@ -30,7 +30,7 @@ export default function AppName({ options, setOptions }: { options: any, setOpti
             return;
         }
 
-        setOptions({...options, app_name: {value: value}});
+        setOptions({...options, app_name: value});
 
         const res = await setOptionsAction('general', 'app_name', value);
         if (res === true) {
@@ -57,13 +57,13 @@ export default function AppName({ options, setOptions }: { options: any, setOpti
                     size="sm"
                     color="primary"
                     variant="solid"
-                    onPress={() => handleUpdateAppNameChange(options.app_name.value)}
+                    onPress={() => handleUpdateAppNameChange(options.app_name)}
                     isLoading={isPending}
                     disabled={isPending}
                 >{isPending ? '保存中...' : '保存'}</Button>
             }
         >
-            <Input type="text" placeholder="请输入应用名称" value={options.app_name.value} onValueChange={handleAppNameChange} />
+            <Input type="text" placeholder="请输入应用名称" value={options.app_name} onValueChange={handleAppNameChange} />
         </FormModal>
     );
 }

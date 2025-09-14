@@ -26,7 +26,7 @@ export default function AppDescription({ options, setOptions }: { options: any, 
             return;
         }
 
-        setOptions({...options, app_description: {value: value}});
+        setOptions({...options, app_description: value});
 
         const res = await setOptionsAction('general', 'app_description', value);
         if (res === true) {
@@ -38,7 +38,7 @@ export default function AppDescription({ options, setOptions }: { options: any, 
     };
 
     const handleAppDescriptionChange = (value: string) => {
-        setOptions({...options, app_description: {value: value}});
+        setOptions({...options, app_description: value});
     };
 
     return (
@@ -57,10 +57,10 @@ export default function AppDescription({ options, setOptions }: { options: any, 
                     variant="solid"
                     isLoading={isPending}
                     disabled={isPending}
-                    onPress={() => handleUpdateAppDescriptionChange(options.app_description.value)}
+                    onPress={() => handleUpdateAppDescriptionChange(options.app_description)}
                 >{isPending ? '保存中...' : '保存'}</Button>
             }>
-                <Input type="text" placeholder="请输入应用描述" value={options.app_description.value} onValueChange={handleAppDescriptionChange} />
+                <Input type="text" placeholder="请输入应用描述" value={options.app_description} onValueChange={handleAppDescriptionChange} />
             </FormModal>
     );
 }

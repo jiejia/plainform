@@ -44,9 +44,7 @@ export async function setOptions(group: string, name: string, value: any) {
             json: {
                 update_group: group,
                 update_name: name,
-                update_data: {
-                    "value": value
-                }
+                update_data: value
             }
         }).json();
 

@@ -96,7 +96,7 @@ export default function ResetPassword() {
                         onFocus={() => setErrors({ ...errors, newPassword: '' })}
                         endContent={
                             errors.newPassword && (
-                                <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                                <span className="text-danger-500 text-xs bg-danger-50 px-2 py-1 rounded-md whitespace-nowrap shrink-0">
                                     {errors.newPassword}
                                 </span>
                             )
@@ -119,7 +119,7 @@ export default function ResetPassword() {
                         onFocus={() => setErrors({ ...errors, confirmPassword: '' })}
                         endContent={
                             errors.confirmPassword && (
-                                <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                                <span className="text-danger-500 text-xs bg-danger-50 px-2 py-1 rounded-md whitespace-nowrap shrink-0">
                                     {errors.confirmPassword}
                                 </span>
                             )
