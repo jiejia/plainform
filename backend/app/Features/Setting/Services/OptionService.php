@@ -29,7 +29,7 @@ class OptionService
         $options = $query->get()->toArray();
         $data = [];
         foreach ($options as $option) {
-            $data[$option['group']][$option['name']] = $option['data'];
+            $data[$option['group']][$option['name']] = $option['data']['value'];
         }
 
         return $data;
@@ -40,14 +40,14 @@ class OptionService
      * 
      * @param string $group
      * @param string $name
-     * @param array $data
+     * @param mixed $data
      * @return array
      */
-    public function set(string $group, string $name, array $data): array
+    public function set(string $group, string $name, mixed $data): array
     {
         $option = Option::where('group', $group)->where('name', $name)->first();
         if ($option) {
-            $option->data = $data;
+            $option->data = ['value' => $data];
             $option->save();
         } else {
             throw new BusinessException(Code::OPTION_NOT_FOUND->value, Code::OPTION_NOT_FOUND->message());
