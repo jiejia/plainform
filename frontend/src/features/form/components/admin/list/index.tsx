@@ -65,7 +65,7 @@ export default function Index() {
             <Card className="h-full">
                 <CardBody className="h-full">
                     <Scroll>
-                        <TableList list={data.data}/>
+                        <TableList data={data} setData={setData}/>
                     </Scroll>
                 </CardBody>
             </Card>

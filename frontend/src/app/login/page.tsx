@@ -1,5 +1,5 @@
 
-import LoginComponent from '@/features/auth/components/admin/login';
+import LoginComponent from '@/features/admin/components/admin/login';
 
 export default function Login() {
 

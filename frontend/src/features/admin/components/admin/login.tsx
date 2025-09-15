@@ -6,8 +6,8 @@ import { Mail, Lock, Eye } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { msg } from "@/features/core/utils/ui";
-import { login } from "@/features/auth/actions/auth-action";
-import { loginValidator } from "@/features/auth/validators/login-validator";
+import { login } from "@/features/admin/actions/auth-action";
+import { loginValidator } from "@/features/admin/validators/login-validator";
 
 type loginError = {
     email: string;

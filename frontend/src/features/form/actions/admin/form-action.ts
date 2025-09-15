@@ -95,3 +95,16 @@ export async function list(args: SearchParams = initialSearchParams): Promise<Re
 
     return res as Result<PaginationParams<FormInList>>;
 }
+
+/**
+ * batch update enabled
+ * 
+ * @param items 
+ */
+export async function batchUpdateEnabled(items: { id: number, enabled: boolean }[]) {
+    const res: Result<void> = await api.patch('api/admin/form/batch-update-enabled', {
+        json: { items }
+    }).json();
+    return res;
+}
+ 

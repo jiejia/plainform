@@ -5,8 +5,8 @@ import { Lock } from "lucide-react";
 import { Link } from "@heroui/link";
 import { useState, useEffect } from "react";
 import { msg } from "@/features/core/utils/ui";
-import { resetPasswordByEmail } from "@/features/auth/actions/auth-action";
-import { resetPasswordValidator } from "@/features/auth/validators/reset-password-validator";
+import { resetPasswordByEmail } from "@/features/admin/actions/auth-action";
+import { resetPasswordValidator } from "@/features/admin/validators/reset-password-validator";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 

@@ -6,7 +6,7 @@ import { ShieldCheck, Mail, SquarePen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { updateEmailValidator, sendEmailResetCodeValidator } from "@/features/setting/validators/update-email";
 import { msg } from "@/features/core/utils/ui";
-import { updateEmail, sendEmailResetCode } from "@/features/auth/actions/auth-action";
+import { updateEmail, sendEmailResetCode } from "@/features/admin/actions/auth-action";
 
 type errors = {
     email: string;

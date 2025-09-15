@@ -6,7 +6,7 @@ import { Lock, SquarePen } from "lucide-react";
 import { useState } from "react";
 import { resetPasswordValidator } from "@/features/setting/validators/reset-password-validator";
 import { msg } from "@/features/core/utils/ui";
-import { resetPassword } from "@/features/auth/actions/auth-action";
+import { resetPassword } from "@/features/admin/actions/auth-action";
 
 type errors = {
     oldPassword: string;

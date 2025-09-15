@@ -4,9 +4,9 @@ import { Input, Button, Card, CardHeader, CardBody, Divider, PressEvent } from "
 import { Mail } from "lucide-react";
 import { Link } from "@heroui/link";
 import { useState, useEffect } from "react";
-import { forgetPasswordValidator } from "@/features/auth/validators/forget-password-validator";
+import { forgetPasswordValidator } from "@/features/admin/validators/forget-password-validator";
 import { msg } from "@/features/core/utils/ui";
-import { forgetPassword } from "@/features/auth/actions/auth-action";
+import { forgetPassword } from "@/features/admin/actions/auth-action";
 
 type forgetPasswordError = {
     email: string;

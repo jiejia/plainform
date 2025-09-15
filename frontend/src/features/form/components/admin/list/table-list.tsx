@@ -23,8 +23,10 @@ import { EllipsisVertical, Pencil, Eye, Trash2 } from "lucide-react";
 import { Link } from "@heroui/react";
 import { useState } from "react";
 import { Form as FormInList } from "@/features/form/types/list/form";
+import { batchUpdateEnabled } from "@/features/form/actions/admin/form-action";
+import { PaginationParams } from "@/features/core/types/pagination-params";
 
-export default function TableList({ list }: { list: FormInList[] }) {
+export default function TableList({ data, setData }: { data: PaginationParams<FormInList>, setData: (data: PaginationParams<FormInList>) => void }) {
     const [mounted, setMounted] = useState(false);
 
     const columns = [{
@@ -52,6 +54,13 @@ export default function TableList({ list }: { list: FormInList[] }) {
         return <div>Loading...</div>;
     }
 
+    const handleEnabledChange = (e: any, id: number) => {
+        console.log(e.target.checked, id);
+        batchUpdateEnabled([{ id: id, enabled: e.target.checked }]).then(() => {
+            setData({ ...data, data: data.data.map(item => item.id === id ? { ...item, enabled: e.target.checked } : item) });
+        });
+    }
+
     return (
         <Table
             aria-label="Controlled table example with dynamic content"
@@ -63,7 +72,7 @@ export default function TableList({ list }: { list: FormInList[] }) {
             <TableHeader columns={columns}>
                 {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
             </TableHeader>
-            <TableBody items={list}>
+            <TableBody items={data.data}>
                 {(item) => (
                     <TableRow key={item.id.toString()}>
                         {(columnKey) => (
@@ -109,7 +118,7 @@ export default function TableList({ list }: { list: FormInList[] }) {
                                     <Link
                                         href={`/form/${item.uuid}`}
                                         target="_blank"
-                        
+
                                     >
                                         {getKeyValue(item, columnKey)}
                                     </Link>
@@ -126,9 +135,10 @@ export default function TableList({ list }: { list: FormInList[] }) {
                                     </Button>
                                 ) : columnKey === "enabled" ? (
                                     <Switch
-                                        isSelected={item.enabled}
+                                        checked={item.enabled as boolean}
                                         aria-label="Automatic updates"
                                         size="sm"
+                                        onChange={(checked) => handleEnabledChange(checked, item.id)}
                                     />
 
                                 ) : (

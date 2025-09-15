@@ -5,7 +5,7 @@ import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Card, Ca
 import { useEffect, useState, useTransition } from 'react'
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
-import { logout } from "@/features/auth/actions/auth-action";
+import { logout } from "@/features/admin/actions/auth-action";
 import { useAppContext } from "@/features/core/context/AppContext";
 
 export default function Header({ 
