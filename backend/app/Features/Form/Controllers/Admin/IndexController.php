@@ -122,6 +122,23 @@ class IndexController
     }
 
     /**
+     * batchUpdateEnabled
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function batchUpdateEnabled(Request $request) : JsonResponse
+    {
+        $this->validator->scene('batch_update_enabled')->validate($request->all());
+
+        $admin = $request->user();
+        $items = $request->input('items', []);
+
+        $this->service->batchUpdateEnabled($admin, $items);
+        return json();
+    }
+
+    /**
      * controls
      * 
      * @param Request $request

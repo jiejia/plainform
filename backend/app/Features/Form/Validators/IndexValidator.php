@@ -40,6 +40,10 @@ class IndexValidator extends AbstractValidator
             'ids' => 'required|array',
             'ids.*' => 'required|integer',
 
+            'items' => 'required|array|min:1',
+            'items.*.id' => 'required|integer|exists:forms,id',
+            'items.*.enabled' => 'required|boolean',
+
             'data' => 'present|nullable|array',
             'data.*.name' => 'required|string',
             'data.*.value' => 'present',
@@ -105,6 +109,15 @@ class IndexValidator extends AbstractValidator
             'ids.*.required' => 'ID不能为空',
             'ids.*.integer' => 'ID必须是整数',
 
+            'items.required' => '更新项目不能为空',
+            'items.array' => '更新项目必须是数组',
+            'items.min' => '更新项目至少需要一个',
+            'items.*.id.required' => '表单ID不能为空',
+            'items.*.id.integer' => '表单ID必须是整数',
+            'items.*.id.exists' => '表单ID不存在',
+            'items.*.enabled.required' => '启用状态不能为空',
+            'items.*.enabled.boolean' => '启用状态必须是布尔值',
+
             'data.required' => 'Data is required',
             'data.array' => 'Data must be an array',
             'data.*.name.required' => 'Field name is required',
@@ -122,6 +135,7 @@ class IndexValidator extends AbstractValidator
             'update' => ['title', 'description', 'enabled', 'numbering_style', 'fields','fields.*.uuid','fields.*.title','fields.*.description','fields.*.regex','fields.*.required','fields.*.config','fields.*.control_id','fields.*.control_type','fields.*.control_name','fields.*.sort'],
             'list' => ['keyword', 'created_at_start', 'created_at_end', 'submissions_count_start', 'submissions_count_end', 'status', 'order_by', 'order_type'],
             'delete' => ['ids'],
+            'batch_update_enabled' => ['items', 'items.*.id', 'items.*.enabled'],
             'submit' => ['data', 'data.*.name', 'data.*.value', 'version'],
         ];
     }

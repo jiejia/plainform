@@ -248,6 +248,29 @@ class IndexService
     }
 
     /**
+     * batchUpdateEnabled
+     *
+     * @param Admin $admin
+     * @param array $items
+     * @return void
+     */
+    public function batchUpdateEnabled(Admin $admin, array $items) : void
+    {
+        foreach ($items as $item) {
+            // get form
+            $form = Form::find($item['id']);
+
+            // check form exists
+            if (!$form) {
+                throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
+            }
+
+            // update enabled status
+            $form->update(['enabled' => $item['enabled']]);
+        }
+    }
+
+    /**
      * controls
      *
      * @return array
