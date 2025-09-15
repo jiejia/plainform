@@ -54,11 +54,13 @@ export default function TableList({ data, setData }: { data: PaginationParams<Fo
         return <div>Loading...</div>;
     }
 
-    const handleEnabledChange = (e: any, id: number) => {
+    const handleEnabledChange = async (e: any, id: number) => {
         console.log(e.target.checked, id);
-        batchUpdateEnabled([{ id: id, enabled: e.target.checked }]).then(() => {
-            setData({ ...data, data: data.data.map(item => item.id === id ? { ...item, enabled: e.target.checked } : item) });
-        });
+        const checked = e.target.checked;
+
+        setData({ ...data, data: data.data.map(item => item.id === id ? { ...item, enabled: checked } : item) });
+
+        await batchUpdateEnabled([{ id: id, enabled: checked }]);
     }
 
     return (
@@ -135,10 +137,10 @@ export default function TableList({ data, setData }: { data: PaginationParams<Fo
                                     </Button>
                                 ) : columnKey === "enabled" ? (
                                     <Switch
-                                        checked={item.enabled as boolean}
+                                        isSelected={item.enabled as boolean}
                                         aria-label="Automatic updates"
                                         size="sm"
-                                        onChange={(checked) => handleEnabledChange(checked, item.id)}
+                                        onChange={(checked) => handleEnabledChange({ target: { checked } }, item.id)}
                                     />
 
                                 ) : (
