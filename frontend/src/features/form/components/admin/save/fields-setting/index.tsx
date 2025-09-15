@@ -14,36 +14,38 @@ import Options from "./options";
 import SwitchDefaultValue from "./switch-default-value";
 import Cols from "./cols";
 import Rows from "./rows";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 export default function Index({
     fields,
     setFields,
-    currentField,
-    setCurrentField
+    errors,
+    setFieldErrors
 }: {
     fields: Field[],
     setFields: (fields: Field[]) => void,
-    currentField: Field | null,
-    setCurrentField: (field: Field) => void
+    errors: FieldError,
+    setFieldErrors: (errors: FieldError) => void
 }) {
 
-    console.log("currentField", currentField);
+    const currentField = fields.find((field: Field) => field.active);
+
     return (
         <div className="h-full grid grid-cols-1 gap-4 content-start">
             {
                 currentField && (
                     <>
-                        <Title fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
-                        <Description fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
-                        <Regrex fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
-                        <DatetimeFormat fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
-                        <Required fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
-                        <Length fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
-                        <Cols fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
-                        <Rows fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
-                        <DefaultValue fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />    
-                        <Options fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
-                        <SwitchDefaultValue fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
+                        <Title fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
+                        <Description fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
+                        <Regrex fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
+                        <DatetimeFormat fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
+                        <Required fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
+                        <Length fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
+                        <Cols fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
+                        <Rows fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
+                        <DefaultValue fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />    
+                        <Options fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
+                        <SwitchDefaultValue fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
                     </>
                 )
             }

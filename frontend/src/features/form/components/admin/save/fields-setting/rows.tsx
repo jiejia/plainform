@@ -2,18 +2,21 @@
 
 import { Field } from "@/features/form/types/field"
 import { Slider } from "@heroui/react";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 
 export default function Rows({
     fields,
     setFields,
     currentField,
-    setCurrentField
+    errors,
+    setFieldErrors
 }: {
     fields: Field[],
     setFields: (fields: Field[]) => void,
     currentField: Field,
-    setCurrentField: (field: Field) => void
+    errors: FieldError,
+    setFieldErrors: (errors: FieldError) => void
 }) {
 
     const handleRowsChange = (value: number | number[]) => {
@@ -28,13 +31,6 @@ export default function Rows({
     
         setFields(fields);
     
-        setCurrentField({
-          ...currentField,
-          config: {
-            ...currentField.config,
-            rows: numValue,
-          },
-        });
     }
 
     return (

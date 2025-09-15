@@ -2,39 +2,34 @@
 
 import { Field } from "@/features/form/types/field"
 import { Slider } from "@heroui/react";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 
 export default function Cols({
     fields,
     setFields,
     currentField,
-    setCurrentField
+    errors,
+    setFieldErrors
 }: {
     fields: Field[],
     setFields: (fields: Field[]) => void,
     currentField: Field,
-    setCurrentField: (field: Field) => void
+    errors: FieldError,
+    setFieldErrors: (errors: FieldError) => void
 }) {
 
     const handleColsChange = (value: number | number[]) => {
         const uuid = currentField.uuid;
         const numValue = Array.isArray(value) ? value[0] : value;
-    
+
         fields.forEach((item: Field) => {
-          if (item.uuid == uuid) {
-            item.config.cols = numValue;
-          }
+            if (item.uuid == uuid) {
+                item.config.cols = numValue;
+            }
         });
-    
+
         setFields(fields);
-    
-        setCurrentField({
-          ...currentField,
-          config: {
-            ...currentField.config,
-            cols: numValue,
-          },
-        });
     }
 
     return (

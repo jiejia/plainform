@@ -2,23 +2,25 @@
 
 import { cn, form, Switch } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 export default function Required({
     fields,
     setFields,
     currentField,
-    setCurrentField
+    errors,
+    setFieldErrors
 }: {
     fields: Field[],
     setFields: (fields: Field[]) => void,
     currentField: Field,
-    setCurrentField: (field: Field) => void
+    errors: FieldError,
+    setFieldErrors: (errors: FieldError) => void
 }) {
 
     const handleRequiredChange = (e: any) => {
         const required = e.target.checked;
         setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, required: required, config: { ...field.config, required: required } } : field));
-        setCurrentField({ ...currentField, required: required, config: { ...currentField.config, required: required } });
     }
     return (
         <>

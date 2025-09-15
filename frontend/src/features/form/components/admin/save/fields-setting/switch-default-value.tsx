@@ -2,23 +2,25 @@
 
 import { cn, Switch } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 export default function SwitchDefaultValue({
     fields,
     setFields,
     currentField,
-    setCurrentField
+    errors,
+    setFieldErrors
 }: {
     fields: Field[],
     setFields: (fields: Field[]) => void,
     currentField: Field,
-    setCurrentField: (field: Field) => void
+    errors: FieldError,
+    setFieldErrors: (errors: FieldError) => void
 }) {
 
     const handleDefaultValueChange = (e: any) => {
         const switch_default_value = e.target.value;
         setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, config: { ...field.config, switch_default_value: switch_default_value } } : field));
-        setCurrentField({ ...currentField, config: { ...currentField.config, switch_default_value: switch_default_value } });
     }
 
     return (

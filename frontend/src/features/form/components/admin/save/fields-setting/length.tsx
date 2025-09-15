@@ -2,17 +2,20 @@
 
 import { Slider } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 export default function Length({
     fields,
     setFields,
     currentField,
-    setCurrentField
+    errors,
+    setFieldErrors
 }: {
     fields: Field[],
     setFields: (fields: Field[]) => void,
     currentField: Field,
-    setCurrentField: (field: Field) => void
+    errors: FieldError,
+    setFieldErrors: (errors: FieldError) => void
 }) {
 
     const handleLengthChange = (value: number | number[]) => {
@@ -26,14 +29,7 @@ export default function Length({
         });
     
         setFields(fields);
-    
-        setCurrentField({
-          ...currentField,
-          config: {
-            ...currentField.config,
-            length: [min, max],
-          },
-        });
+
     }
 
     return (

@@ -8,18 +8,21 @@ import { Button } from "@heroui/react";
 import clsx from "clsx";
 import { Option } from "@/features/form/types/config/option";
 import _ from "lodash";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 
 export default function Options({
     fields,
     setFields,
     currentField,
-    setCurrentField
+    errors,
+    setFieldErrors
 }: {
     fields: Field[],
     setFields: (fields: Field[]) => void,
     currentField: Field,
-    setCurrentField: (field: Field) => void
+    errors: FieldError,
+    setFieldErrors: (errors: FieldError) => void
 }) {
 
 
@@ -53,11 +56,6 @@ export default function Options({
             }
             return item;
         });
-
-        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
-        if (updatedCurrentField) {
-            setCurrentField(updatedCurrentField);
-        }
 
         setFields(newFields);
     }

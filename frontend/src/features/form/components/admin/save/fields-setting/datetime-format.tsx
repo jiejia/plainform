@@ -2,17 +2,20 @@
 
 import { Select, SelectItem } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 export default function DatetimeFormat({
     fields,
     setFields,
     currentField,
-    setCurrentField
+    errors,
+    setFieldErrors
 }: {
     fields: Field[],
     setFields: (fields: Field[]) => void,
     currentField: Field,
-    setCurrentField: (field: Field) => void
+    errors: FieldError,
+    setFieldErrors: (errors: FieldError) => void
 }) {
 
     const handleDatetimeFormatChange = (e: any) => {
@@ -31,7 +34,6 @@ export default function DatetimeFormat({
                 : field
         );
         
-        setCurrentField(updatedCurrentField);
         setFields(updatedFields);
     }
 

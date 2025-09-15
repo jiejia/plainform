@@ -2,23 +2,25 @@
 
 import { Input } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 export default function DefaultValue({
     fields,
     setFields,
     currentField,
-    setCurrentField
+    errors,
+    setFieldErrors
 }: {
     fields: Field[],
     setFields: (fields: Field[]) => void,
     currentField: Field,
-    setCurrentField: (field: Field) => void
+    errors: FieldError,
+    setFieldErrors: (errors: FieldError) => void
 }) {
 
     const handleDefaultValueChange = (e: any) => {
         const default_value = e.target.value;
         setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, config: { ...field.config, default_value: default_value } } : field));
-        setCurrentField({ ...currentField, config: { ...currentField.config, default_value: default_value } });
     }
 
     return (

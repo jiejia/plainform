@@ -20,7 +20,10 @@ import { DraggableItem } from "@/features/form/types/draggable-item";
 import { create, update } from "@/features/form/actions/admin/form-action";
 import { msg } from "@/features/core/utils/ui";
 import { useRouter } from "next/navigation";
-
+import { saveFormValidator } from "@/features/form/validators/save-form-validator";
+import { saveFormFieldValidator } from "@/features/form/validators/save-form-field-validator";
+import { FormError } from "@/features/form/types/save/form-error";
+import { FieldError } from "@/features/form/types/save/field-error";
 
 export default function Save({ initialControls, initialFields, initialForm }: { initialControls: Control[], initialFields: Field[], initialForm: Form }) {
 
@@ -29,14 +32,70 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
     const [fields, setFields] = useState<Field[]>(initialFields);
     const [activeItem, setActiveItem] = useState<DraggableItem | null>(null);
     const [overItem, setOverItem] = useState<DraggableItem | null>(null);
-    const [currentField, setCurrentField] = useState<Field | null>(null);
     const [tabSelectedKey, setTabSelectedKey] = useState<string | number>("form-property");
     const [form, setForm] = useState<Form>(initialForm);
 
     const [isPending, setIsPending] = useState(false);
 
+    const [errors, setErrors] = useState<FormError>({
+        title: '',
+        description: '',
+    });
+
+    const [fieldErrors, setFieldErrors] = useState<FieldError>({
+        title: '',
+        description: '',
+        regex: '',
+        // config: {
+        //     options: {
+        //         default_options: [],
+        //     },
+        // },
+    });
+
     const handleSubmit = async () => {
         setIsPending(true);
+
+        // validate form setting
+        const result = saveFormValidator({
+            title: form.title,
+            description: form.description,
+        });
+        if (!result.success) {
+            const { fieldErrors } = result.error.flatten();
+            setErrors({
+                title: fieldErrors.title?.[0] ?? '',
+                description: fieldErrors.description?.[0] ?? '',
+            });
+            setIsPending(false);
+            setTabSelectedKey('form-property');
+            return;
+        }
+
+        // validate field setting
+        for (const field of fields) {
+            const result = saveFormFieldValidator({
+                title: field.title,
+                description: field.description,
+                regex: field.regex,
+                config: field.config,
+            });
+            if (!result.success) {  
+                const { fieldErrors } = result.error.flatten();
+                setFieldErrors({
+                    title: fieldErrors.title?.[0] ?? '',
+                    description: fieldErrors.description?.[0] ?? '',
+                    regex: fieldErrors.regex?.[0] ?? '',
+                });
+
+                // set field active
+                setFields(fields.map(item => field.uuid === item.uuid ? { ...item, active: true } : {...item, active: false}));
+
+                setIsPending(false);
+                setTabSelectedKey('field-property');
+                return;
+            }
+        }
 
         // get form data
         const formData = {
@@ -204,7 +263,6 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                 // If the deleted field was active, activate the first field
                 if (removedField.active && newFiledItems.length > 0) {
                     newFiledItems[0] = {...newFiledItems[0], active: true};
-                    setCurrentField(newFiledItems[0]);
                 }
 
                 setFields(newFiledItems);
@@ -253,7 +311,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                     <Divider />
                     <CardBody className="h-full">
                         <Scroll>
-                            <Fields fields={fields} setCurrentField={setCurrentField} setFields={setFields} setTabSelectedKey={setTabSelectedKey} />
+                            <Fields fields={fields} setFields={setFields} setTabSelectedKey={setTabSelectedKey} setFieldErrors={setFieldErrors} />
                         </Scroll>
                     </CardBody>
                     <CardFooter>
@@ -281,7 +339,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                                 </div>}
                                 className="h-full">
                                 <Scroll>
-                                    <FormSetting form={form} setForm={setForm} />
+                                    <FormSetting form={form} setForm={setForm} errors={errors} setErrors={setErrors} />
                                 </Scroll>
                             </Tab>
                             <Tab key="field-property"
@@ -292,7 +350,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                                 className="h-full"
                             >
                                 <Scroll>
-                                    <FieldSetting fields={fields} setFields={setFields} currentField={currentField} setCurrentField={setCurrentField} />
+                                    <FieldSetting fields={fields} setFields={setFields} errors={fieldErrors} setFieldErrors={setFieldErrors} />
                                 </Scroll>
                             </Tab>
                         </Tabs>

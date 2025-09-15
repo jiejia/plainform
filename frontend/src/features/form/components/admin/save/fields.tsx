@@ -6,8 +6,9 @@ import { DndDroppable } from "@/features/core/components/shared/dnd-droppable";
 import { DndSortableItem } from "@/features/core/components/shared/dnd-sortable-item";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import clsx from "clsx";
+import { FieldError } from "@/features/form/types/save/field-error";
 
-export default function Fields({ fields, setCurrentField, setFields, setTabSelectedKey }: { fields: Field[], setCurrentField: (field: Field) => void, setFields: (fields: Field[]) => void, setTabSelectedKey: (key: string | number) => void }) {
+export default function Fields({ fields, setFields, setTabSelectedKey, setFieldErrors }: { fields: Field[], setFields: (fields: Field[]) => void, setTabSelectedKey: (key: string | number) => void, setFieldErrors: (errors: FieldError) => void }) {
 
     const handleFieldClick = (
         e: React.MouseEvent<HTMLElement>,
@@ -21,12 +22,14 @@ export default function Fields({ fields, setCurrentField, setFields, setTabSelec
             }
         });
 
-        fields.forEach((item: Field, key: number) => {
-            if (key == index) setCurrentField(item);
-        });
 
         setFields(updatedFields);
         setTabSelectedKey("field-property");
+        setFieldErrors({
+            title: '',
+            description: '',
+            regex: '',
+        });
     };
 
 

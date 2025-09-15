@@ -3,8 +3,9 @@
 import { Input, Textarea, Select, SelectItem, Switch, cn } from "@heroui/react";
 import React from "react";
 import { Form } from "@/features/form/types/form";
+import { FormError } from "@/features/form/types/save/form-error";
 
-export default function FormSetting({ form, setForm }: { form: Form, setForm: (form: Form) => void }) {
+export default function FormSetting({ form, setForm, errors ,setErrors}: { form: Form, setForm: (form: Form) => void, errors: FormError, setErrors: (errors: FormError) => void }) {
 
     const handleTitleChange = (e: any) => {
         setForm({ ...form, title: e.target.value });
@@ -28,7 +29,6 @@ export default function FormSetting({ form, setForm }: { form: Form, setForm: (f
                 label="Title"
                 placeholder="Please enter"
                 type="text"
-                isRequired
                 size="sm"
                 value={form.title}
                 onChange={handleTitleChange}
@@ -37,6 +37,17 @@ export default function FormSetting({ form, setForm }: { form: Form, setForm: (f
                     // 文字更深更粗：根据主题语义色或自定义颜色选择
                     label: "text-foreground font-semibold", // 或如 "text-zinc-800 dark:text-zinc-100 font-bold"
                 }}
+                onFocus={() => setErrors({ ...errors, title: '' })}
+                endContent={
+                    errors.title && (
+                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                            {errors.title}
+                        </span>
+                    )
+                }
+                maxLength={255}
+                isRequired
+                validationBehavior="aria"
             />
             <Textarea
                 label="Description"
@@ -49,6 +60,15 @@ export default function FormSetting({ form, setForm }: { form: Form, setForm: (f
                     // 文字更深更粗：根据主题语义色或自定义颜色选择
                     label: "text-foreground font-semibold", // 或如 "text-zinc-800 dark:text-zinc-100 font-bold"
                 }}
+                onFocus={() => setErrors({ ...errors, description: '' })}
+                endContent={
+                    errors.description && (
+                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                            {errors.description}
+                        </span>
+                    )
+                }
+                maxLength={1000}
             />
             <Select
                 label="Sequential numbering style"
