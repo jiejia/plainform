@@ -85,11 +85,6 @@ export default function Options({
             return item;
         });
 
-        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
-        if (updatedCurrentField) {
-            setCurrentField(updatedCurrentField);
-        }
-
         setFields(newFields);
 
     };
@@ -123,11 +118,6 @@ export default function Options({
             return item;
         });
 
-        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
-        if (updatedCurrentField) {
-            setCurrentField(updatedCurrentField);
-        }
-
         setFields(newFields);
 
         console.log(currentField.config.options);
@@ -158,11 +148,6 @@ export default function Options({
             return item;
         });
 
-        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
-        if (updatedCurrentField) {
-            setCurrentField(updatedCurrentField);
-        }
-
         setFields(newFields);
 
         console.log(currentField.config.options);
@@ -189,11 +174,6 @@ export default function Options({
             }
             return item;
         });
-
-        const updatedCurrentField = newFields.find(field => field.uuid === uuid);
-        if (updatedCurrentField) {
-            setCurrentField(updatedCurrentField);
-        }
 
         setFields(newFields);
         console.log("remove");
