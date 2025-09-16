@@ -23,10 +23,18 @@ import { EllipsisVertical, Pencil, Eye, Trash2 } from "lucide-react";
 import { Link } from "@heroui/react";
 import { useState } from "react";
 import { Form as FormInList } from "@/features/form/types/list/form";
-import { batchUpdateEnabled } from "@/features/form/actions/admin/form-action";
+import { batchDelete, batchUpdateEnabled } from "@/features/form/actions/admin/form-action";
 import { PaginationParams } from "@/features/core/types/pagination-params";
+import { Dispatch, SetStateAction } from "react";
+import { msg } from "@/features/core/utils/ui";
 
-export default function TableList({ data, setData }: { data: PaginationParams<FormInList>, setData: (data: PaginationParams<FormInList>) => void }) {
+
+export default function TableList({ data, setData, selectedKeys, setSelectedKeys }: { 
+    data: PaginationParams<FormInList>, 
+    setData: Dispatch<SetStateAction<PaginationParams<FormInList>>>, 
+    selectedKeys: Selection, 
+    setSelectedKeys: Dispatch<SetStateAction<Selection>> 
+}) {
     const [mounted, setMounted] = useState(false);
 
     const columns = [{
@@ -43,8 +51,6 @@ export default function TableList({ data, setData }: { data: PaginationParams<Fo
         key: "actions", label: "操作"
     }];
 
-    const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
-
 
     useEffect(() => {
         setMounted(true);
@@ -54,16 +60,40 @@ export default function TableList({ data, setData }: { data: PaginationParams<Fo
         return <div>Loading...</div>;
     }
 
-    const handleEnabledChange = async (e: any, id: number) => {
-        console.log(e.target.checked, id);
-        const checked = e.target.checked;
+    const handleEnabledChange = async (checked: boolean, id: number) => {
+        // update remote data
+        await batchUpdateEnabled([{ id, enabled: checked }]);
 
-        setData({ ...data, data: data.data.map(item => item.id === id ? { ...item, enabled: checked } : item) });
+        // update local data
+        setData(prev => ({
+            ...prev,
+            data: prev.data.map(item =>
+                item.id === id ? { ...item, enabled: checked } : item
+            ),
+        }));
+    };
 
-        await batchUpdateEnabled([{ id: id, enabled: checked }]);
+    const handleDelete = async (id: number) => {
+        // confirm
+        const isConfirmed = await confirm('确定删除吗？');
+        if (!isConfirmed) {
+            return;
+        }
+
+        // update remote data
+        const res = await batchDelete([id]);
+        if (res.code === 0) {
+            // update local data
+            setData(prev => ({
+                ...prev,
+                data: prev.data.filter(item => item.id !== id),
+            }));
+        } else {
+            msg("删除失败", res.msg, 'warning');
+        }
     }
 
-    return (
+        return (
         <Table
             aria-label="Controlled table example with dynamic content"
             selectedKeys={selectedKeys}
@@ -111,6 +141,7 @@ export default function TableList({ data, setData }: { data: PaginationParams<Fo
                                                 className="text-danger"
                                                 color="danger"
                                                 startContent={<Trash2 size="16" />}
+                                                onPress={() => handleDelete(item.id)}
                                             >
                                                 删除
                                             </DropdownItem>
@@ -137,11 +168,11 @@ export default function TableList({ data, setData }: { data: PaginationParams<Fo
                                     </Button>
                                 ) : columnKey === "enabled" ? (
                                     <Switch
+
                                         isSelected={item.enabled as boolean}
                                         aria-label="Automatic updates"
                                         size="sm"
-                                        onChange={(checked) => handleEnabledChange({ target: { checked } }, item.id)}
-                                    />
+                                        onValueChange={(isSelected) => handleEnabledChange(isSelected, item.id)} />
 
                                 ) : (
                                     getKeyValue(item, columnKey)

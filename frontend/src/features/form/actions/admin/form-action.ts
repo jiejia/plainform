@@ -108,3 +108,16 @@ export async function batchUpdateEnabled(items: { id: number, enabled: boolean }
     return res;
 }
  
+
+/**
+ * batch delete
+ * 
+ * @param ids 
+ */
+export async function batchDelete(ids: number[]) {
+    const res: Result<[]> = await api.delete('api/admin/form', {
+        json: { ids }
+    }).json();
+    return res;
+}
+ 

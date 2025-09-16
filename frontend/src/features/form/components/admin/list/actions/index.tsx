@@ -5,6 +5,7 @@ import {
     Button,
     Input,
     SharedSelection,
+    Selection
 } from "@heroui/react";
 import {
     EllipsisVertical,
@@ -25,10 +26,20 @@ import {
 import { SearchParams } from "@/features/form/types/list/search-params";
 import AdvancedSearch from "./advanced-search";
 import { initialSearchParams } from "@/features/form/data/initial-search-params";
+import { batchDelete, batchUpdateEnabled } from "@/features/form/actions/admin/form-action";
+import { PaginationParams } from "@/features/core/types/pagination-params";
+import { Form as FormInList } from "@/features/form/types/list/form";
+import { Dispatch, SetStateAction } from "react";
+import { msg } from "@/features/core/utils/ui";
 
-
-
-export default function Actions({params, setParams}: {params: SearchParams, setParams: (params: SearchParams) => void}) {
+export default function Actions({params, setParams, tableSelectedKeys, currentPageIds, data, setData}: {
+    params: SearchParams, 
+    setParams: (params: SearchParams) => void, 
+    tableSelectedKeys: Selection, 
+    currentPageIds: number[], 
+    data: PaginationParams<FormInList>, 
+    setData: Dispatch<SetStateAction<PaginationParams<FormInList>>>
+}) {
 
     const sortOptions = [
         { key: "id_desc", orderBy: "id", orderType: "desc", text: "按ID/创建时间倒序" },
@@ -61,7 +72,91 @@ export default function Actions({params, setParams}: {params: SearchParams, setP
         setParams(initialSearchParams);
     }
 
+    const getIds = () => {
+        return tableSelectedKeys === "all"
+          ? currentPageIds
+          : Array.from(tableSelectedKeys as Set<React.Key>).map(Number);
+    }
 
+
+    const handleBatchUpdateEnabledDisable = async () => {
+        // get ids
+        const ids = getIds();
+        if (ids.length === 0) {
+            return;
+        }
+        
+        // construct items
+        const items = ids.map(id => ({ id, enabled: false }));
+        
+        // update remote data
+        await batchUpdateEnabled(items);
+
+        // update local data
+        setData(prev => ({
+            ...prev,
+            data: prev.data.map(item =>
+                ids.includes(item.id) ? { ...item, enabled: false } : item
+            ),
+        }));
+        
+        // update local data
+        setData(prev => ({
+            ...prev,
+            data: prev.data.map(item =>
+                ids.includes(item.id) ? { ...item, enabled: false } : item
+            ),
+        }));
+    }
+
+    const handleBatchUpdateEnabledActive = async () => {
+        // get ids
+        const ids = getIds();
+        if (ids.length === 0) {
+            return;
+        }
+        
+        // construct items
+        const items = ids.map(id => ({ id, enabled: true }));
+        
+        // update remote data
+        await batchUpdateEnabled(items);
+
+        // update local data
+        setData(prev => ({
+            ...prev,
+            data: prev.data.map(item =>
+                ids.includes(item.id) ? { ...item, enabled: true } : item
+            ),
+        }));
+    }
+
+    const handleBatchDelete = async () => {
+        // confirm
+        const isConfirmed = await confirm('确定删除吗？');
+        if (!isConfirmed) {
+            return;
+        }
+
+        // get ids
+        const ids = getIds();
+        if (ids.length === 0) {
+            return;
+        }
+
+        // update remote data
+        const res = await batchDelete(ids);
+        if (res.code === 0) {
+            // update local data
+            setData(prev => ({
+                ...prev,
+                data: prev.data.filter(item => !ids.includes(item.id)),
+            }));
+        } else {
+            msg("删除失败", res.msg, 'warning');
+        }
+    }   
+    
     return (
         <>
             <div className="grid grid-cols-[1fr_auto] items-center gap-2">
@@ -120,9 +215,9 @@ export default function Actions({params, setParams}: {params: SearchParams, setP
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Static Actions">
-                            <DropdownItem key="pause" startContent={<Pause size="16" />}>批量暂停</DropdownItem>
-                            <DropdownItem key="reactive" startContent={<Play size="16" />}>批量激活</DropdownItem>
-                            <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />}>
+                            <DropdownItem key="pause" startContent={<Pause size="16" />} onPress={handleBatchUpdateEnabledDisable}>批量关闭</DropdownItem>
+                            <DropdownItem key="reactive" startContent={<Play size="16" />} onPress={handleBatchUpdateEnabledActive}>批量启用</DropdownItem>
+                            <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />} onPress={handleBatchDelete}>
                                 批量删除
                             </DropdownItem>
                         </DropdownMenu>

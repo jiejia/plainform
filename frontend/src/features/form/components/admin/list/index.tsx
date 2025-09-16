@@ -24,6 +24,8 @@ import { initialSearchParams } from "@/features/form/data/initial-search-params"
 
 export default function Index() {
 
+    const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
+
     const [params, setParams] = useState<SearchParams>(initialSearchParams);
 
     const [data, setData] = useState<PaginationParams<FormInList>>({
@@ -59,13 +61,13 @@ export default function Index() {
         <div className="grid grid-rows-[56px_1fr_56px] gap-4 h-full">
             <Card className="h-full">
                 <CardBody className="pt-3">
-                    <Actions params={params} setParams={setParams}/>
+                    <Actions params={params} setParams={setParams} tableSelectedKeys={selectedKeys} currentPageIds={data.data.map(item => item.id)} data={data} setData={setData}/>
                 </CardBody>
             </Card>
             <Card className="h-full">
                 <CardBody className="h-full">
                     <Scroll>
-                        <TableList data={data} setData={setData}/>
+                        <TableList data={data} setData={setData} selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys}/>
                     </Scroll>
                 </CardBody>
             </Card>
