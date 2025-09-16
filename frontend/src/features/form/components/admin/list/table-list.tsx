@@ -77,6 +77,7 @@ export default function TableList({ data, setData, selectedKeys, setSelectedKeys
         // confirm
         const isConfirmed = await confirm('确定删除吗？');
         if (!isConfirmed) {
+            msg("删除失败", "请至少选择一个表单", 'warning');
             return;
         }
 

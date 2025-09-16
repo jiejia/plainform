@@ -83,6 +83,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
         // get ids
         const ids = getIds();
         if (ids.length === 0) {
+            msg("关闭失败", "请至少选择一个表单", 'warning');
             return;
         }
         
@@ -113,6 +114,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
         // get ids
         const ids = getIds();
         if (ids.length === 0) {
+            msg("启用失败", "请至少选择一个表单", 'warning');
             return;
         }
         
@@ -132,15 +134,16 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
     }
 
     const handleBatchDelete = async () => {
-        // confirm
-        const isConfirmed = await confirm('确定删除吗？');
-        if (!isConfirmed) {
-            return;
-        }
-
         // get ids
         const ids = getIds();
         if (ids.length === 0) {
+            msg("删除失败", "请至少选择一个表单", 'warning');
+            return;
+        }
+
+        // confirm
+        const isConfirmed = await confirm('确定删除吗？');
+        if (!isConfirmed) {
             return;
         }
 
