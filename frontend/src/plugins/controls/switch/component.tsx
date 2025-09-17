@@ -6,7 +6,7 @@ import { Switch } from "@heroui/react";
 export default function SwitchComponent({ field }: { field: Field }) {
     return (
         <Switch
-            aria-label={field.title}
+            // aria-label={field.title}
             checked={field.config.switch_default_value as boolean}
             size="sm"
             onChange={(e) => {

@@ -14,7 +14,7 @@ export async function get(uuid: string): Promise<Result<Form>> {
  * @param controlName - The name of the control to load
  * @returns Promise that resolves to the control component
  */
-export async function loadControlComponent(controlName: string) {
+export async function loadControlComponent(controlName: string){
     try {
         const componentModule = await import(`@/plugins/controls/${controlName}/component.tsx`);
         return componentModule.default;

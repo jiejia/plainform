@@ -7,9 +7,13 @@ import { Option } from "@/features/form/types/config/option";
 
 export default function CheckboxComponent({ field }: { field: Field }) {
     return (
-        <CheckboxGroup defaultValue={field.config.options?.default_options.map((option: Option) => option.val)} label={field.title}>
-            {field.config.options?.default_options.map((option: Option) => (
-                <Checkbox value={option.val}>{option.val}</Checkbox>
+        <CheckboxGroup
+            defaultValue={field.config.options?.default_options.map((option: Option) => option.val)}
+            // label={field.title}
+            size="sm"
+        >
+            {field.config.options?.default_options.map((option: Option, index: number) => (
+                <Checkbox key={index} value={option.val}>{option.val}</Checkbox>
             ))}
         </CheckboxGroup>
     )

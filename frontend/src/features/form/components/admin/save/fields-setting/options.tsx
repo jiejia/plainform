@@ -67,7 +67,7 @@ export default function Options({
             if (item.uuid === uuid && item.config.options !== undefined) {
                 const options = _.cloneDeep(item.config.options.default_options) as Option[];
                 options.splice(index + 1, 0, {
-                    val: "option",
+                    val: "option" + (options.length + 1),
                     selected: false,
                 });
 

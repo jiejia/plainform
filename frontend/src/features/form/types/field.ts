@@ -15,4 +15,5 @@ export type Field = {
     control_name: string;
     sort: number;
     active?: boolean;
+    component?:any;
 }
