@@ -5,19 +5,24 @@ import { Select, SelectItem } from "@heroui/react";
 import { Option } from "@/features/form/types/config/option";
 
 
-export default function SelectComponent({ field }: { field: Field }) {
-    const selectedKeys =
-        field.config.options?.default_options
-            ?.filter((option: Option) => option.selected)
-            .map((option: Option) => option.val) || [];
+export default function SelectComponent({ field, value, setValue }: { field: Field, value: any, setValue: (value: any) => void }) {
 
-            // console.log("selectedKeys", selectedKeys);
+    const selectionMode = field.config.options?.multiple ? "multiple" : "single";
 
     return (
         <Select
             placeholder={field.title}
             size="sm"
-            selectedKeys={selectedKeys}
+            selectedKeys={value}
+            onSelectionChange={(keys) => {
+                if (keys === "all") {
+                    // handle all selected
+                    return;
+                }
+                const selectedKeys = [...keys]; // convert to array
+                setValue(selectedKeys);
+            }}
+            selectionMode={selectionMode}
         >
             {field.config.options?.default_options?.map((option: Option, index: number) => (
                 <SelectItem key={option.val} textValue={option.val}>{option.val}</SelectItem>

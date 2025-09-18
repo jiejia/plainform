@@ -18,7 +18,8 @@
         "multiple": false,
         "hide_multiple": false,
         "api_url": ""
-      }
+      },
+      "default_value": ["option1"]
     },
     "icon": "ChevronDown"
 }

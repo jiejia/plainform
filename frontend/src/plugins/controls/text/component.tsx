@@ -3,13 +3,13 @@
 import { Field } from "@/features/form/types/field";
 import { Input } from "@heroui/react";
 
-export default function TextComponent({ field }: { field: Field }) {
+export default function TextComponent({ field,value,setValue }: { field: Field,value:any,setValue: (value:any) => void }) {
     return (
         <Input
             // label={field.title}
-            value={field.config.default_value as string}
+            value={value}
             onChange={(e) => {
-                field.config.default_value = e.target.value;
+                setValue(e.target.value);
             }}
             size="sm"
         />

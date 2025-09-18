@@ -1,19 +1,18 @@
 'use client'
 
 import { Field } from "@/features/form/types/field";
-import { DateInput } from "@heroui/react";
+import {DatePicker} from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";
 
 
-export default function DatetimeComponent({ field }: { field: Field }) {
+export default function DatetimeComponent({ field, value, setValue }: { field: Field, value: any, setValue: (value: any) => void }) {
     return (
-        <DateInput
+        <DatePicker
             className="max-w-full"
             // label={field.title}
-            placeholderValue={new CalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())}
-            value={field.config.default_value ? new CalendarDate(new Date(field.config.default_value as string).getFullYear(), new Date(field.config.default_value as string).getMonth(), new Date(field.config.default_value as string).getDate()) : undefined}
+            value={value ? new CalendarDate(new Date(value as string).getFullYear(), new Date(value as string).getMonth(), new Date(value as string).getDate()) : undefined}
             onChange={(date) => {
-                field.config.default_value = date?.toString();
+                setValue(date?.toString());
             }}
             size="sm"
         />

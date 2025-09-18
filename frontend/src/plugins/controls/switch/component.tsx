@@ -3,14 +3,15 @@
 import { Field } from "@/features/form/types/field";
 import { Switch } from "@heroui/react";
 
-export default function SwitchComponent({ field }: { field: Field }) {
+export default function SwitchComponent({ field, value, setValue }: { field: Field, value: any, setValue: (value: any) => void }) {
     return (
         <Switch
             // aria-label={field.title}
-            checked={field.config.switch_default_value as boolean}
+            checked={value}
             size="sm"
             onChange={(e) => {
-                field.config.switch_default_value = e.target.checked;
+                // console.log("switch change", e.target.checked);
+                setValue(e.target.checked);
             }}
         />
     )

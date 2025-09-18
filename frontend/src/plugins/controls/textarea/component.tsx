@@ -3,15 +3,18 @@
 import { Field } from "@/features/form/types/field";
 import { Textarea } from "@heroui/react";
 
-export default function TextareaComponent({ field }: { field: Field }) {
+export default function TextareaComponent({ field, value, setValue }: { field: Field, value: any, setValue: (value: any) => void }) {
     return (
         <Textarea 
             // label={field.title}
-            value={field.config.default_value as string}
+            value={value}
             onChange={(e) => {
-                field.config.default_value = e.target.value;
+                setValue(e.target.value);
             }}
             size="sm"
+            maxLength={field.config.length?.[1] as number}
+            minLength={field.config.length?.[0] as number}
+            minRows={field.config.rows as number}
         />
     )
 }

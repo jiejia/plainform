@@ -4,11 +4,81 @@ import { Form as FormType } from "@/features/form/types/form";
 import { Card, CardBody, CardHeader, CardFooter, Button } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 import Copyright from "@/features/core/components/admin/copyright";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface FieldItemProps {
+    field: Field;
+    onChange: (uuid: string, value: unknown) => void;
+}
+
+function FieldItem({ field, onChange }: FieldItemProps) {
+    const [value, setValue] = useState(field.config.default_value);
+
+    const handleChange = (v: unknown) => {
+        setValue(v);
+        onChange(field.uuid, v);
+    };
+
+    return (
+        <>
+            {field.component &&
+                <field.component
+                    field={field}
+                    value={value}
+                    setValue={handleChange}
+                />
+            }
+        </>
+    );
+}
+
 
 export default function Detail({ form }: { form: FormType }) {
 
-    const [fields, setFields] = useState<Field[]>(form.fields || []);
+    const [formData, setFormData] = useState<Array<{
+        uuid: string;
+        title: string;
+        value: unknown;
+    }>>([]);
+
+    const handleFieldChange = (uuid: string, value: unknown) => {
+        setFormData(prev => {
+            const existingIndex = prev.findIndex(item => item.uuid === uuid);
+            const field = form.fields?.find(f => f.uuid === uuid);
+            
+            if (existingIndex >= 0) {
+                const updated = [...prev];
+                updated[existingIndex] = {
+                    ...updated[existingIndex],
+                    value
+                };
+                return updated;
+            } else {
+                return [...prev, {
+                    uuid,
+                    title: field?.title || '',
+                    value
+                }];
+            }
+        });
+    };
+
+    const handleSubmit = () => {
+        console.log(formData);
+    };
+    
+    useEffect(() => {
+        if (form.fields) {
+            const initialData = form.fields.map((field: Field) => ({
+                uuid: field.uuid,
+                title: field.title,
+                value: field.config.default_value
+            }));
+            console.log("initialData", initialData);
+            setFormData(initialData);
+        }
+    }, [form.fields]);
+
 
     return (
         <div className="py-4 px-4 min-h-screen">
@@ -19,11 +89,14 @@ export default function Detail({ form }: { form: FormType }) {
                 <CardBody className="px-6">
                     <ul className="grid grid-flow-row gap-4">
                         {
-                            fields.map((field: Field, index: number) => (
+                            form.fields?.map((field: Field, index: number) => (
                                 <li key={index} className="flex flex-col gap-2">
                                     <span>{index + 1}. {field.title}</span>
                                     <div>
-                                        {field.component && <field.component field={field} />}
+                                        <FieldItem                    
+                                            field={field}
+                                            onChange={handleFieldChange}
+                                        />
                                     </div>
                                 </li>
                             ))
@@ -45,6 +118,7 @@ export default function Detail({ form }: { form: FormType }) {
                             size="sm"
                             variant="solid"
                             radius="sm"
+                            onClick={handleSubmit}
                         >
                             Submit
                         </Button>
