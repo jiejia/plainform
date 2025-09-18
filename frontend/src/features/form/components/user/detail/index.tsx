@@ -92,6 +92,7 @@ export default function Detail({ form }: { form: FormType }) {
                             form.fields?.map((field: Field, index: number) => (
                                 <li key={index} className="flex flex-col gap-2">
                                     <span>{index + 1}. {field.title}</span>
+                                    <span className="text-xs text-gray-400">{field.description}</span>
                                     <div>
                                         <FieldItem                    
                                             field={field}
