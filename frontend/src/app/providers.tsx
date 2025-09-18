@@ -7,7 +7,7 @@ import { AppProvider } from "@/features/core/context/AppContext";
 
 export function Providers({children}: { children: React.ReactNode }) {
     return (
-        <HeroUIProvider>
+        <HeroUIProvider locale="zh-CN">
             <AppProvider>
                 {children}
                 <ToastProvider placement={"top-right"} toastOffset={10} maxVisibleToasts={3}/>

@@ -2,6 +2,7 @@ import { Field } from "./field";
 
 export type Form = {
     id?: number;
+    uuid?: string;
     title: string;
     description: string;
     enabled: boolean;

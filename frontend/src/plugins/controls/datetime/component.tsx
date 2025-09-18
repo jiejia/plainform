@@ -15,6 +15,7 @@ export default function DatetimeComponent({ field, value, setValue }: { field: F
                 setValue(date?.toString());
             }}
             size="sm"
+            granularity={field.config.datetime_format as "day" | "hour" | "minute" | "second"}
         />
     )
 }

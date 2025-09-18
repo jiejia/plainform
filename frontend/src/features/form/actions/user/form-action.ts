@@ -23,3 +23,13 @@ export async function loadControlComponent(controlName: string){
         throw new Error(`Control component '${controlName}' not found`);
     }
 }
+
+export async function submit(uuid: string, data: any, version: number): Promise<Result<void>> {
+    const res: Result<void> = await api.post(`api/form/${uuid}/submit`, {
+        json: {
+            data : data,
+            version : version
+        }
+    }).json();
+    return res;
+}

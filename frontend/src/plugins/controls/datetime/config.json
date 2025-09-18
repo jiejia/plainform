@@ -9,7 +9,7 @@
       "description": "请输入描述",
       "placeholder": "",
       "default_value": "",
-      "datetime_format": "Y-m-d H:i:s"
+      "datetime_format": "day"
     },
     "icon": "Calendar"
 }

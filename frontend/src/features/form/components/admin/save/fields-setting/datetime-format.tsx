@@ -64,7 +64,7 @@ export default function DatetimeFormat({
             {
                 currentField.config.datetime_format !== undefined && (
                     <Select 
-                        label="Date Format" 
+                        label="精确到" 
                         placeholder="Please select" 
                         className="max-w-full" 
                         selectedKeys={[(currentField.config.datetime_format as string)]} 
@@ -75,36 +75,10 @@ export default function DatetimeFormat({
                         }}
                     >
                         {/* Full Date & Time Formats */}
-                        <SelectItem key={"Y-m-d H:i:s"}>{currentDatetime("Y-m-d H:i:s")}</SelectItem>
-                        <SelectItem key={"Y-m-d H:i"}>{currentDatetime("Y-m-d H:i")}</SelectItem>
-                        <SelectItem key={"Y/m/d H:i:s"}>{currentDatetime("Y/m/d H:i:s")}</SelectItem>
-                        <SelectItem key={"Y/m/d H:i"}>{currentDatetime("Y/m/d H:i")}</SelectItem>
-                        <SelectItem key={"m/d/Y H:i:s"}>{currentDatetime("m/d/Y H:i:s")}</SelectItem>
-                        <SelectItem key={"m/d/Y H:i"}>{currentDatetime("m/d/Y H:i")}</SelectItem>
-                        <SelectItem key={"d/m/Y H:i:s"}>{currentDatetime("d/m/Y H:i:s")}</SelectItem>
-                        <SelectItem key={"d/m/Y H:i"}>{currentDatetime("d/m/Y H:i")}</SelectItem>
-                        
-                        {/* Date Only Formats */}
-                        <SelectItem key={"Y-m-d"}>{currentDatetime("Y-m-d")}</SelectItem>
-                        <SelectItem key={"Y/m/d"}>{currentDatetime("Y/m/d")}</SelectItem>
-                        <SelectItem key={"m/d/Y"}>{currentDatetime("m/d/Y")}</SelectItem>
-                        <SelectItem key={"d/m/Y"}>{currentDatetime("d/m/Y")}</SelectItem>
-                        <SelectItem key={"m-d-Y"}>{currentDatetime("m-d-Y")}</SelectItem>
-                        <SelectItem key={"d-m-Y"}>{currentDatetime("d-m-Y")}</SelectItem>
-                        
-                        {/* Time Only Formats */}
-                        <SelectItem key={"H:i:s"}>{currentDatetime("H:i:s")}</SelectItem>
-                        <SelectItem key={"H:i"}>{currentDatetime("H:i")}</SelectItem>
-                        
-                        {/* Year/Month Only */}
-                        <SelectItem key={"Y-m"}>{currentDatetime("Y-m")}</SelectItem>
-                        <SelectItem key={"Y/m"}>{currentDatetime("Y/m")}</SelectItem>
-                        <SelectItem key={"m/Y"}>{currentDatetime("m/Y")}</SelectItem>
-                        
-                        {/* Single Components */}
-                        <SelectItem key={"Y"}>{currentDatetime("Y")}</SelectItem>
-                        <SelectItem key={"m"}>{currentDatetime("m")}</SelectItem>
-                        <SelectItem key={"d"}>{currentDatetime("d")}</SelectItem>
+                        <SelectItem key={"day"}>{"日"}</SelectItem>
+                        <SelectItem key={"hour"}>{"小时"}</SelectItem>
+                        <SelectItem key={"minute"}>{"分钟"}</SelectItem>
+                        <SelectItem key={"second"}>{"秒"}</SelectItem>
                     </Select>
                 )
             }

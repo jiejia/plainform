@@ -380,13 +380,13 @@ class IndexService
             $fieldsByTitle[$field->title] = $field;
         }
 
-        foreach ($data as $item) {
-            // find the field by title and use its UUID for storage
-            if (isset($fieldsByTitle[$item['name']])) {
-                $field = $fieldsByTitle[$item['name']];
-                $storageData[$field->uuid] = $item['value'];
-            }
-        }
+        // foreach ($data as $item) {
+        //     // find the field by title and use its UUID for storage
+        //     if (isset($fieldsByTitle[$item['name']])) {
+        //         $field = $fieldsByTitle[$item['name']];
+        //         $storageData[$field->title] = $item['value'];
+        //     }
+        // }
 
         // convert ipv4 to integer
         $ipv4Int = ip2long($ipv4);
@@ -394,7 +394,7 @@ class IndexService
         // create form submission
         FormSubmission::create([
             'form_id' => $form->id,
-            'data' => $storageData,
+            'data' => $data,
             'version' => $version,
             'ipv4' => $ipv4Int,
             'created_at' => now(),

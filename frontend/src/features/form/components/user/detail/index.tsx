@@ -5,6 +5,8 @@ import { Card, CardBody, CardHeader, CardFooter, Button } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 import Copyright from "@/features/core/components/admin/copyright";
 import { useState, useEffect } from "react";
+import { submit } from "@/features/form/actions/user/form-action";
+import { msg } from "@/features/core/utils/ui";
 
 interface FieldItemProps {
     field: Field;
@@ -37,9 +39,11 @@ export default function Detail({ form }: { form: FormType }) {
 
     const [formData, setFormData] = useState<Array<{
         uuid: string;
-        title: string;
+        name: string;
         value: unknown;
     }>>([]);
+
+    const [isPending, setIsPending] = useState(false);
 
     const handleFieldChange = (uuid: string, value: unknown) => {
         setFormData(prev => {
@@ -56,27 +60,42 @@ export default function Detail({ form }: { form: FormType }) {
             } else {
                 return [...prev, {
                     uuid,
-                    title: field?.title || '',
+                    name: field?.title || '',
                     value
                 }];
             }
         });
     };
 
-    const handleSubmit = () => {
-        console.log(formData);
+    const handleSubmit = async () => {
+        setIsPending(true);
+
+        if (!form.uuid) {
+            return;
+        }
+        const res = await submit(form.uuid, formData, form.version || 1);
+        if (res.code === 0) {
+            msg("Success", "Submit successfully", "success");
+        } else {
+            msg("Error", res.msg, "warning");
+        }
+
+        setIsPending(false);
     };
-    
-    useEffect(() => {
+
+    const initializeFormData = () => {
         if (form.fields) {
             const initialData = form.fields.map((field: Field) => ({
                 uuid: field.uuid,
-                title: field.title,
+                name: field.title,
                 value: field.config.default_value
             }));
-            console.log("initialData", initialData);
             setFormData(initialData);
         }
+    }
+    
+    useEffect(() => {
+        initializeFormData();
     }, [form.fields]);
 
 
@@ -119,9 +138,11 @@ export default function Detail({ form }: { form: FormType }) {
                             size="sm"
                             variant="solid"
                             radius="sm"
+                            isLoading={isPending}
+                            disabled={isPending}
                             onClick={handleSubmit}
                         >
-                            Submit
+                                {isPending ? 'Submitting...' : 'Submit'}
                         </Button>
                     </div>
                 </CardBody>
