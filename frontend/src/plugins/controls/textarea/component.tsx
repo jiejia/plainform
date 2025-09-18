@@ -6,7 +6,6 @@ import { Textarea } from "@heroui/react";
 export default function TextareaComponent({ field, value, setValue }: { field: Field, value: any, setValue: (value: any) => void }) {
     return (
         <Textarea 
-            // label={field.title}
             value={value}
             onChange={(e) => {
                 setValue(e.target.value);

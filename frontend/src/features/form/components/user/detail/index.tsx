@@ -102,7 +102,7 @@ export default function Detail({ form }: { form: FormType }) {
     return (
         <div className="py-4 px-4 min-h-screen">
             <Card className="h-full mx-auto max-w-5xl mt-2">
-                <CardHeader className="flex flex-col gap-2">
+                <CardHeader className="flex flex-col gap-2 pt-8 pb-4">
                     <h2 className="text-2xl font-bold">{form.title}</h2>
                 </CardHeader>
                 <CardBody className="px-6">

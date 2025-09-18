@@ -10,7 +10,6 @@ export default function SwitchComponent({ field, value, setValue }: { field: Fie
             checked={value}
             size="sm"
             onChange={(e) => {
-                // console.log("switch change", e.target.checked);
                 setValue(e.target.checked);
             }}
         />

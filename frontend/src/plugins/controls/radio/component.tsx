@@ -9,7 +9,6 @@ export default function RadioComponent({ field, value, setValue }: { field: Fiel
         <RadioGroup
             defaultValue={value}
             onValueChange={(e) => {
-                console.log("radio change", e);
                 setValue(e);
             }}
             size="sm"
