@@ -3,14 +3,13 @@
 export type config = {
     title: string;
     description: string;
-    required: boolean;
+    required?: boolean;
     regex: {
         hidden: boolean;
         value: string;
         warning_message: string;
     };
-    regex_warning_message?: string;
-    placeholder: string;
+    placeholder?: string;
     default_value: {
         type: string;
         value: any;
