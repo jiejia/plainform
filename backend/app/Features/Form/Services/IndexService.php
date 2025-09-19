@@ -37,6 +37,7 @@ class IndexService
             'enabled' => $enabled,
             'numbering_style' => $numberingStyle,
             'fields' => $fields,
+            'version' => 1,
         ];
 
         // set admin_id
@@ -85,6 +86,9 @@ class IndexService
             throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
         }
 
+        // check if fields have changed
+        $fieldsChanged = $this->hasFieldsChanged($form, $fields);
+
         // get form data
         $data = [
             'title' => $title,
@@ -93,6 +97,11 @@ class IndexService
             'numbering_style' => $numberingStyle,
             'fields' => $fields,
         ];
+
+        // increment version if fields changed
+        if ($fieldsChanged) {
+            $data['version'] = $form->version + 1;
+        }
 
         // update form
         $form->update($data);
@@ -462,5 +471,81 @@ class IndexService
             }
             throw new BusinessException($errorMessage, Code::FORM_FIELD_CONFIG_REGEX_FAILED->value);
         }
+    }
+
+    /**
+     * hasFieldsChanged
+     *
+     * @param Form $form
+     * @param array $newFields
+     * @return bool
+     */
+    private function hasFieldsChanged(Form $form, array $newFields) : bool
+    {
+        $existingFields = $form->fields->sortBy('sort')->values()->toArray();
+        
+        // check if number of fields changed
+        if (count($existingFields) !== count($newFields)) {
+            return true;
+        }
+
+        // create lookup arrays for comparison
+        $existingFieldsLookup = [];
+        foreach ($existingFields as $field) {
+            $existingFieldsLookup[$field['uuid']] = $field;
+        }
+
+        $newFieldsLookup = [];
+        foreach ($newFields as $field) {
+            $newFieldsLookup[$field['uuid']] = $field;
+        }
+
+        // check if any field was removed or added
+        $existingUuids = array_keys($existingFieldsLookup);
+        $newUuids = array_keys($newFieldsLookup);
+        
+        if (array_diff($existingUuids, $newUuids) || array_diff($newUuids, $existingUuids)) {
+            return true;
+        }
+
+        // check if field order changed by comparing the UUID sequence
+        $existingUuidSequence = array_column($existingFields, 'uuid');
+        $newUuidSequence = array_column($newFields, 'uuid');
+        
+        if ($existingUuidSequence !== $newUuidSequence) {
+            return true;
+        }
+
+        // check if any field properties changed
+        foreach ($newFields as $index => $newField) {
+            $uuid = $newField['uuid'];
+            
+            if (!isset($existingFieldsLookup[$uuid])) {
+                return true; // new field
+            }
+
+            $existingField = $existingFieldsLookup[$uuid];
+            
+            // compare important field properties (excluding id, form_id, timestamps, sort)
+            $fieldsToCompare = ['type', 'title', 'required', 'config'];
+            
+            foreach ($fieldsToCompare as $fieldName) {
+                $existingValue = $existingField[$fieldName] ?? null;
+                $newValue = $newField[$fieldName] ?? null;
+                
+                // for arrays (like config), compare as JSON strings
+                if (is_array($existingValue) || is_array($newValue)) {
+                    if (json_encode($existingValue) !== json_encode($newValue)) {
+                        return true;
+                    }
+                } else {
+                    if ($existingValue !== $newValue) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }
