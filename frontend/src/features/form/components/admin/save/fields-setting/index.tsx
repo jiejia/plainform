@@ -11,7 +11,6 @@ import Required from "./required";
 import Length from "./length";
 import DefaultValue from "./default-value";
 import Options from "./options";
-import SwitchDefaultValue from "./switch-default-value";
 import Cols from "./cols";
 import Rows from "./rows";
 import { FieldError } from "@/features/form/types/save/field-error";
@@ -45,7 +44,6 @@ export default function Index({
                         <Rows fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
                         <DefaultValue fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />    
                         <Options fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
-                        <SwitchDefaultValue fields={fields} setFields={setFields} currentField={currentField} errors={errors} setFieldErrors={setFieldErrors} />
                     </>
                 )
             }

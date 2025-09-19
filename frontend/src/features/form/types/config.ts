@@ -4,9 +4,18 @@ export type config = {
     title: string;
     description: string;
     required: boolean;
-    regex: string;
+    regex: {
+        hidden: boolean;
+        value: string;
+        warning_message: string;
+    };
     regex_warning_message?: string;
     placeholder: string;
+    default_value: {
+        type: string;
+        value: any;
+        hidden: boolean;
+    };
     length?: number[];
     rows?: number;
     cols?: number;

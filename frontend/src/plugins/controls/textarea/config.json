@@ -3,8 +3,11 @@
     "name": "Textarea",
     "group": "general",
     "config": {
-      "regex": "",
-      "regex_warning_message": "",
+      "regex": {
+        "hidden": false,
+        "value": "",
+        "warning_message": ""
+      },
       "cols": 20,
       "rows": 3,
       "title": "请输入标题",
@@ -12,7 +15,11 @@
       "length": [0, 255],
       "required": false,
       "placeholder": "",
-      "default_value": ""
+      "default_value": {
+        "type": "string",
+        "value": "",
+        "hidden": false
+      }
     },
     "icon": "Text"
   }

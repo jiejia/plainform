@@ -7,7 +7,7 @@ export default function SwitchComponent({ field, value, setValue }: { field: Fie
     return (
         <Switch
             // aria-label={field.title}
-            checked={value}
+            isSelected={value}
             size="sm"
             onChange={(e) => {
                 setValue(e.target.checked);

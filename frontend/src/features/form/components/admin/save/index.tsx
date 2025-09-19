@@ -78,7 +78,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                 title: field.title,
                 description: field.description,
                 regex: field.regex,
-                config: field.config,
+                // config: field.config,
             });
             if (!result.success) {  
                 const { fieldErrors } = result.error.flatten();
@@ -205,7 +205,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                         title: initialControls[currentActiveItem.id].config.title,
                         description: initialControls[currentActiveItem.id].config.description,
                         required: initialControls[currentActiveItem.id].config.required,
-                        regex: initialControls[currentActiveItem.id].config.regex,
+                        regex: initialControls[currentActiveItem.id].config.regex.value,
                         config: initialControls[currentActiveItem.id].config,
                         sort: 0,
                     };

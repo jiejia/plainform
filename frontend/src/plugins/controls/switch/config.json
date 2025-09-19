@@ -2,12 +2,19 @@
     "type": "switch",
     "name": "Switch",
     "config": {
-      "regex": "",
+      "regex": {
+        "hidden": true,
+        "value": "",
+        "warning_message": ""
+      },
       "title": "请输入标题",
       "description": "请输入描述",
       "required": false,
-      "switch_default_value": false,
-      "default_value": false
+      "default_value": {
+        "type": "boolean",
+        "value": false,
+        "hidden": false
+      }
     },
     "icon": "ToggleLeft"
 }

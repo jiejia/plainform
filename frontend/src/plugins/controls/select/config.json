@@ -3,10 +3,13 @@
     "name": "Select",
     "group": "general",
     "config": {
-      "regex": "",
-      "regex_warning_message": "",
       "title": "请输入标题",
       "description": "请输入描述",
+      "regex": {
+        "hidden": true,
+        "value": "",
+        "warning_message": ""
+      },
       "required": false,
       "options": {
         "default_options": [
@@ -19,7 +22,11 @@
         "hide_multiple": false,
         "api_url": ""
       },
-      "default_value": ["option1"]
+      "default_value": {
+        "type": "options",
+        "value": [],
+        "hidden": true
+      }
     },
     "icon": "ChevronDown"
 }

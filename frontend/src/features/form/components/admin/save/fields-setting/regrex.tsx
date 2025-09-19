@@ -25,13 +25,13 @@ export default function Regrex({
     return (
         <>
             {
-                currentField.config.regex !== undefined && (
+                currentField.config.regex.hidden === false && (
                     <Input
                         label="Regrex"
                         placeholder="Please enter"
                         type="text"
                         size="sm"
-                        value={currentField.regex}
+                        value={currentField.config.regex.value}
                         onChange={handleRegrexChange}
                         labelPlacement="outside"
                         classNames={{

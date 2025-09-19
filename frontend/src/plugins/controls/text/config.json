@@ -3,14 +3,21 @@
     "name": "Text",
     "group": "general",
     "config": {
-      "regex": "",
-      "regex_warning_message": "",
+      "regex": {
+        "hidden": false,
+        "value": "",
+        "warning_message": ""
+      },
       "title": "请输入标题",
       "description": "请输入描述",
       "length": [0, 255],
       "required": false,
       "placeholder": "",
-      "default_value": ""
+      "default_value": {
+        "type": "string",
+        "value": "",
+        "hidden": false
+      }
     },
     "icon": "Type"
 }

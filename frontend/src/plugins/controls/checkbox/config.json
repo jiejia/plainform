@@ -1,25 +1,32 @@
 {
-    "type": "checkbox",
-    "name": "Checkbox",
-    "group": "general",
-    "config": {
-      "regex": "",
-      "regex_warning_message": "",
-      "title": "请输入标题",
-      "description": "请输入描述",
-      "required": false,
-      "options": {
-        "default_options": [
-          {
-            "val": "option1",
-            "selected": true
-          }
-        ],
-        "multiple": true,
-        "hide_multiple": true,
-        "api_url": ""
-      },
-      "default_value": ["option1"]
+  "type": "checkbox",
+  "name": "Checkbox",
+  "group": "general",
+  "config": {
+    "title": "请输入标题",
+    "description": "请输入描述",
+    "regex": {
+      "hidden": true,
+      "value": "",
+      "warning_message": ""
     },
-    "icon": "CheckSquare"
+    "required": false,
+    "options": {
+      "default_options": [
+        {
+          "val": "option1",
+          "selected": true
+        }
+      ],
+      "multiple": true,
+      "hide_multiple": true,
+      "api_url": ""
+    },
+    "default_value": {
+      "type": "options",
+      "value": [],
+      "hidden": true
+    }
+  },
+  "icon": "CheckSquare"
 }

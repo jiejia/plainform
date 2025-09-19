@@ -14,7 +14,7 @@ interface FieldItemProps {
 }
 
 function FieldItem({ field, onChange }: FieldItemProps) {
-    const [value, setValue] = useState(field.config.default_value);
+    const [value, setValue] = useState(field.config.default_value.value);
 
     const handleChange = (v: unknown) => {
         setValue(v);
@@ -88,7 +88,7 @@ export default function Detail({ form }: { form: FormType }) {
             const initialData = form.fields.map((field: Field) => ({
                 uuid: field.uuid,
                 name: field.title,
-                value: field.config.default_value
+                value: field.config.default_value.value 
             }));
             setFormData(initialData);
         }
