@@ -451,8 +451,8 @@ class IndexService
     private function validateConfigRegex(FormField $field, $value) : void
     {
         // get config regex and warning message
-        $configRegex = $field->config['regex'] ?? '';
-        $regexWarningMessage = $field->config['regex_warning_message'] ?? '';
+        $configRegex = $field->config['regex']['value'] ?? '';
+        $regexWarningMessage = $field->config['regex']['warning_message'] ?? '';
 
         // validate config regex if exists
         if (!empty($configRegex) && !preg_match($configRegex, $value)) {

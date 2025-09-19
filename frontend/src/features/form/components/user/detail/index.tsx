@@ -74,6 +74,7 @@ export default function Detail({ form }: { form: FormType }) {
             return;
         }
         const res = await submit(form.uuid, formData, form.version || 1);
+        console.log("res", res);
         if (res.code === 0) {
             msg("Success", "Submit successfully", "success");
         } else {
