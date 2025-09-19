@@ -56,6 +56,9 @@ class IndexService
                 throw new BusinessException(Code::FORM_FIELD_UUID_EXISTS->message(), Code::FORM_FIELD_UUID_EXISTS->value);
             }
 
+            // process field config
+            $field = $this->processFieldConfig($field);
+
             $field['form_id'] = $form->id;
             FormField::create($field);
         }
@@ -113,6 +116,9 @@ class IndexService
         foreach ($data['fields'] as $k => $field) {
             // set sort
             $field['sort'] = $k;
+
+            // process field config
+            $field = $this->processFieldConfig($field);
 
             if (isset($field['id'])) {
                 // validate uuid
@@ -547,5 +553,80 @@ class IndexService
         }
 
         return false;
+    }
+
+    /**
+     * processFieldConfig
+     *
+     * @param array $field
+     * @return array
+     */
+    private function processFieldConfig(array $field) : array
+    {
+        // check if config exists
+        if (!isset($field['config']) || !is_array($field['config'])) {
+            return $field;
+        }
+
+        // check if default_value exists
+        if (!isset($field['config']['default_value']) || !is_array($field['config']['default_value'])) {
+            return $field;
+        }
+
+        $defaultValueType = $field['config']['default_value']['type'] ?? '';
+
+        // ensure regex structure exists
+        if (!isset($field['config']['regex'])) {
+            $field['config']['regex'] = [
+                'value' => '',
+                'warning_message' => ''
+            ];
+        }
+
+        switch ($defaultValueType) {
+            case 'options':
+                // for options type, set regex to match any of the option values
+                $field = $this->processOptionsFieldConfig($field);
+                break;
+            
+            case 'boolean':
+                // for boolean type, set regex to match true or false
+                $field['config']['regex']['value'] = '^(true|false)$';
+                break;
+            
+            case 'string':
+                // for string type, keep regex unchanged
+                break;
+        }
+
+        return $field;
+    }
+
+    /**
+     * processOptionsFieldConfig
+     *
+     * @param array $field
+     * @return array
+     */
+    private function processOptionsFieldConfig(array $field) : array
+    {
+        // check if options exist
+        if (!isset($field['config']['options']['default_options']) || !is_array($field['config']['options']['default_options'])) {
+            return $field;
+        }
+
+        $optionValues = [];
+        foreach ($field['config']['options']['default_options'] as $option) {
+            if (isset($option['val'])) {
+                $optionValues[] = preg_quote($option['val'], '/');
+            }
+        }
+
+        // if there are option values, create regex pattern
+        if (!empty($optionValues)) {
+            $field['config']['regex']['value'] = '^(' . implode('|', $optionValues) . ')$';
+        }
+
+        return $field;
     }
 }

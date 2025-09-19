@@ -8,6 +8,10 @@ export type config = {
         hidden: boolean;
         value: string;
         warning_message: string;
+        avaliable_rules?: {
+            name: string;
+            value: string;
+        }[];
     };
     placeholder?: string;
     default_value: {
