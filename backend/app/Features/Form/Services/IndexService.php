@@ -616,15 +616,38 @@ class IndexService
         }
 
         $optionValues = [];
+        $selectedValues = [];
+        
         foreach ($field['config']['options']['default_options'] as $option) {
             if (isset($option['val'])) {
                 $optionValues[] = preg_quote($option['val'], '/');
+                
+                // collect selected values for default_value
+                if (isset($option['selected']) && $option['selected'] === true) {
+                    $selectedValues[] = $option['val'];
+                }
             }
         }
 
         // if there are option values, create regex pattern
         if (!empty($optionValues)) {
             $field['config']['regex']['value'] = '^(' . implode('|', $optionValues) . ')$';
+        }
+
+        // set default_value.value to selected options
+        // for radio type, use string (first selected value), for others use array
+        $defaultValue = $selectedValues;
+        if (isset($field['control_type']) && $field['control_type'] === 'radio') {
+            $defaultValue = !empty($selectedValues) ? $selectedValues[0] : '';
+        }
+
+        if (!isset($field['config']['default_value'])) {
+            $field['config']['default_value'] = [
+                'type' => 'options',
+                'value' => $defaultValue
+            ];
+        } else {
+            $field['config']['default_value']['value'] = $defaultValue;
         }
 
         return $field;

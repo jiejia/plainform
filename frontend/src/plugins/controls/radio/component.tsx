@@ -5,6 +5,7 @@ import { Field } from "@/features/form/types/field";
 import { Option } from "@/features/form/types/config/option";
 
 export default function RadioComponent({ field, value, setValue }: { field: Field, value: any, setValue: (value: any) => void }) {
+    // console.log("radio value", value);
     return (
         <RadioGroup
             defaultValue={value}
