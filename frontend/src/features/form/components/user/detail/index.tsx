@@ -13,6 +13,10 @@ interface FieldItemProps {
     onChange: (uuid: string, value: unknown) => void;
 }
 
+type Errors = {
+    [key: string]: string;
+}
+
 function FieldItem({ field, onChange }: FieldItemProps) {
     const [value, setValue] = useState(field.config.default_value.value);
 
@@ -34,7 +38,6 @@ function FieldItem({ field, onChange }: FieldItemProps) {
     );
 }
 
-
 export default function Detail({ form }: { form: FormType }) {
 
     const [formData, setFormData] = useState<Array<{
@@ -43,13 +46,15 @@ export default function Detail({ form }: { form: FormType }) {
         value: unknown;
     }>>([]);
 
+    const [errors, setErrors] = useState<Errors>({});
+
     const [isPending, setIsPending] = useState(false);
 
     const handleFieldChange = (uuid: string, value: unknown) => {
         setFormData(prev => {
             const existingIndex = prev.findIndex(item => item.uuid === uuid);
             const field = form.fields?.find(f => f.uuid === uuid);
-            
+
             if (existingIndex >= 0) {
                 const updated = [...prev];
                 updated[existingIndex] = {
@@ -65,6 +70,13 @@ export default function Detail({ form }: { form: FormType }) {
                 }];
             }
         });
+
+        // clear error
+        setErrors(prev => {
+            if (!prev[uuid]) return prev;   // if no error, return prev
+            const { [uuid]: _, ...rest } = prev;  // delete error
+            return rest;
+        });
     };
 
     const handleSubmit = async () => {
@@ -73,8 +85,29 @@ export default function Detail({ form }: { form: FormType }) {
         if (!form.uuid) {
             return;
         }
+
+        // validate form data (required)
+        for (const field of form.fields || []) {
+            if (field.required) {
+                if (!formData.find(item => item.uuid === field.uuid)?.value) {
+                    // set error
+                    const newErrors = { ...errors, [field.uuid]: "This field is required" };
+                    setErrors(newErrors);
+                    console.log("newErrors", newErrors);
+
+                    // scroll to field
+                    document.getElementById(field.uuid)?.scrollIntoView({ behavior: 'smooth' });
+
+                    // set pending to false
+                    setIsPending(false);
+
+                    return;
+                }
+            }
+        }
+
         const res = await submit(form.uuid, formData, form.version || 1);
-        console.log("res", res);
+        // console.log("res", res);
         if (res.code === 0) {
             msg("Success", "Submit successfully", "success");
         } else {
@@ -89,14 +122,25 @@ export default function Detail({ form }: { form: FormType }) {
             const initialData = form.fields.map((field: Field) => ({
                 uuid: field.uuid,
                 name: field.title,
-                value: field.config.default_value.value 
+                value: field.config.default_value.value
             }));
             setFormData(initialData);
         }
     }
-    
+
+    const initializeErrors = () => {
+        if (form.fields) {
+            const initialErrors = formData.reduce((acc: Errors, item: { uuid: string; name: string; value: unknown }) => {
+                acc[item.uuid] = '';
+                return acc;
+            }, {});
+            setErrors(initialErrors);
+        }
+    }
+
     useEffect(() => {
         initializeFormData();
+        initializeErrors();
     }, [form.fields]);
 
 
@@ -110,11 +154,21 @@ export default function Detail({ form }: { form: FormType }) {
                     <ul className="grid grid-flow-row gap-4">
                         {
                             form.fields?.map((field: Field, index: number) => (
-                                <li key={index} className="flex flex-col gap-2">
-                                    <span>{index + 1}. {field.title}</span>
+                                <li key={index} className="flex flex-col gap-2" id={field.uuid}>
+                                    <span>
+                                        <span>{index + 1}.</span>
+                                        <span className="text-md">{field.title}</span>
+                                        <i className="text-md text-red-400 ml-1 align-middle">{field.required ? "*" : ""}</i>
+                                        {
+                                            errors[field.uuid] &&
+                                            <span className="text-xs text-red-400 ml-4text-danger-500 text-xs bg-danger-50 px-2 py-1 rounded-md whitespace-nowrap shrink-0 ml-2">
+                                                {errors[field.uuid]}
+                                            </span>
+                                        }
+                                    </span>
                                     <span className="text-xs text-gray-400">{field.description}</span>
                                     <div>
-                                        <FieldItem                    
+                                        <FieldItem
                                             field={field}
                                             onChange={handleFieldChange}
                                         />
@@ -143,7 +197,7 @@ export default function Detail({ form }: { form: FormType }) {
                             disabled={isPending}
                             onClick={handleSubmit}
                         >
-                                {isPending ? 'Submitting...' : 'Submit'}
+                            {isPending ? 'Submitting...' : 'Submit'}
                         </Button>
                     </div>
                 </CardBody>

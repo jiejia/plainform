@@ -16,4 +16,5 @@ export type Field = {
     sort: number;
     active?: boolean;
     component?:any;
+    error?: string;
 }
