@@ -7,6 +7,7 @@ import Copyright from "@/features/core/components/admin/copyright";
 import { useState, useEffect } from "react";
 import { submit } from "@/features/form/actions/user/form-action";
 import { msg } from "@/features/core/utils/ui";
+import { clsx } from "clsx";
 
 interface FieldItemProps {
     field: Field;
@@ -17,27 +18,12 @@ type Errors = {
     [key: string]: string;
 }
 
-function FieldItem({ field, onChange }: FieldItemProps) {
-    const [value, setValue] = useState(field.config.default_value.value);
-
-    const handleChange = (v: unknown) => {
-        setValue(v);
-        onChange(field.uuid, v);
-    };
-
-    return (
-        <>
-            {field.component &&
-                <field.component
-                    field={field}
-                    value={value}
-                    setValue={handleChange}
-                />
-            }
-        </>
-    );
+function FieldItem({ field, value, onChange }: FieldItemProps & { value: unknown }) {
+    const handleChange = (v: unknown) => onChange(field.uuid, v);
+    return field.component
+        ? <field.component field={field} value={value} setValue={handleChange} />
+        : null;
 }
-
 export default function Detail({ form }: { form: FormType }) {
 
     const [formData, setFormData] = useState<Array<{
@@ -82,6 +68,8 @@ export default function Detail({ form }: { form: FormType }) {
     const handleSubmit = async () => {
         setIsPending(true);
 
+        console.log("formData", formData);
+
         if (!form.uuid) {
             return;
         }
@@ -106,8 +94,41 @@ export default function Detail({ form }: { form: FormType }) {
             }
         }
 
+        // validate form data (regex)
+        for (const field of form.fields || []) {
+            if (field.regex) {
+                if (typeof formData.find(item => item.uuid === field.uuid)?.value === 'string') {
+                    const regex = new RegExp(field.regex);
+                    if (!regex.test(formData.find(item => item.uuid === field.uuid)?.value as string)) {
+                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ?? "This field is invalid" }));
+
+                        // scroll to field
+                        document.getElementById(field.uuid)?.scrollIntoView({ behavior: 'smooth' });
+
+                        // set pending to false
+                        setIsPending(false);
+
+                        return;
+                    }
+                } else if (Array.isArray(formData.find(item => item.uuid === field.uuid)?.value)) {
+                    const regex = new RegExp(field.regex);
+                    if (!regex.test(formData.find(item => item.uuid === field.uuid)?.value as string)) {
+                        setErrors(prev => ({ ...prev, [field.uuid]: "This field is invalid" }));
+                    }
+
+                    // scroll to field
+                    document.getElementById(field.uuid)?.scrollIntoView({ behavior: 'smooth' });
+
+                    // set pending to false
+                    setIsPending(false);
+
+                    return;
+                }
+            }
+        }
+
         const res = await submit(form.uuid, formData, form.version || 1);
-        // console.log("res", res);
+        console.log("res", res);
         if (res.code === 0) {
             msg("Success", "Submit successfully", "success");
         } else {
@@ -154,14 +175,14 @@ export default function Detail({ form }: { form: FormType }) {
                     <ul className="grid grid-flow-row gap-4">
                         {
                             form.fields?.map((field: Field, index: number) => (
-                                <li key={index} className="flex flex-col gap-2" id={field.uuid}>
+                                <li key={index} className={clsx("flex flex-col gap-2 p-2", errors[field.uuid] && "bg-danger-50 rounded-sm")} id={field.uuid}>
                                     <span>
                                         <span>{index + 1}.</span>
                                         <span className="text-md">{field.title}</span>
                                         <i className="text-md text-red-400 ml-1 align-middle">{field.required ? "*" : ""}</i>
                                         {
                                             errors[field.uuid] &&
-                                            <span className="text-xs text-red-400 ml-4text-danger-500 text-xs bg-danger-50 px-2 py-1 rounded-md whitespace-nowrap shrink-0 ml-2">
+                                            <span className="text-xs text-red-400 ml-4text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0 ml-2">
                                                 {errors[field.uuid]}
                                             </span>
                                         }
@@ -170,6 +191,7 @@ export default function Detail({ form }: { form: FormType }) {
                                     <div>
                                         <FieldItem
                                             field={field}
+                                            value={formData.find(i => i.uuid === field.uuid)?.value}
                                             onChange={handleFieldChange}
                                         />
                                     </div>
@@ -184,6 +206,7 @@ export default function Detail({ form }: { form: FormType }) {
                             size="sm"
                             variant="flat"
                             radius="sm"
+                            onPress={() => confirm("Are you sure you want to reset the form?") && initializeFormData() && initializeErrors()}
                         >
                             Reset
                         </Button>
@@ -195,7 +218,7 @@ export default function Detail({ form }: { form: FormType }) {
                             radius="sm"
                             isLoading={isPending}
                             disabled={isPending}
-                            onClick={handleSubmit}
+                            onPress={handleSubmit}
                         >
                             {isPending ? 'Submitting...' : 'Submit'}
                         </Button>
