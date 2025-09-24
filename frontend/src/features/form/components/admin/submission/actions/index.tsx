@@ -1,6 +1,6 @@
 'use client';
 
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
     Button,
     Input,
@@ -29,9 +29,20 @@ import {
     Play,
     Trash2,
 } from "lucide-react";
+import { SearchParams } from "@/features/form/types/submission/search-params";
+import { Submission } from "@/features/form/types/submission/submission";
+import { PaginationParams } from "@/features/core/types/pagination-params";
+import { Select, SelectItem } from "@heroui/react";
 
-
-export default function Actions() {
+export default function Actions({ params, setParams, tableSelectedKeys, currentPageIds, data, setData, versions }: {
+    params: SearchParams,
+    setParams: (params: SearchParams) => void,
+    tableSelectedKeys: Selection,
+    currentPageIds: number[],
+    data: PaginationParams<Submission>,
+    setData: Dispatch<SetStateAction<PaginationParams<Submission>>>,
+    versions: number[]
+}) {
 
     // 定义搜索字段配置
     const searchFields: SearchField[] = [
@@ -91,7 +102,7 @@ export default function Actions() {
 
         <div className="grid grid-cols-[1fr_auto] items-center gap-2">
             <div>
-                <form>
+                <form className="grid grid-cols-[1fr_100px] gap-2 w-full">
                     <Input
                         label=""
                         type="text"
@@ -99,6 +110,20 @@ export default function Actions() {
                         placeholder="搜索..."
                         startContent={<Search size="16" />}
                     />
+                    <Select
+                        className=""
+                        isClearable={true}
+                        size="sm"
+                        placeholder="选择版本"
+                        selectedKeys={params.version ? [params.version.toString()] : versions.length > 0 ? [versions[versions.length - 1].toString()] : []}
+                        onSelectionChange={(keys) => {
+                            setParams({...params, version: parseInt(Array.from(keys)[0] as string)});
+                        }}
+                    >
+                        {versions.map((version) => (
+                            <SelectItem key={version}>{version}</SelectItem>
+                        ))}
+                    </Select>
                 </form>
             </div>
             <div className="grid grid-flow-col gap-2">

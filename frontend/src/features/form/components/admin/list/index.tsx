@@ -21,6 +21,7 @@ import { msg } from "@/features/core/utils/ui";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Form as FormInList } from "@/features/form/types/list/form";
 import { initialSearchParams } from "@/features/form/data/initial-search-params";
+import { initialPagination } from "@/features/form/data/initial-pagination";
 
 export default function Index() {
 
@@ -28,21 +29,7 @@ export default function Index() {
 
     const [params, setParams] = useState<SearchParams>(initialSearchParams);
 
-    const [data, setData] = useState<PaginationParams<FormInList>>({
-        current_page: 1,
-        data: [],
-        first_page_url: '',
-        last_page: 1,
-        last_page_url: '',
-        from: 1,
-        links: [],
-        next_page_url: '',
-        path: '',
-        per_page: 10,
-        prev_page_url: '',
-        to: 1,
-        total: 1,
-    });
+    const [data, setData] = useState<PaginationParams<FormInList>>(initialPagination);
 
     const fetchList = async () => {
         try {

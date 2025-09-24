@@ -123,6 +123,11 @@ export async function submissionList(id: number, args: SubmissionSearchParams = 
     return res as Result<PaginationParams<Submission>>;
 }
 
+export async function getVersions(id: number): Promise<Result<number[]>> {
+    const res: Result<number[]> = await api.get(`api/admin/form/${id}/submission/versions`).json();
+    return res;
+}
+
 /**
  * batch update enabled
  * 

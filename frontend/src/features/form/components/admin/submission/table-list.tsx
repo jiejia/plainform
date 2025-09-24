@@ -24,7 +24,16 @@ import {
     Eye,
     Trash2,
 } from "lucide-react";
-export default function TableList() {
+import { PaginationParams } from "@/features/core/types/pagination-params";
+import { Submission } from "@/features/form/types/submission/submission";
+import { Dispatch, SetStateAction } from "react";
+
+export default function TableList({data, setData, selectedKeys, setSelectedKeys}: {
+    data: PaginationParams<Submission>, 
+    setData: Dispatch<SetStateAction<PaginationParams<Submission>>>, 
+    selectedKeys: Selection, 
+    setSelectedKeys: Dispatch<SetStateAction<Selection>>
+}) {
     const rows = [{
         key: "1",
         id: 1,
@@ -49,10 +58,9 @@ export default function TableList() {
         key: "actions", label: "操作"
     }];
 
-    const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set(["1"]));
     const [mounted, setMounted] = useState(false);
 
-    
+
     useEffect(() => {
         setMounted(true);
     }, []);
