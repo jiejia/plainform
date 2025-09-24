@@ -469,14 +469,50 @@ class IndexService
         $configRegex = $field->config['regex']['value'] ?? '';
         $regexWarningMessage = $field->config['regex']['warning_message'] ?? '';
 
-        // validate config regex if exists
-        if (!empty($configRegex) && !preg_match($configRegex, $value)) {
+        // skip validation if no regex pattern is defined
+        if (empty($configRegex)) {
+            return;
+        }
+
+        // validate config regex
+        // var_dump($configRegex, $value, $field->title);
+        $configRegex = "/" . $configRegex . "/";
+        $isValid = $this->validateValueAgainstRegex($value, $configRegex);
+
+        if (!$isValid) {
             $errorMessage = $field->title . ' validation failed';
             if (!empty($regexWarningMessage)) {
                 $errorMessage .= ': ' . $regexWarningMessage;
             }
             throw new BusinessException($errorMessage, Code::FORM_FIELD_CONFIG_REGEX_FAILED->value);
         }
+    }
+
+    /**
+     * validateValueAgainstRegex
+     *
+     * @param mixed $value
+     * @param string $regex
+     * @return bool
+     */
+    private function validateValueAgainstRegex($value, string $regex) : bool
+    {
+        // if value is array, validate each element
+        if (is_array($value)) {
+            foreach ($value as $item) {
+                if (!$this->validateValueAgainstRegex($item, $regex)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        if (is_bool($value)) {
+            $value = $value ? 'true' : 'false';
+        }
+
+        // validate against regex pattern
+        return preg_match($regex, $value) === 1;
     }
 
     /**

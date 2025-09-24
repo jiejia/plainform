@@ -68,7 +68,7 @@ export default function Detail({ form }: { form: FormType }) {
     const handleSubmit = async () => {
         setIsPending(true);
 
-        console.log("formData", formData);
+        // console.log("formData", formData);
 
         if (!form.uuid) {
             return;
@@ -126,9 +126,10 @@ export default function Detail({ form }: { form: FormType }) {
                 }
             }
         }
+            
+        console.log("formData", JSON.stringify(formData));
 
         const res = await submit(form.uuid, formData, form.version || 1);
-        console.log("res", res);
         if (res.code === 0) {
             msg("Success", "Submit successfully", "success");
         } else {
@@ -175,14 +176,14 @@ export default function Detail({ form }: { form: FormType }) {
                     <ul className="grid grid-flow-row gap-4">
                         {
                             form.fields?.map((field: Field, index: number) => (
-                                <li key={index} className={clsx("flex flex-col gap-2 p-2", errors[field.uuid] && "bg-danger-50 rounded-sm")} id={field.uuid}>
+                                <li key={index} className={clsx("flex flex-col gap-2 p-2", errors[field.uuid] && "")} id={field.uuid}>
                                     <span>
                                         <span>{index + 1}.</span>
                                         <span className="text-md">{field.title}</span>
                                         <i className="text-md text-red-400 ml-1 align-middle">{field.required ? "*" : ""}</i>
                                         {
                                             errors[field.uuid] &&
-                                            <span className="text-xs text-red-400 ml-4text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0 ml-2">
+                                            <span className="text-xs text-red-400 ml-4text-danger-500 text-xs bg-danger-50 px-2 py-1 rounded-md whitespace-nowrap shrink-0 ml-2">
                                                 {errors[field.uuid]}
                                             </span>
                                         }
