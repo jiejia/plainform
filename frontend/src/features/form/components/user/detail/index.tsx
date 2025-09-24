@@ -100,7 +100,8 @@ export default function Detail({ form }: { form: FormType }) {
                 if (typeof formData.find(item => item.uuid === field.uuid)?.value === 'string') {
                     const regex = new RegExp(field.regex);
                     if (!regex.test(formData.find(item => item.uuid === field.uuid)?.value as string)) {
-                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ?? "This field is invalid" }));
+
+                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : "This field is invalid" }));
 
                         // scroll to field
                         document.getElementById(field.uuid)?.scrollIntoView({ behavior: 'smooth' });
@@ -113,7 +114,8 @@ export default function Detail({ form }: { form: FormType }) {
                 } else if (Array.isArray(formData.find(item => item.uuid === field.uuid)?.value)) {
                     const regex = new RegExp(field.regex);
                     if (!regex.test(formData.find(item => item.uuid === field.uuid)?.value as string)) {
-                        setErrors(prev => ({ ...prev, [field.uuid]: "This field is invalid" }));
+
+                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : "This field is invalid" }));
                     }
 
                     // scroll to field
@@ -132,6 +134,8 @@ export default function Detail({ form }: { form: FormType }) {
         const res = await submit(form.uuid, formData, form.version || 1);
         if (res.code === 0) {
             msg("Success", "Submit successfully", "success");
+            initializeFormData();
+            initializeErrors();
         } else {
             msg("Error", res.msg, "warning");
         }

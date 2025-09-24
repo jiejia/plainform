@@ -15,7 +15,7 @@ Route::prefix('form')->group(function () {
 
     // Submission routes
     Route::prefix('{formId}/submission')->group(function () {
-        Route::get('/', [SubmissionController::class, 'list'])->name('admin.form.submission.list');
+        Route::post('/', [SubmissionController::class, 'list'])->name('admin.form.submission.list');
         Route::get('/versions', [SubmissionController::class, 'versions'])->name('admin.form.submission.versions');
         Route::get('/fields', [SubmissionController::class, 'fields'])->name('admin.form.submission.fields');
         Route::get('/{id}', [SubmissionController::class, 'detail'])->name('admin.form.submission.detail');

@@ -8,6 +8,9 @@ import { SearchParams} from "@/features/form/types/list/search-params";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Form as FormInList } from "@/features/form/types/list/form";
 import { initialSearchParams } from "@/features/form/data/initial-search-params";
+import { initialSearchParams as initialSubmissionSearchParams } from "@/features/form/data/submission/initial-search-params";
+import { SearchParams as SubmissionSearchParams } from "@/features/form/types/submission/search-params";
+import { Submission } from "@/features/form/types/submission/submission";
 
 /**
  * get controls
@@ -94,6 +97,30 @@ export async function list(args: SearchParams = initialSearchParams): Promise<Re
     }).json();
 
     return res as Result<PaginationParams<FormInList>>;
+}
+
+/**
+ * submission list
+ * 
+ * @param id 
+ * @param args 
+ * @returns 
+ */
+export async function submissionList(id: number, args: SubmissionSearchParams = initialSubmissionSearchParams): Promise<Result<PaginationParams<Submission>>> {
+    const res = await api.post(`api/admin/form/${id}/submission`, {
+        json: {
+            page: args.page,
+            limit: args.limit,
+            version: args.version,
+            created_at_start: args.createdAtStart,
+            created_at_end: args.createdAtEnd,
+            ip: args.ip,
+            dynamic_fields: args.dynamicFields,
+            order_by: args.orderBy,
+            order_type: args.orderType
+        }
+    }).json();
+    return res as Result<PaginationParams<Submission>>;
 }
 
 /**
