@@ -16,7 +16,7 @@ import { initialSearchParams } from "@/features/form/data/submission/initial-sea
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Submission } from "@/features/form/types/submission/submission";
 import { initialPagination } from "@/features/form/data/initial-pagination";
-import { submissionList } from "@/features/form/actions/admin/form-action";
+import { list } from "@/features/form/actions/admin/submission-action";
 import { useEffect } from "react";
 
 export default function Index({ form, versions }: { form: FormType, versions: number[] }) {
@@ -24,13 +24,15 @@ export default function Index({ form, versions }: { form: FormType, versions: nu
     // set version to the latest version
     initialSearchParams.version = versions[versions.length - 1];
 
+    const formId = form.id as number;
+
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
     const [params, setParams] = useState<SearchParams>(initialSearchParams);
     const [data, setData] = useState<PaginationParams<Submission>>(initialPagination);
 
     const fetchList = async () => {
         try {
-            const res = await submissionList(form.id as number, params);
+            const res = await list(form.id as number, params);
             setData(res.data as PaginationParams<Submission>);   
         } catch (error: any) {
             console.log(error)
@@ -45,13 +47,13 @@ export default function Index({ form, versions }: { form: FormType, versions: nu
     return (<div className="grid grid-rows-[56px_1fr_56px] gap-4 h-full">
         <Card className="h-full">
             <CardBody className="pt-3"> 
-                <Actions params={params} setParams={setParams} tableSelectedKeys={selectedKeys} currentPageIds={data.data.map(item => item.id)} data={data} setData={setData} versions={versions} initialSearchParams={initialSearchParams}/>
+                <Actions formId={formId} params={params} setParams={setParams} tableSelectedKeys={selectedKeys} currentPageIds={data.data.map(item => item.id)} data={data} setData={setData} versions={versions} initialSearchParams={initialSearchParams}/>
             </CardBody>
         </Card>
         <Card className="h-full">
             <CardBody className="h-full">
                 <Scroll>
-                    <TableList data={data} setData={setData} selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys}/>
+                    <TableList formId={formId} data={data} setData={setData} setParams={setParams} selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys} initialSearchParams={initialSearchParams}/>
                 </Scroll>
             </CardBody>
         </Card>

@@ -99,29 +99,6 @@ export async function list(args: SearchParams = initialSearchParams): Promise<Re
     return res as Result<PaginationParams<FormInList>>;
 }
 
-/**
- * submission list
- * 
- * @param id 
- * @param args 
- * @returns 
- */
-export async function submissionList(id: number, args: SubmissionSearchParams = initialSubmissionSearchParams): Promise<Result<PaginationParams<Submission>>> {
-    const res = await api.post(`api/admin/form/${id}/submission`, {
-        json: {
-            page: args.page,
-            limit: args.limit,
-            version: args.version,
-            created_at_start: args.createdAtStart,
-            created_at_end: args.createdAtEnd,
-            ip: args.ip,
-            dynamic_fields: args.dynamicFields,
-            order_by: args.orderBy,
-            order_type: args.orderType
-        }
-    }).json();
-    return res as Result<PaginationParams<Submission>>;
-}
 
 export async function getVersions(id: number): Promise<Result<number[]>> {
     const res: Result<number[]> = await api.get(`api/admin/form/${id}/submission/versions`).json();

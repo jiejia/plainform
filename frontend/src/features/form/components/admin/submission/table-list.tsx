@@ -26,13 +26,20 @@ import {
 } from "lucide-react";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Submission } from "@/features/form/types/submission/submission";
+import { Form as FormType } from "@/features/form/types/form";
 import { Dispatch, SetStateAction } from "react";
+import { batchDelete } from "@/features/form/actions/admin/submission-action";
+import { msg } from "@/features/core/utils/ui";
+import { SearchParams } from "@/features/form/types/submission/search-params";
 
-export default function TableList({data, setData, selectedKeys, setSelectedKeys}: {
+export default function TableList({formId, data, setData, setParams, selectedKeys, setSelectedKeys,initialSearchParams}: {
+    formId: number,
     data: PaginationParams<Submission>, 
     setData: Dispatch<SetStateAction<PaginationParams<Submission>>>, 
+    setParams: Dispatch<SetStateAction<SearchParams>>,
     selectedKeys: Selection, 
-    setSelectedKeys: Dispatch<SetStateAction<Selection>>
+    setSelectedKeys: Dispatch<SetStateAction<Selection>>,
+    initialSearchParams: SearchParams
 }) {
 
     const columns = [{
@@ -56,6 +63,20 @@ export default function TableList({data, setData, selectedKeys, setSelectedKeys}
 
     if (!mounted) {
         return <div>Loading...</div>;
+    }
+
+    const handleDelete = async (id: number) => {
+        if (confirm('确定删除吗？')) {
+            const res = await batchDelete(formId, [id]);
+            if (res.code === 0) {
+                msg("删除成功", "删除成功", 'success');
+                window.location.reload();
+            } else {
+                msg("删除失败", res.msg, 'warning');
+            }
+        } else {
+            return ;
+        }
     }
 
 
@@ -101,6 +122,7 @@ export default function TableList({data, setData, selectedKeys, setSelectedKeys}
                                                 className="text-danger"
                                                 color="danger"
                                                 startContent={<Trash2 size="16" />}
+                                                onPress={() => handleDelete(item.id)}
                                             >
                                                 删除
                                             </DropdownItem>

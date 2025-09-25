@@ -34,8 +34,11 @@ import { Submission } from "@/features/form/types/submission/submission";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Select, SelectItem } from "@heroui/react";
 import { initialSearchParams } from "@/features/form/data/submission/initial-search-params";
+import { msg } from "@/features/core/utils/ui";
+import { batchDelete } from "@/features/form/actions/admin/submission-action";
 
-export default function Actions({ params, setParams, tableSelectedKeys, currentPageIds, data, setData, versions, initialSearchParams }: {
+export default function Actions({ formId, params, setParams, tableSelectedKeys, currentPageIds, data, setData, versions, initialSearchParams }: {
+    formId: number,
     params: SearchParams,
     setParams: (params: SearchParams) => void,
     tableSelectedKeys: Selection,
@@ -105,6 +108,35 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
         setParams(initialSearchParams);
     }
 
+    const handleBatchDelete = async () => {
+        // get ids
+        const ids = getIds();
+
+        console.log('ids', ids);
+        if (ids.length === 0) {
+            msg("删除失败", "请至少选择一个表单", 'warning');
+            return;
+        }
+        // confirm
+        const isConfirmed = await confirm('确定删除吗？');
+        if (!isConfirmed) {
+            return; 
+        }
+        // update remote data
+        const res = await batchDelete(formId, ids);
+        if (res.code === 0) {
+            msg("删除成功", "删除成功", 'success');
+            window.location.reload();
+        } else {
+            msg("删除失败", res.msg, 'warning');
+        }
+    }
+
+    const getIds = () => {
+        return tableSelectedKeys === "all"
+          ? currentPageIds
+          : Array.from(tableSelectedKeys as Set<React.Key>).map(Number);
+    }
 
     return <>
 
@@ -128,7 +160,7 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
                         }}
                     >
                         {versions.map((version) => (
-                            <SelectItem key={version.toString()} textValue={version.toString()}>{version}</SelectItem>
+                            <SelectItem key={version.toString()} textValue={"版本" +  version.toString()}>版本{version}</SelectItem>
                         ))}
                     </Select>
                 </form>
@@ -191,7 +223,7 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
                         </Button>
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions">
-                        <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />}>
+                        <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />} onPress={handleBatchDelete}>
                             批量删除
                         </DropdownItem>
                     </DropdownMenu>
