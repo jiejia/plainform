@@ -112,7 +112,6 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
                     />
                     <Select
                         className=""
-                        isClearable={true}
                         size="sm"
                         placeholder="选择版本"
                         selectedKeys={params.version ? [params.version.toString()] : versions.length > 0 ? [versions[versions.length - 1].toString()] : []}
@@ -121,7 +120,7 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
                         }}
                     >
                         {versions.map((version) => (
-                            <SelectItem key={version}>{version}</SelectItem>
+                            <SelectItem key={version.toString()} textValue={version.toString()}>{version}</SelectItem>
                         ))}
                     </Select>
                 </form>

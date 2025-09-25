@@ -7,6 +7,7 @@ const api = ky.create({
     hooks: {
         beforeRequest: [
             async (request) => {
+                console.log('API Request URL:', request.url);
                 try {
                     let token = null;
 

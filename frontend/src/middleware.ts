@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import api from '@/features/core/library/api';
-import { HTTPError } from 'ky';
 import { CookieKey } from '@/features/core/constants/cookie-key';
 
 /**

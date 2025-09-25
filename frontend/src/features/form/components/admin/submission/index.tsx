@@ -16,12 +16,13 @@ import { initialSearchParams } from "@/features/form/data/submission/initial-sea
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Submission } from "@/features/form/types/submission/submission";
 import { initialPagination } from "@/features/form/data/initial-pagination";
-import { submissionList } from "@/features/form/actions/admin/form-action";
-import { useEffect } from "react";
 
 export default function Index({ form, versions }: { form: FormType, versions: number[] }) {
 
     console.log('versions', versions);
+
+    // set version to the latest version
+    initialSearchParams.version = versions[versions.length - 1];
 
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
     const [params, setParams] = useState<SearchParams>(initialSearchParams);
