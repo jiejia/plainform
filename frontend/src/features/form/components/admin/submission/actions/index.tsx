@@ -33,15 +33,17 @@ import { SearchParams } from "@/features/form/types/submission/search-params";
 import { Submission } from "@/features/form/types/submission/submission";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Select, SelectItem } from "@heroui/react";
+import { initialSearchParams } from "@/features/form/data/submission/initial-search-params";
 
-export default function Actions({ params, setParams, tableSelectedKeys, currentPageIds, data, setData, versions }: {
+export default function Actions({ params, setParams, tableSelectedKeys, currentPageIds, data, setData, versions, initialSearchParams }: {
     params: SearchParams,
     setParams: (params: SearchParams) => void,
     tableSelectedKeys: Selection,
     currentPageIds: number[],
     data: PaginationParams<Submission>,
     setData: Dispatch<SetStateAction<PaginationParams<Submission>>>,
-    versions: number[]
+    versions: number[],
+    initialSearchParams: SearchParams
 }) {
 
     // 定义搜索字段配置
@@ -63,16 +65,11 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
     ];
 
 
-
     const sortOptions = [
-        { key: "id_desc", text: "按ID/创建时间倒序" },
-        { key: "id_asc", text: "按ID/创建时间顺序" },
-        { key: "title_desc", text: "按名称倒序" },
-        { key: "title_asc", text: "按名称顺序" },
-        { key: "submissions_desc", text: "按提交数倒序" },
-        { key: "submissions_asc", text: "按提交数顺序" },
-        { key: "enabled_desc", text: "按状态倒序" },
-        { key: "enabled_asc", text: "按状态顺序" },
+        { key: "id_desc", orderBy: "id", orderType: "desc", text: "按ID/创建时间倒序" },
+        { key: "id_asc", orderBy: "id", orderType: "asc", text: "按ID/创建时间顺序" },
+        { key: "ipv4_desc", orderBy: "ipv4", orderType: "desc", text: "按IP倒序" },
+        { key: "ipv4_asc", orderBy: "ipv4", orderType: "asc", text: "按IP顺序" },
     ];
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -95,7 +92,18 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
         // 例如：清空搜索条件，重新加载数据等
     };
 
+    const handleSortChange = (e: SharedSelection) => {
+        const selectedKey = e.currentKey;
+        const selectedOption = sortOptions.find(option => option.key === selectedKey);
+        if (selectedOption) {
+            setParams({...params, orderBy: selectedOption.orderBy, orderType: selectedOption.orderType});
+        }
+        setSelectedKeys2(e);
+    }
 
+    const handleRefresh = () => {
+        setParams(initialSearchParams);
+    }
 
 
     return <>
@@ -131,6 +139,7 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
                     size="sm"
                     variant="flat"
                     title="refresh"
+                    onPress={handleRefresh}
                 >
                     <RefreshCw size="16" />
                 </Button>
@@ -163,7 +172,7 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
                         selectedKeys={selectedKeys2}
                         selectionMode="single"
                         variant="flat"
-                        onSelectionChange={setSelectedKeys2}
+                        onSelectionChange={handleSortChange}
                     >
                         {sortOptions.map((option) => (
                             <DropdownItem
@@ -182,8 +191,6 @@ export default function Actions({ params, setParams, tableSelectedKeys, currentP
                         </Button>
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions">
-                        <DropdownItem key="pause" startContent={<Pause size="16" />}>批量暂停</DropdownItem>
-                        <DropdownItem key="reactive" startContent={<Play size="16" />}>批量激活</DropdownItem>
                         <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />}>
                             批量删除
                         </DropdownItem>

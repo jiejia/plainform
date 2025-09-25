@@ -2,7 +2,7 @@ import { SearchParams } from "@/features/form/types/submission/search-params";
 
 export const initialSearchParams: SearchParams = {
     page: 1,
-    limit: 10,
+    limit: 20,
     keyword: '',
     createdAtStart: '',
     createdAtEnd: '',

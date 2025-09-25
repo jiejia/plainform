@@ -10,7 +10,7 @@ export const initialPagination: PaginationParams<any> = {
     links: [],
     next_page_url: '',
     path: '',
-    per_page: 10,
+    per_page: 20,
     prev_page_url: '',
     to: 1,
     total: 1,

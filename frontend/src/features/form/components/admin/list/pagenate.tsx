@@ -54,8 +54,10 @@ export default function Pagenate({data, params, setParams}: {data: PaginationPar
                     selectionMode="single"
                     className="max-w-xs"
                     size="sm"
-                    defaultSelectedKeys={[data.per_page.toString()]}
-                    onChange={(e) => handleLimitChange(parseInt(e.target.value))}
+                    selectedKeys={[params.limit.toString()]}
+                    onSelectionChange={(keys) =>
+                        handleLimitChange(parseInt(Array.from(keys)[0] as string))
+                    }
                 >
                     {[10, 20, 30, 50, 100].map((size) => (<SelectItem key={size} textValue={size.toString()}>
                         {size}
