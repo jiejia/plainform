@@ -403,15 +403,12 @@ class IndexService
         //     }
         // }
 
-        // convert ipv4 to integer
-        $ipv4Int = ip2long($ipv4);
-
         // create form submission
         FormSubmission::create([
             'form_id' => $form->id,
             'data' => $data,
             'version' => $version,
-            'ipv4' => $ipv4Int,
+            'ipv4' => $ipv4,
             'created_at' => now(),
         ]);
     }

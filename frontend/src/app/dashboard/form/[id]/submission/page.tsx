@@ -21,7 +21,7 @@ export default async function Submission({ params }: SubmissionProps) {
     }
 
     // get versions
-    const versionsRes = await getVersions(id as unknown as number); 
+    const versionsRes = await getVersions(id as unknown as number) || []; 
 
     return (
         <DashboardLayout breadcrumbs={<><Link href={"/dashboard"}>Dashboard</Link> / <Link href={"/dashboard/form"}>Form</Link> / <Link href={"/dashboard/form/" + id}>{res.data.title}</Link> 的 <span>Submissions</span></>} menuItemId={2}>
