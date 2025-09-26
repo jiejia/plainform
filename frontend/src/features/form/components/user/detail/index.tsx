@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { submit } from "@/features/form/actions/user/form-action";
 import { msg } from "@/features/core/utils/ui";
 import { clsx } from "clsx";
+import { config } from "@/features/form/types/config";
 
 interface FieldItemProps {
     field: Field;
@@ -30,6 +31,8 @@ export default function Detail({ form }: { form: FormType }) {
         uuid: string;
         name: string;
         value: unknown;
+        config: config;
+        control_type: string;
     }>>([]);
 
     const [errors, setErrors] = useState<Errors>({});
@@ -52,7 +55,9 @@ export default function Detail({ form }: { form: FormType }) {
                 return [...prev, {
                     uuid,
                     name: field?.title || '',
-                    value
+                    value,
+                    config: field?.config || {} as config,
+                    control_type: field?.control_type || ''
                 }];
             }
         });
@@ -148,7 +153,9 @@ export default function Detail({ form }: { form: FormType }) {
             const initialData = form.fields.map((field: Field) => ({
                 uuid: field.uuid,
                 name: field.title,
-                value: field.config.default_value.value
+                value: field.config.default_value.value,
+                config: field.config,
+                control_type: field.control_type
             }));
             console.log("initialData", initialData);
             setFormData(initialData);
