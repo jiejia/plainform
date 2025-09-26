@@ -150,6 +150,7 @@ export default function Detail({ form }: { form: FormType }) {
                 name: field.title,
                 value: field.config.default_value.value
             }));
+            console.log("initialData", initialData);
             setFormData(initialData);
         }
     }

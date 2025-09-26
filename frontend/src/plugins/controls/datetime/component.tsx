@@ -10,7 +10,7 @@ export default function DatetimeComponent({ field, value, setValue }: { field: F
         <DatePicker
             className="max-w-full"
             // label={field.title}
-            value={value ? new CalendarDate(new Date(value as string).getFullYear(), new Date(value as string).getMonth(), new Date(value as string).getDate()) : undefined}
+            value={value ? new CalendarDate(new Date(value as string).getFullYear(), new Date(value as string).getMonth(), new Date(value as string).getDate()) : null}
             onChange={(date) => {
                 setValue(date?.toString());
             }}

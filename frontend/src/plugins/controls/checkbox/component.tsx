@@ -8,7 +8,7 @@ import { Option } from "@/features/form/types/config/option";
 export default function CheckboxComponent({ field, value, setValue }: { field: Field, value: any, setValue: (value: any) => void }) {
     return (
         <CheckboxGroup
-            defaultValue={value}
+            value={value}
             size="sm"
             onChange={(e) => {
                 // console.log("checkbox change", e);
