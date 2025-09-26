@@ -17,6 +17,12 @@ import {
     DropdownTrigger,
     Selection,
     Button,
+    useDisclosure,
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
 } from "@heroui/react";
 import {
     EllipsisVertical,
@@ -31,13 +37,13 @@ import { batchDelete } from "@/features/form/actions/admin/submission-action";
 import { msg } from "@/features/core/utils/ui";
 import { SearchParams } from "@/features/form/types/submission/search-params";
 
-export default function TableList({loading, formId, data, setData, setParams, selectedKeys, setSelectedKeys,initialSearchParams}: {
+export default function TableList({ loading, formId, data, setData, setParams, selectedKeys, setSelectedKeys, initialSearchParams }: {
     loading: boolean,
     formId: number,
-    data: PaginationParams<Submission>, 
-    setData: Dispatch<SetStateAction<PaginationParams<Submission>>>, 
+    data: PaginationParams<Submission>,
+    setData: Dispatch<SetStateAction<PaginationParams<Submission>>>,
     setParams: Dispatch<SetStateAction<SearchParams>>,
-    selectedKeys: Selection, 
+    selectedKeys: Selection,
     setSelectedKeys: Dispatch<SetStateAction<Selection>>,
     initialSearchParams: SearchParams
 }) {
@@ -55,6 +61,8 @@ export default function TableList({loading, formId, data, setData, setParams, se
     }];
 
     const [mounted, setMounted] = useState(false);
+    const [currentItem, setCurrentItem] = useState<Submission | null>(null);
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
 
     useEffect(() => {
@@ -75,8 +83,13 @@ export default function TableList({loading, formId, data, setData, setParams, se
                 msg("删除失败", res.msg, 'warning');
             }
         } else {
-            return ;
+            return;
         }
+    }
+
+    const handleView = (item: Submission) => {
+        setCurrentItem(item);
+        onOpen();
     }
 
     // judge here
@@ -121,7 +134,7 @@ export default function TableList({loading, formId, data, setData, setParams, se
                                             <DropdownItem
                                                 key="view"
                                                 startContent={<Eye size="16" />}
-                                                href={`/dashboard/form/${item.id}`}
+                                                onPress={() => handleView(item)}
                                             >
                                                 查看
                                             </DropdownItem>
@@ -145,5 +158,111 @@ export default function TableList({loading, formId, data, setData, setParams, se
                 )}
             </TableBody>
         </Table>
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">提交详情</ModalHeader>
+              <ModalBody>
+              {currentItem && (() => {
+                                // 格式化字段值的函数
+                                const formatValue = (value: any): string => {
+                                    if (value === null || value === undefined) {
+                                        return '';
+                                    }
+                                    
+                                    // 处理数组类型 - 转换为逗号分隔的字符串
+                                    if (Array.isArray(value)) {
+                                        return value.join(', ');
+                                    }
+                                    
+                                    // 处理布尔类型 - 转换为是/否
+                                    if (typeof value === 'boolean') {
+                                        return value ? '是' : '否';
+                                    }
+                                    
+                                    // 处理其他对象类型
+                                    if (typeof value === 'object') {
+                                        return JSON.stringify(value);
+                                    }
+                                    
+                                    // 其他类型直接转字符串
+                                    return String(value);
+                                };
+
+                                // 准备表单数据字段
+                                const formDataRows: any[] = [];
+                                if (currentItem.data && Array.isArray(currentItem.data)) {
+                                    currentItem.data.forEach((field: any, index: number) => {
+                                        formDataRows.push({
+                                            key: `field_${field.uuid || index}`,
+                                            name: field.name,
+                                            value: formatValue(field.value)
+                                        });
+                                    });
+                                }
+
+                                return (
+                                    <div className="space-y-6">
+                                        {/* 系统信息区域 */}
+                                        <div className="bg-gray-50 p-4 rounded-lg">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="text-sm font-medium text-gray-500">ID</label>
+                                                    <p className="mt-1 text-sm text-gray-900">{currentItem.id}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-sm font-medium text-gray-500">表单版本</label>
+                                                    <p className="mt-1 text-sm text-gray-900">{currentItem.version}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-sm font-medium text-gray-500">IP地址</label>
+                                                    <p className="mt-1 text-sm text-gray-900">{currentItem.ipv4}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-sm font-medium text-gray-500">创建时间</label>
+                                                    <p className="mt-1 text-sm text-gray-900">{currentItem.created_at || '未知'}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* 表单数据表格 */}
+                                        {formDataRows.length > 0 ? (
+                                            <div>
+                                                <Table removeWrapper>
+                                                    <TableHeader>
+                                                        <TableColumn>字段名称</TableColumn>
+                                                        <TableColumn>字段值</TableColumn>
+                                                    </TableHeader>
+                                                    <TableBody items={formDataRows}>
+                                                        {(row) => (
+                                                            <TableRow key={row.key}>
+                                                                <TableCell>{row.name}</TableCell>
+                                                                <TableCell>{row.value}</TableCell>
+                                                            </TableRow>
+                                                        )}
+                                                    </TableBody>
+                                                </Table>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                                    <p className="text-sm text-gray-500">暂无表单数据</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })()}
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>;
 }

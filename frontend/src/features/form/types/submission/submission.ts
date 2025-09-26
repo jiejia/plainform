@@ -3,5 +3,5 @@ export type Submission = {
     data: [];
     version: number;
     ipv4: number;
-    createdAt: string;
+    created_at: string;
 }
