@@ -33,7 +33,7 @@ class SubmissionValidator extends AbstractValidator
             'ids.*' => 'required|integer|min:1',
 
             // fields scene  
-            'version' => 'required|integer|min:1',
+            'version' => 'required|integer|min:0',
 
         ];
     }

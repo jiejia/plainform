@@ -26,13 +26,13 @@ import {
 } from "lucide-react";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Submission } from "@/features/form/types/submission/submission";
-import { Form as FormType } from "@/features/form/types/form";
 import { Dispatch, SetStateAction } from "react";
 import { batchDelete } from "@/features/form/actions/admin/submission-action";
 import { msg } from "@/features/core/utils/ui";
 import { SearchParams } from "@/features/form/types/submission/search-params";
 
-export default function TableList({formId, data, setData, setParams, selectedKeys, setSelectedKeys,initialSearchParams}: {
+export default function TableList({loading, formId, data, setData, setParams, selectedKeys, setSelectedKeys,initialSearchParams}: {
+    loading: boolean,
     formId: number,
     data: PaginationParams<Submission>, 
     setData: Dispatch<SetStateAction<PaginationParams<Submission>>>, 
@@ -62,7 +62,7 @@ export default function TableList({formId, data, setData, setParams, selectedKey
     }, []);
 
     if (!mounted) {
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-full">Loading...</div>;
     }
 
     const handleDelete = async (id: number) => {
@@ -79,6 +79,14 @@ export default function TableList({formId, data, setData, setParams, selectedKey
         }
     }
 
+    // judge here
+    if (loading) {
+        return <div className="flex justify-center items-center h-full"></div>;
+    } else {
+        if (data.data.length === 0) {
+            return <div className="flex justify-center items-center h-full">暂无数据</div>;
+        }
+    }
 
     return <>
 

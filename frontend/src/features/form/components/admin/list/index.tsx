@@ -31,12 +31,16 @@ export default function Index() {
 
     const [data, setData] = useState<PaginationParams<FormInList>>(initialPagination);
 
+    const [loading, setLoading] = useState(true);
+
     const fetchList = async () => {
         try {
             const res = await list(params);
             setData(res.data as PaginationParams<FormInList>);   
         } catch (error: any) {
             console.log(error)
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -54,7 +58,7 @@ export default function Index() {
             <Card className="h-full">
                 <CardBody className="h-full">
                     <Scroll>
-                        <TableList data={data} setData={setData} selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys}/>
+                        <TableList loading={loading} data={data} setData={setData} selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys}/>
                     </Scroll>
                 </CardBody>
             </Card>

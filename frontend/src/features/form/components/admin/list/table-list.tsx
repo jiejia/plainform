@@ -29,11 +29,12 @@ import { Dispatch, SetStateAction } from "react";
 import { msg } from "@/features/core/utils/ui";
 
 
-export default function TableList({ data, setData, selectedKeys, setSelectedKeys }: { 
-    data: PaginationParams<FormInList>, 
-    setData: Dispatch<SetStateAction<PaginationParams<FormInList>>>, 
-    selectedKeys: Selection, 
-    setSelectedKeys: Dispatch<SetStateAction<Selection>> 
+export default function TableList({ loading, data, setData, selectedKeys, setSelectedKeys }: {
+    loading: boolean,
+    data: PaginationParams<FormInList>,
+    setData: Dispatch<SetStateAction<PaginationParams<FormInList>>>,
+    selectedKeys: Selection,
+    setSelectedKeys: Dispatch<SetStateAction<Selection>>
 }) {
     const [mounted, setMounted] = useState(false);
 
@@ -57,7 +58,15 @@ export default function TableList({ data, setData, selectedKeys, setSelectedKeys
     }, []);
 
     if (!mounted) {
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-full">Loading...</div>;
+    }
+
+    if (loading) {
+        return <div className="flex justify-center items-center h-full"></div>;
+    } else {
+        if (data.data.length === 0) {
+            return <div className="flex justify-center items-center h-full">暂无数据</div>;
+        }
     }
 
     const handleEnabledChange = async (checked: boolean, id: number) => {
@@ -94,7 +103,11 @@ export default function TableList({ data, setData, selectedKeys, setSelectedKeys
         }
     }
 
-        return (
+    if (data.data.length === 0) {
+        return <div className="flex justify-center items-center h-full">暂无数据</div>;
+    }
+
+    return (
         <Table
             aria-label="Controlled table example with dynamic content"
             selectedKeys={selectedKeys}

@@ -22,13 +22,16 @@ import { useEffect } from "react";
 export default function Index({ form, versions }: { form: FormType, versions: number[] }) {
 
     // set version to the latest version
-    initialSearchParams.version = versions[versions.length - 1];
+    if (versions.length > 0) {
+        initialSearchParams.version = versions[versions.length - 1];
+    }
 
     const formId = form.id as number;
 
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
     const [params, setParams] = useState<SearchParams>(initialSearchParams);
     const [data, setData] = useState<PaginationParams<Submission>>(initialPagination);
+    const [loading, setLoading] = useState(true);
 
     const fetchList = async () => {
         try {
@@ -36,6 +39,8 @@ export default function Index({ form, versions }: { form: FormType, versions: nu
             setData(res.data as PaginationParams<Submission>);   
         } catch (error: any) {
             console.log(error)
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -53,7 +58,7 @@ export default function Index({ form, versions }: { form: FormType, versions: nu
         <Card className="h-full">
             <CardBody className="h-full">
                 <Scroll>
-                    <TableList formId={formId} data={data} setData={setData} setParams={setParams} selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys} initialSearchParams={initialSearchParams}/>
+                    <TableList loading={loading} formId={formId} data={data} setData={setData} setParams={setParams} selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys} initialSearchParams={initialSearchParams}/>
                 </Scroll>
             </CardBody>
         </Card>
