@@ -83,6 +83,7 @@ class SubmissionValidator extends AbstractValidator
             'list' => ['version', 'created_at_start', 'created_at_end', 'ip', 'dynamic_fields', 'page', 'per_page', 'order_by', 'order_type'],
             'delete' => ['ids'],
             'fields' => ['version'],
+            'export' => ['version', 'created_at_start', 'created_at_end', 'ip', 'dynamic_fields', 'order_by', 'order_type'],
         ];
     }
 }

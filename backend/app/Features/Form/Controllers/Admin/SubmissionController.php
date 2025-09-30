@@ -5,6 +5,8 @@ use App\Features\Form\Services\SubmissionService;
 use App\Features\Form\Validators\SubmissionValidator;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Rap2hpoutre\FastExcel\FastExcel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * SubmissionController
@@ -109,5 +111,31 @@ class SubmissionController
 
         $data = $this->service->getFields($formId, $version);
         return json($data);
+    }
+
+    /**
+     * export
+     * 
+     * @param Request $request
+     * @param int $formId
+     * @return StreamedResponse
+     */
+    public function export(Request $request, int $formId): StreamedResponse
+    {
+        $this->validator->scene('export')->validate($request->all());
+
+        $version = $request->input('version');
+        $createdAtStart = $request->input('created_at_start');
+        $createdAtEnd = $request->input('created_at_end');
+        $ip = $request->input('ip');
+        $dynamicFields = $request->input('dynamic_fields', []);
+        $orderBy = $request->input('order_by');
+        $orderType = $request->input('order_type');
+
+        $data = $this->service->export($formId, $version, $createdAtStart, $createdAtEnd, $ip, $dynamicFields, $orderBy, $orderType);
+
+        $fileName = 'submissions_' . date('YmdHis') . '.xlsx';
+
+        return (new FastExcel(collect($data)))->download($fileName);
     }
 }

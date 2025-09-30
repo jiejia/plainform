@@ -20,5 +20,6 @@ Route::prefix('form')->group(function () {
         Route::get('/fields', [SubmissionController::class, 'fields'])->name('admin.form.submission.fields');
         Route::get('/{id}', [SubmissionController::class, 'detail'])->name('admin.form.submission.detail');
         Route::delete('/', [SubmissionController::class, 'delete'])->name('admin.form.submission.delete');
+        Route::post('/export', [SubmissionController::class, 'export'])->name('admin.form.submission.export');
     });
 });

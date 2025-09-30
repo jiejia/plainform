@@ -58,38 +58,69 @@ class SubmissionService
             }
         }
 
-        // Dynamic field search
-        foreach ($dynamicFields as $field) {
-            $fieldName = $field['field_name'];
-            $whereType = $field['where_type'];
-            $value = $field['value'];
-
-            switch ($whereType) {
-                case 'like':
-                    $query->whereRaw("data->>? LIKE ?", [$fieldName, "%{$value}%"]);
-                    break;
-                case '=':
-                    $query->whereRaw("data->>? = ?", [$fieldName, $value]);
-                    break;
-                case 'in':
-                    if (is_array($value) && !empty($value)) {
-                        $placeholders = str_repeat('?,', count($value) - 1) . '?';
-                        $query->whereRaw("data->>? IN ({$placeholders})", array_merge([$fieldName], $value));
-                    }
-                    break;
-                case 'between':
-                    $query->whereRaw("(data->>?)::numeric BETWEEN ? AND ?", [$fieldName, $value[0], $value[1]]);
-                    break;
-            }
-        }
-
         // Sorting
         $orderBy = $orderBy ?: 'created_at';
         $orderType = $orderType ?: 'desc';
         $query->orderBy($orderBy, $orderType);
 
+        // Get all results first
+        $allSubmissions = $query->get();
+
+        // Dynamic field filter in application layer
+        if (!empty($dynamicFields)) {
+            $allSubmissions = $allSubmissions->filter(function ($submission) use ($dynamicFields) {
+                foreach ($dynamicFields as $field) {
+                    $fieldName = $field['field_name'];
+                    $whereType = $field['where_type'];
+                    $value = $field['value'];
+
+                    // Find the field in data array
+                    $dataField = collect($submission->data)->firstWhere('name', $fieldName);
+                    if (!$dataField) {
+                        return false;
+                    }
+
+                    $fieldValue = $dataField['value'] ?? null;
+
+                    switch ($whereType) {
+                        case 'like':
+                            if (stripos($fieldValue, $value) === false) {
+                                return false;
+                            }
+                            break;
+                        case '=':
+                            if ($fieldValue != $value) {
+                                return false;
+                            }
+                            break;
+                        case 'in':
+                            if (!in_array($fieldValue, $value)) {
+                                return false;
+                            }
+                            break;
+                        case 'between':
+                            $numericValue = floatval($fieldValue);
+                            if ($numericValue < $value[0] || $numericValue > $value[1]) {
+                                return false;
+                            }
+                            break;
+                    }
+                }
+                return true;
+            })->values();
+        }
+
         // Pagination
-        return $query->paginate(getPageLimit(), ['id', 'data', 'version', 'ipv4', 'created_at'])->toArray();
+        $total = $allSubmissions->count();
+        $items = $allSubmissions->forPage($page, $perPage)->values();
+
+        return [
+            'data' => $items->toArray(),
+            'current_page' => $page,
+            'per_page' => $perPage,
+            'total' => $total,
+            'last_page' => ceil($total / $perPage),
+        ];
     }
 
     /**
@@ -208,6 +239,132 @@ class SubmissionService
             return [];
         }
 
-        return array_keys($data);
+        // Extract field names from data array
+        $fieldNames = [];
+        foreach ($data as $field) {
+            if (isset($field['name'])) {
+                $fieldNames[] = $field['name'];
+            }
+        }
+
+        return $fieldNames;
+    }
+
+    /**
+     * export
+     * 
+     * @param int $formId
+     * @param int $version
+     * @param string|null $createdAtStart
+     * @param string|null $createdAtEnd
+     * @param string|null $ip
+     * @param array $dynamicFields
+     * @param string|null $orderBy
+     * @param string|null $orderType
+     * @return array
+     */
+    public function export(int $formId, int $version, ?string $createdAtStart, ?string $createdAtEnd, ?string $ip, array $dynamicFields, ?string $orderBy = null, ?string $orderType = null): array
+    {
+        // Check if form exists
+        $form = Form::find($formId);
+        if (!$form) {
+            throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
+        }
+
+        // Build query
+        $query = FormSubmission::where('form_id', $formId)
+            ->where('version', $version)
+            ->select(['id', 'data', 'version', 'ipv4', 'created_at']);
+
+        // Created time range search
+        if ($createdAtStart) {
+            $query->where('created_at', '>=', $createdAtStart);
+        }
+        if ($createdAtEnd) {
+            $query->where('created_at', '<=', $createdAtEnd);
+        }
+
+        // IP search
+        if ($ip) {
+            $ipv4 = ip2long($ip);
+            if ($ipv4 !== false) {
+                $query->where('ipv4', $ipv4);
+            }
+        }
+
+        // Sorting
+        $orderBy = $orderBy ?: 'created_at';
+        $orderType = $orderType ?: 'desc';
+        $query->orderBy($orderBy, $orderType);
+
+        // Get all submissions
+        $submissions = $query->get();
+
+        // Dynamic field filter in application layer
+        if (!empty($dynamicFields)) {
+            $submissions = $submissions->filter(function ($submission) use ($dynamicFields) {
+                foreach ($dynamicFields as $field) {
+                    $fieldName = $field['field_name'];
+                    $whereType = $field['where_type'];
+                    $value = $field['value'];
+
+                    // Find the field in data array
+                    $dataField = collect($submission->data)->firstWhere('name', $fieldName);
+                    if (!$dataField) {
+                        return false;
+                    }
+
+                    $fieldValue = $dataField['value'] ?? null;
+
+                    switch ($whereType) {
+                        case 'like':
+                            if (stripos($fieldValue, $value) === false) {
+                                return false;
+                            }
+                            break;
+                        case '=':
+                            if ($fieldValue != $value) {
+                                return false;
+                            }
+                            break;
+                        case 'in':
+                            if (!in_array($fieldValue, $value)) {
+                                return false;
+                            }
+                            break;
+                        case 'between':
+                            $numericValue = floatval($fieldValue);
+                            if ($numericValue < $value[0] || $numericValue > $value[1]) {
+                                return false;
+                            }
+                            break;
+                    }
+                }
+                return true;
+            });
+        }
+
+        // Build export data
+        $exportData = [];
+        foreach ($submissions as $submission) {
+            $row = [
+                'Created At' => $submission->created_at->format('Y-m-d H:i:s'),
+                'Version' => $submission->version,
+                'IP' => $submission->ipv4,
+            ];
+
+            // Add dynamic fields from data array
+            if (is_array($submission->data)) {
+                foreach ($submission->data as $field) {
+                    if (isset($field['name']) && isset($field['value'])) {
+                        $row[$field['name']] = $field['value'];
+                    }
+                }
+            }
+
+            $exportData[] = $row;
+        }
+
+        return $exportData;
     }
 }
