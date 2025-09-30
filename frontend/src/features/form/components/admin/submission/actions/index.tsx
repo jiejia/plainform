@@ -156,7 +156,11 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                         placeholder="选择版本"
                         selectedKeys={params.version ? [params.version.toString()] : versions.length > 0 ? [versions[versions.length - 1].toString()] : []}
                         onSelectionChange={(keys) => {
-                            setParams({...params, version: parseInt(Array.from(keys)[0] as string)});
+                            const first = Array.from(keys)[0] as string | undefined;
+                            if (!first) return;
+                            const next = Number(first);
+                            if (Number.isNaN(next)) return;
+                            setParams({ ...params, page: 1, version: next });
                         }}
                     >
                         {versions.map((version) => (

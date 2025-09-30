@@ -34,11 +34,17 @@ export default function Index({ form, versions }: { form: FormType, versions: nu
     const [loading, setLoading] = useState(true);
 
     const fetchList = async () => {
+        setLoading(true);
         try {
             const res = await list(form.id as number, params);
-            setData(res.data as PaginationParams<Submission>);   
+            if (res && (res as any).code === 0 && (res as any).data) {
+                setData(res.data as PaginationParams<Submission>);
+            } else {
+                setData(initialPagination);
+            }
         } catch (error: any) {
-            console.log(error)
+            console.log(error);
+            setData(initialPagination);
         } finally {
             setLoading(false);
         }
