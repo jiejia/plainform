@@ -3,6 +3,7 @@
 import React from "react";
 import { Card, CardBody } from "@heroui/react";
 import { FileText, TrendingUp, CheckCircle, Users } from "lucide-react";
+import Figure from "@/features/core/components/admin/statistic/figure";
 
 export default function MetricCards() {
     const metrics = [
@@ -49,27 +50,14 @@ export default function MetricCards() {
             {metrics.map((metric, index) => {
                 const Icon = metric.icon;
                 return (
-                    <Card key={index}>
-                        <CardBody className="flex flex-row items-center justify-between p-4">
-                            <div>
-                                <p className="text-sm text-gray-600 mb-1">{metric.title}</p>
-                                <p className="text-2xl font-bold">{metric.value}</p>
-                                <p className={`text-xs flex items-center mt-1 ${
-                                    metric.changeType === 'increase' 
-                                        ? 'text-green-600' 
-                                        : metric.changeType === 'decrease'
-                                        ? 'text-red-600'
-                                        : 'text-gray-500'
-                                }`}>
-                                    {metric.changeType === 'increase' && <TrendingUp className="w-3 h-3 mr-1" />}
-                                    {metric.change}
-                                </p>
-                            </div>
-                            <div className={`${metric.bgColor} p-3 rounded-lg`}>
-                                <Icon className={`w-6 h-6 ${metric.color}`} />
-                            </div>
-                        </CardBody>
-                    </Card>
+                    <Figure 
+                        key={index} 
+                        title={metric.title} 
+                        value={metric.value} 
+                        icon={<Icon className={`w-6 h-6 ${metric.color}`} />} 
+                        changeType={metric.changeType} 
+                        change={metric.change} 
+                    />
                 );
             })}
         </div>

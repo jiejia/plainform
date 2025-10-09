@@ -1,8 +1,8 @@
 'use client'
 
 import React from "react";
-import { Card, CardBody, CardHeader } from "@heroui/react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import Chart from "@/features/core/components/admin/statistic/chart";
 
 export default function SubmissionOverview() {
     // 静态数据 - 最近30天的提交概览
@@ -33,92 +33,74 @@ export default function SubmissionOverview() {
     };
 
     return (
-        <Card className="flex flex-col">
-            <CardHeader className="pb-2">
-                <div className="flex items-center justify-between w-full">
-                    <div>
-                        <h3 className="text-lg font-semibold">提交概览</h3>
-                        <div className="flex gap-4 mt-1 text-sm text-gray-500">
-                            <span>总提交: <span className="font-semibold text-gray-900">{stats.totalSubmissions}</span></span>
-                            <span>日均: <span className="font-semibold text-gray-900">{stats.averageDaily}</span>次</span>
-                            <span>成功率: <span className="font-semibold text-green-600">{stats.successRate}</span></span>
-                            <span className="text-green-600 font-semibold">{stats.growth}</span>
-                        </div>
-                    </div>
-                    <span className="text-sm text-gray-500">最近30天</span>
-                </div>
-            </CardHeader>
-            <CardBody className="pt-0 flex-1 min-h-0 overflow-hidden">
-                <div className="w-full h-full">
-                    <ResponsiveContainer width="100%" height={320}>
-                        <AreaChart data={data}>
-                            <defs>
-                                <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
-                                </linearGradient>
-                                <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                                </linearGradient>
-                                <linearGradient id="colorUnique" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                            <XAxis 
-                                dataKey="date" 
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 12 }}
-                            />
-                            <YAxis 
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 12 }}
-                            />
-                            <Tooltip 
-                                contentStyle={{
-                                    backgroundColor: 'white',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                                }}
-                            />
-                            <Legend 
-                                wrapperStyle={{ paddingTop: '10px' }}
-                                iconType="circle"
-                            />
-                            <Area 
-                                type="monotone" 
-                                dataKey="total" 
-                                stroke="#6366f1" 
-                                fill="url(#colorTotal)" 
-                                strokeWidth={2}
-                                name="总提交"
-                            />
-                            <Area 
-                                type="monotone" 
-                                dataKey="success" 
-                                stroke="#10b981" 
-                                fill="url(#colorSuccess)" 
-                                strokeWidth={2}
-                                name="成功提交"
-                            />
-                            <Area 
-                                type="monotone" 
-                                dataKey="unique" 
-                                stroke="#f59e0b" 
-                                fill="url(#colorUnique)" 
-                                strokeWidth={2}
-                                name="独立IP"
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
-            </CardBody>
-        </Card>
+        <Chart title="提交概览">
+            <AreaChart data={data}
+                margin={{ top: 10, right: 10, bottom: 0, left: -30 }}
+            >
+                <defs>
+                    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorUnique" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis
+                    dataKey="date"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12 }}
+                />
+                <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12 }}
+                />
+                <Tooltip
+                    contentStyle={{
+                        backgroundColor: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                />
+                <Legend
+                    wrapperStyle={{ paddingTop: '10px' }}
+                    iconType="circle"
+                />
+                <Area
+                    type="monotone"
+                    dataKey="total"
+                    stroke="#6366f1"
+                    fill="url(#colorTotal)"
+                    strokeWidth={2}
+                    name="总提交"
+                />
+                <Area
+                    type="monotone"
+                    dataKey="success"
+                    stroke="#10b981"
+                    fill="url(#colorSuccess)"
+                    strokeWidth={2}
+                    name="成功提交"
+                />
+                <Area
+                    type="monotone"
+                    dataKey="unique"
+                    stroke="#f59e0b"
+                    fill="url(#colorUnique)"
+                    strokeWidth={2}
+                    name="独立IP"
+                />
+            </AreaChart>
+        </Chart>
     );
 }
 

@@ -1,8 +1,8 @@
 'use client'
 
 import React from "react";
-import { Card, CardBody, CardHeader } from "@heroui/react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import Chart from "@/features/core/components/admin/statistic/chart";
 
 export default function FormTrend() {
     // 静态数据 - 最近30天的表单创建趋势
@@ -33,80 +33,62 @@ export default function FormTrend() {
     };
 
     return (
-        <Card className="flex flex-col">
-            <CardHeader className="pb-2">
-                <div className="flex items-center justify-between w-full">
-                    <div>
-                        <h3 className="text-lg font-semibold">表单创建趋势</h3>
-                        <div className="flex gap-4 mt-1 text-sm text-gray-500">
-                            <span>新增表单: <span className="font-semibold text-gray-900">{stats.totalCreated}</span></span>
-                            <span>日均: <span className="font-semibold text-gray-900">{stats.averageDaily}</span>个</span>
-                            <span>活跃率: <span className="font-semibold text-green-600">{stats.activeRate}</span></span>
-                            <span className="text-green-600 font-semibold">{stats.growth}</span>
-                        </div>
-                    </div>
-                    <span className="text-sm text-gray-500">最近30天</span>
-                </div>
-            </CardHeader>
-            <CardBody className="pt-0 flex-1 min-h-0 overflow-hidden">
-                <div className="w-full h-full">
-                    <ResponsiveContainer width="100%" height={320}>
-                        <AreaChart data={data}>
-                            <defs>
-                                <linearGradient id="colorCreated" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#0070f3" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="#0070f3" stopOpacity={0}/>
-                                </linearGradient>
-                                <linearGradient id="colorActive" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                            <XAxis 
-                                dataKey="date" 
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 12 }}
-                            />
-                            <YAxis 
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 12 }}
-                            />
-                            <Tooltip 
-                                contentStyle={{
-                                    backgroundColor: 'white',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                                }}
-                            />
-                            <Legend 
-                                wrapperStyle={{ paddingTop: '10px' }}
-                                iconType="circle"
-                            />
-                            <Area 
-                                type="monotone" 
-                                dataKey="created" 
-                                stroke="#0070f3" 
-                                fill="url(#colorCreated)" 
-                                strokeWidth={2}
-                                name="新建表单"
-                            />
-                            <Area 
-                                type="monotone" 
-                                dataKey="active" 
-                                stroke="#10b981" 
-                                fill="url(#colorActive)" 
-                                strokeWidth={2}
-                                name="活跃表单"
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
-            </CardBody>
-        </Card>
+        <Chart title="表单创建趋势">
+            <AreaChart data={data}
+                margin={{ top: 10, right: 10, bottom: 0, left: -35 }}
+            >
+                <defs>
+                    <linearGradient id="colorCreated" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#0070f3" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#0070f3" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorActive" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis
+                    dataKey="date"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12 }}
+                />
+                <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12 }}
+                />
+                <Tooltip
+                    contentStyle={{
+                        backgroundColor: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                />
+                <Legend
+                    wrapperStyle={{ paddingTop: '10px' }}
+                    iconType="circle"
+                />
+                <Area
+                    type="monotone"
+                    dataKey="created"
+                    stroke="#0070f3"
+                    fill="url(#colorCreated)"
+                    strokeWidth={2}
+                    name="新建表单"
+                />
+                <Area
+                    type="monotone"
+                    dataKey="active"
+                    stroke="#10b981"
+                    fill="url(#colorActive)"
+                    strokeWidth={2}
+                    name="活跃表单"
+                />
+            </AreaChart>
+        </Chart>
     );
 }
 
