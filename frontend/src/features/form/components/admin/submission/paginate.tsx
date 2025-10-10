@@ -15,7 +15,7 @@ export default function Paginate({data, params, setParams}: {
     params: SearchParams, 
     setParams: (params: SearchParams) => void
 }) {
-    console.log('data', data);
+    // console.log('data', data);
 
     const handleLimitChange = (limit: number | null) => {
         if (!limit) {

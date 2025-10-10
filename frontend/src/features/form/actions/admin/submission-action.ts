@@ -33,6 +33,36 @@ export async function list(id: number, args: SubmissionSearchParams = initialSub
 }
 
 /**
+ * export excel - get blob data from server
+ * 
+ * @param id 
+ * @param args 
+ * @returns ArrayBuffer for client-side download
+ */
+export async function exportExcel(id: number, args: SubmissionSearchParams = initialSubmissionSearchParams): Promise<Result<ArrayBuffer>> {
+    try {
+        const blob = await api.post(`api/admin/form/${id}/submission/export`, {
+            json: {
+                page: args.page,
+                limit: args.limit,
+                version: args.version,
+                created_at_start: args.createdAtStart,
+                created_at_end: args.createdAtEnd,
+                ip: args.ip,
+                dynamic_fields: args.dynamicFields,
+                order_by: args.orderBy,
+                order_type: args.orderType
+            }
+        }).arrayBuffer();
+
+        return { code: 0, msg: 'success', data: blob } as Result<ArrayBuffer>;
+    } catch (error: any) {
+        console.error('Export error:', error);
+        return { code: 1, msg: error.message, data: new ArrayBuffer(0) } as Result<ArrayBuffer>;
+    }
+}
+
+/**
  * batch delete submission
  * 
  * @param id 

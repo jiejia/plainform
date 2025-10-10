@@ -28,14 +28,14 @@ import {
     Pause,
     Play,
     Trash2,
+    Download,
 } from "lucide-react";
 import { SearchParams } from "@/features/form/types/submission/search-params";
 import { Submission } from "@/features/form/types/submission/submission";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Select, SelectItem } from "@heroui/react";
-import { initialSearchParams } from "@/features/form/data/submission/initial-search-params";
 import { msg } from "@/features/core/utils/ui";
-import { batchDelete } from "@/features/form/actions/admin/submission-action";
+import { batchDelete, exportExcel } from "@/features/form/actions/admin/submission-action";
 
 export default function Actions({ formId, params, setParams, tableSelectedKeys, currentPageIds, data, setData, versions, initialSearchParams }: {
     formId: number,
@@ -129,6 +129,31 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
             window.location.reload();
         } else {
             msg("删除失败", res.msg, 'warning');
+        }
+    }
+
+    const handleExportExcel = async () => {
+        console.log('params', params);
+        const res = await exportExcel(formId, params);
+        if (res.code === 0 && res.data) {
+            // Convert ArrayBuffer to Blob
+            const blob = new Blob([res.data], { 
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+            });
+            
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `submissions_${Date.now()}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            msg("导出成功", "Excel文件已开始下载", 'success');
+        } else {
+            msg("导出失败", res.msg, 'warning');
         }
     }
 
@@ -229,6 +254,9 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                     <DropdownMenu aria-label="Static Actions">
                         <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />} onPress={handleBatchDelete}>
                             批量删除
+                        </DropdownItem>
+                        <DropdownItem key="export" className="text-primary" color="primary" startContent={<Download size="16" />} onPress={handleExportExcel}>
+                            导出Excel
                         </DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
