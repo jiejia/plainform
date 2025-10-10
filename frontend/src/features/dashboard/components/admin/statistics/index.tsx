@@ -25,11 +25,11 @@ export default function Index() {
                     {/* 核心指标卡片 */}
                     <MetricCards />
 
-                    {/* 表单创建趋势 */}
-                    <FormTrend />
-
-                    {/* 提交概览 */}
-                    <SubmissionOverview />
+                    {/* 表单创建趋势和提交概览 */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <FormTrend />
+                        <SubmissionOverview />
+                    </div>
 
                     {/* 热门表单和最近活动 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
