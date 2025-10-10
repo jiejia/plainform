@@ -3,6 +3,7 @@
 import React from "react";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { TrendingUp, Eye } from "lucide-react";
+import Chart from "@/features/core/components/admin/statistic/chart";
 
 export default function ActiveForms() {
     // 静态数据 - Top 10 活跃表单
@@ -52,65 +53,10 @@ export default function ActiveForms() {
             trend: '+9.8%',
             status: 'active'
         },
-        { 
-            id: 6,
-            name: '意见建议反馈表', 
-            submissions: 534,
-            views: 1287,
-            rate: 41.5,
-            trend: '+6.3%',
-            status: 'active'
-        },
-        { 
-            id: 7,
-            name: '招聘申请表', 
-            submissions: 467,
-            views: 1134,
-            rate: 41.2,
-            trend: '+11.2%',
-            status: 'active'
-        },
-        { 
-            id: 8,
-            name: '会员注册表单', 
-            submissions: 398,
-            views: 987,
-            rate: 40.3,
-            trend: '+4.5%',
-            status: 'active'
-        },
-        { 
-            id: 9,
-            name: '订单信息收集表', 
-            submissions: 345,
-            views: 876,
-            rate: 39.4,
-            trend: '+7.8%',
-            status: 'active'
-        },
-        { 
-            id: 10,
-            name: '培训报名表', 
-            submissions: 289,
-            views: 745,
-            rate: 38.8,
-            trend: '+3.9%',
-            status: 'active'
-        },
     ];
 
     return (
-        <Card className="flex flex-col">
-            <CardHeader className="pb-2">
-                <div className="flex items-center justify-between w-full">
-                    <h3 className="text-lg font-semibold flex items-center">
-                        <TrendingUp className="w-5 h-5 mr-2 text-green-600" />
-                        热门表单 Top 10
-                    </h3>
-                    <span className="text-sm text-gray-500">按提交数排序</span>
-                </div>
-            </CardHeader>
-            <CardBody className="pt-0 flex-1 min-h-0 overflow-hidden">
+        <Chart title="热门表单 Top 10">
                 <div className="space-y-2">
                     {forms.map((form, index) => (
                         <div 
@@ -153,8 +99,7 @@ export default function ActiveForms() {
                         </div>
                     ))}
                 </div>
-            </CardBody>
-        </Card>
+        </Chart>
     );
 }
 

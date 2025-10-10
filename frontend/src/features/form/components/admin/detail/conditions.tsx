@@ -1,46 +1,57 @@
 'use client'
 
-import React from "react";
-import { Select, SelectItem } from "@heroui/react";
+import React, { useState } from "react";
+import { Button, ButtonGroup, Select, SelectItem } from "@heroui/react";
+import { ListFilterPlus } from "lucide-react";
+
 
 export default function Conditions() {
+    const [selectedRange, setSelectedRange] = useState("1");
 
-    const animals = [
+    const versions = [
         { key: "cat", label: "版本1" },
         { key: "dog", label: "版本2" },
         { key: "bird", label: "版本3" },
     ];
 
-    const range = [
-        { key: "1", label: "7天" },
-        { key: "2", label: "30天" },
-        { key: "3", label: "60天" },
+    const ranges = [
+        { key: "1", label: "今天" },
+        { key: "7", label: "7天" },
+        { key: "30", label: "一月" },
     ];
 
     return (
-        <div className="grid grid-flow-col items-center gap-2 justify-end">
+        <div className="grid grid-cols-[1fr_auto] items-center gap-2">
+            <div className="text-xs font-medium">
+                <ListFilterPlus className="w-4 h-4" />
+            </div>
+            <div className="grid grid-flow-col items-center gap-4 justify-end">
             <Select
                 isRequired
                 className="w-24"
                 defaultSelectedKeys={["cat"]}
-                placeholder="Select an animal"
+                placeholder="选择版本"
                 size="sm"
             >
-                {animals.map((animal) => (
-                    <SelectItem key={animal.key}>{animal.label}</SelectItem>
+                {versions.map((version) => (
+                    <SelectItem key={version.key}>{version.label}</SelectItem>
                 ))}
             </Select>
-            <Select
-                isRequired
-                className="w-24"
-                defaultSelectedKeys={["1"]}
-                placeholder="Select an animal"
-                size="sm"
-            >
-                {range.map((v) => (
-                    <SelectItem key={v.key}>{v.label}</SelectItem>
+            
+            <ButtonGroup size="sm" variant="flat">
+                {ranges.map((range) => (
+                    <Button
+                        key={range.key}
+                        color={selectedRange === range.key ? "primary" : "default"}
+                        variant={selectedRange === range.key ? "solid" : "flat"}
+                        onPress={() => setSelectedRange(range.key)}
+                    >
+                        {range.label}
+                    </Button>
                 ))}
-            </Select>
+            </ButtonGroup>
         </div>
+        </div>
+
     )
 }

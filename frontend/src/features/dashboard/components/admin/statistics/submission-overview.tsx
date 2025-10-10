@@ -1,8 +1,31 @@
 'use client'
 
 import React from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Line } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler,
+    ChartOptions,
+} from 'chart.js';
 import Chart from "@/features/core/components/admin/statistic/chart";
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+);
 
 export default function SubmissionOverview() {
     // 静态数据 - 最近30天的提交概览
@@ -25,81 +48,128 @@ export default function SubmissionOverview() {
         { date: '10/09', total: 467, success: 445, unique: 387 },
     ];
 
-    const stats = {
-        totalSubmissions: 6834,
-        averageDaily: 427,
-        successRate: '95.4%',
-        growth: '+24.5%',
+    const chartData = {
+        labels: data.map(item => item.date),
+        datasets: [
+            {
+                label: '总提交',
+                data: data.map(item => item.total),
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                pointBackgroundColor: '#6366f1',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+            },
+            {
+                label: '成功提交',
+                data: data.map(item => item.success),
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+            },
+            {
+                label: '独立IP',
+                data: data.map(item => item.unique),
+                borderColor: '#f59e0b',
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                pointBackgroundColor: '#f59e0b',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+            },
+        ],
+    };
+
+    const options: ChartOptions<'line'> = {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+            mode: 'index' as const,
+            intersect: false,
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top' as const,
+                align: 'end' as const,
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    padding: 15,
+                    font: {
+                        size: 12,
+                    },
+                },
+            },
+            tooltip: {
+                backgroundColor: 'white',
+                titleColor: '#1f2937',
+                bodyColor: '#6b7280',
+                borderColor: '#e5e7eb',
+                borderWidth: 1,
+                padding: 12,
+                boxPadding: 6,
+                usePointStyle: true,
+                callbacks: {
+                    labelColor: function(context) {
+                        return {
+                            borderColor: context.dataset.borderColor as string,
+                            backgroundColor: context.dataset.borderColor as string,
+                            borderWidth: 2,
+                            borderRadius: 2,
+                        };
+                    },
+                },
+            },
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                },
+                border: {
+                    display: false,
+                },
+                ticks: {
+                    font: {
+                        size: 12,
+                    },
+                },
+            },
+            y: {
+                border: {
+                    display: false,
+                },
+                grid: {
+                    color: '#f0f0f0',
+                },
+                ticks: {
+                    font: {
+                        size: 12,
+                    },
+                },
+            },
+        },
     };
 
     return (
         <Chart title="提交概览">
-            <AreaChart data={data}
-                margin={{ top: 10, right: 10, bottom: 0, left: -30 }}
-            >
-                <defs>
-                    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient id="colorUnique" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
-                    </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis
-                    dataKey="date"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12 }}
-                />
-                <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12 }}
-                />
-                <Tooltip
-                    contentStyle={{
-                        backgroundColor: 'white',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                    }}
-                />
-                <Legend
-                    wrapperStyle={{ paddingTop: '10px' }}
-                    iconType="circle"
-                />
-                <Area
-                    type="monotone"
-                    dataKey="total"
-                    stroke="#6366f1"
-                    fill="url(#colorTotal)"
-                    strokeWidth={2}
-                    name="总提交"
-                />
-                <Area
-                    type="monotone"
-                    dataKey="success"
-                    stroke="#10b981"
-                    fill="url(#colorSuccess)"
-                    strokeWidth={2}
-                    name="成功提交"
-                />
-                <Area
-                    type="monotone"
-                    dataKey="unique"
-                    stroke="#f59e0b"
-                    fill="url(#colorUnique)"
-                    strokeWidth={2}
-                    name="独立IP"
-                />
-            </AreaChart>
+            <div style={{ height: '300px' }}>
+                <Line data={chartData} options={options} />
+            </div>
         </Chart>
     );
 }
