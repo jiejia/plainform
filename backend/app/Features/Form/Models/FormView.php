@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
- * FormSubmission
+ * FormView
  * 
  * @property int $id
  * @property int $form_id
@@ -19,29 +19,32 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * @property string|null $deleted_at
  * @package App\Features\Form\Models
  */
-class FormSubmission extends Model
+class FormView extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'form_submissions';
+    protected $table = 'form_views';
 
     protected $fillable = [
         'form_id',
-        'data',
-        'version',
+        'form_version',
+        'visitor_id',
         'ipv4',
-        'created_at',
         'ipv6',
         'region',
-        'visitor_id',
         'user_agent',
+        'created_at',
+        'updated_at',
+        'completed_at',
     ];
 
     protected $casts = [
-        'data' => 'array',
-        'version' => 'integer',
+        'form_version' => 'integer',
+        'ipv4' => 'integer',
         'created_at' => 'datetime:Y-m-d H:i:s',
-        'deleted_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'completed_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     public $timestamps = false;

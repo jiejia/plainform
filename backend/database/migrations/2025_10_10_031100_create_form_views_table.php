@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('form_submissions', function (Blueprint $table) {
+        Schema::create('form_views', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('form_id');
-            // 使用 json 以兼容 sqlite / mysql; 若迁移到 PostgreSQL 可改为 jsonb
-            $table->json('data');
-            $table->timestamp('created_at')->useCurrent();
-            $table->softDeletes();
-            $table->integer('version')->default(1);
+            $table->integer('form_version');
+            $table->string('visitor_id', 255);
             $table->integer('ipv4')->nullable();
             $table->ipAddress('ipv6')->nullable();
             $table->string('region', 255)->nullable();
             $table->string('user_agent', 500)->nullable();
-            $table->string('visitor_id', 255);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('completed_at')->nullable();
         });
     }
 
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('form_submissions');
+        Schema::dropIfExists('form_views');
     }
 };

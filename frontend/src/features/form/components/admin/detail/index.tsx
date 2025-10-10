@@ -22,11 +22,11 @@ export default function Index() {
                     {/* 核心指标卡片 */}
                     <MetricCards />
                     
-                    {/* 提交趋势图 */}
-                    <SubmissionTrend /> 
-                    
-                    {/* 提交时段热力图 */}
-                    <TimeHeatmap />
+                    {/* 提交趋势图和提交时段热力图 */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <SubmissionTrend /> 
+                        <TimeHeatmap />
+                    </div>
                     
                     {/* 其他统计 */}
                     <AdditionalStats />
