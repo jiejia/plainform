@@ -48,6 +48,8 @@ class IndexValidator extends AbstractValidator
             'data.*.name' => 'required|string',
             'data.*.value' => 'present',
             'version' => 'nullable|integer|min:1',
+            'visitor_id' => 'required|string',
+            'user_agent' => 'nullable|string|max:500',
         ];
     }
 
@@ -124,6 +126,10 @@ class IndexValidator extends AbstractValidator
             'data.*.value.present' => 'Field value must be present',
             'version.integer' => 'Version must be an integer',
             'version.min' => 'Version must be at least 1',
+            'visitor_id.required' => 'Visitor ID is required',
+            'visitor_id.string' => 'Visitor ID must be a string',
+            'user_agent.string' => 'User agent must be a string',
+            'user_agent.max' => 'User agent cannot exceed 500 characters',
         ];
     }
 
@@ -135,7 +141,8 @@ class IndexValidator extends AbstractValidator
             'list' => ['keyword', 'created_at_start', 'created_at_end', 'submissions_count_start', 'submissions_count_end', 'status', 'order_by', 'order_type'],
             'delete' => ['ids'],
             'batch_update_enabled' => ['items', 'items.*.id', 'items.*.enabled'],
-            'submit' => ['data', 'data.*.name', 'data.*.value', 'version'],
+            'submit' => ['data', 'data.*.name', 'data.*.value', 'version', 'visitor_id', 'user_agent'],
+            'view' => ['version', 'visitor_id', 'user_agent'],
         ];
     }
 }

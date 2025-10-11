@@ -21,8 +21,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  */
 class FormView extends Model
 {
-    use SoftDeletes;
-
     protected $table = 'form_views';
 
     protected $fillable = [

@@ -4,11 +4,13 @@ namespace App\Features\Form\Services;
 use App\Features\Form\Models\Form;
 use App\Features\Form\Models\FormField;
 use App\Features\Form\Models\FormSubmission;
+use App\Features\Form\Models\FormView;
 use App\Features\Form\Models\Control;
 use App\Features\Admin\Models\Admin;
 use App\Features\Form\Constants\Code;
 use App\Features\Core\Exceptions\BusinessException;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 
 /**
  * IndexService
@@ -370,9 +372,12 @@ class IndexService
      * @param array $data
      * @param int $version
      * @param string $ipv4
+     * @param string $ipv6
+     * @param string $visitorId
+     * @param string $userAgent
      * @return void
      */
-    public function submit(string $uuid, array $data, int $version, string $ipv4) : void
+    public function submit(string $uuid, array $data, int $version, string $ipv4, string $ipv6, string $visitorId, string $userAgent) : void
     {
         // get form
         $form = Form::where('uuid', $uuid)->where('enabled', 1)->first();
@@ -410,6 +415,9 @@ class IndexService
             'version' => $version,
             'ipv4' => $ipv4,
             'created_at' => now(),
+            'ipv6' => $ipv6,
+            'visitor_id' => $visitorId,
+            'user_agent' => $userAgent,
         ]);
     }
 
@@ -684,5 +692,49 @@ class IndexService
         }
 
         return $field;
+    }
+
+    /**
+     * recordView
+     *
+     * @param string $uuid
+     * @param int $version
+     * @param string $visitorId
+     * @param string $ipv4
+     * @param string $ipv6
+     * @param string|null $userAgent
+     * @return void
+     */
+    public function recordView(string $uuid, int $version, string $visitorId, string $ipv4, string $ipv6, ?string $userAgent = null): void
+    {
+        // get form
+        $form = Form::where('uuid', $uuid)->where('enabled', 1)->first();
+
+        // check form
+        if (!$form) {
+            throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
+        }
+
+        // check if already recorded in 24 hours (same visitor_id + ip combination)
+        $exists = FormView::where('form_id', $form->id)
+            ->where('form_version', $version)
+            ->where('visitor_id', $visitorId)
+            ->where('ipv4', ip2long($ipv4))
+            ->where('ipv6', $ipv6)
+            ->where('created_at', '>=', now()->subHours(24))
+            ->exists();
+
+        if (!$exists) {
+            // create form view record
+            FormView::create([
+                'form_id' => $form->id,
+                'form_version' => $version,
+                'visitor_id' => $visitorId,
+                'ipv4' => $ipv4,
+                'ipv6' => $ipv6,
+                'user_agent' => $userAgent,
+                'created_at' => now(),
+            ]);
+        }
     }
 }

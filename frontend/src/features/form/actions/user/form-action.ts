@@ -24,12 +24,38 @@ export async function loadControlComponent(controlName: string){
     }
 }
 
-export async function submit(uuid: string, data: any, version: number): Promise<Result<void>> {
+export async function submit(uuid: string, data: any, version: number, visitorId: string, userAgent: string): Promise<Result<void>> {
     const res: Result<void> = await api.post(`api/form/${uuid}/submit`, {
         json: {
             data : data,
-            version : version
+            version : version,
+            visitor_id : visitorId,
+            user_agent : userAgent
         }
     }).json();
     return res;
+}
+
+/**
+ * Record form view
+ * @param uuid - Form UUID
+ * @param visitorId - Visitor ID
+ * @param version - Form version
+ * @param userAgent - User agent string
+ * @returns Promise that resolves to Result
+ */
+export async function recordFormView(uuid: string, visitorId: string, version: number, userAgent: string): Promise<Result<void>> {
+    try {
+        const res: Result<void> = await api.post(`api/form/${uuid}/view`, {
+            json: {
+                visitor_id: visitorId,
+                version: version,
+                user_agent: userAgent
+            }
+        }).json();
+        return res;
+    } catch (error: any) {
+        console.error('Record form view failed:', error);
+        return { code: -1, msg: error.message || 'Network error', data: undefined };
+    }
 }

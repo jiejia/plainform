@@ -52,8 +52,33 @@ class IndexController
         $data = $request->input('data');
         $version = $request->input('version', 1);
         $ipv4 = $request->ip();
+        $visitorId = $request->input('visitor_id');
+        $ipv6 = $request->ip();
+        $userAgent = $request->input('user_agent', null);
 
-        $this->service->submit($uuid, $data, $version, $ipv4);
+        $this->service->submit($uuid, $data, $version, $ipv4, $ipv6, $visitorId, $userAgent);
+
+        return json();
+    }
+
+    /**
+     * view
+     * 
+     * @param Request $request
+     * @param string $uuid
+     * @return JsonResponse
+     */
+    public function view(Request $request, string $uuid) : JsonResponse
+    {
+        $this->validator->scene('view')->validate($request->all());
+
+        $version = $request->input('version', 1);
+        $visitorId = $request->input('visitor_id');
+        $userAgent = $request->input('user_agent', null);
+        $ipv4 = $request->ip();
+        $ipv6 = $request->ip();
+
+        $this->service->recordView($uuid, $version, $visitorId, $ipv4, $ipv6, $userAgent);
 
         return json();
     }

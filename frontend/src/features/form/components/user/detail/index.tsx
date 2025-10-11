@@ -9,6 +9,8 @@ import { submit } from "@/features/form/actions/user/form-action";
 import { msg } from "@/features/core/utils/ui";
 import { clsx } from "clsx";
 import { config } from "@/features/form/types/config";
+import { getOrCreateVisitorId } from "@/features/core/utils/session";
+import { recordFormView } from "@/features/form/actions/user/form-action";
 
 interface FieldItemProps {
     field: Field;
@@ -136,7 +138,7 @@ export default function Detail({ form }: { form: FormType }) {
             
         console.log("formData", JSON.stringify(formData));
 
-        const res = await submit(form.uuid, formData, form.version || 1);
+        const res = await submit(form.uuid, formData, form.version || 1, getOrCreateVisitorId(), navigator.userAgent);
         if (res.code === 0) {
             msg("Success", "Submit successfully", "success");
             initializeFormData();
@@ -175,6 +177,9 @@ export default function Detail({ form }: { form: FormType }) {
     useEffect(() => {
         initializeFormData();
         initializeErrors();
+        if (form.uuid && form.version) {
+            recordFormView(form.uuid, getOrCreateVisitorId(), form.version || 1, navigator.userAgent);
+        }
     }, [form.fields]);
 
 
