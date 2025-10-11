@@ -21,8 +21,6 @@ return new class extends Migration
             $table->string('region', 255)->nullable();
             $table->string('user_agent', 500)->nullable();
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
-            $table->timestamp('completed_at')->nullable();
         });
     }
 

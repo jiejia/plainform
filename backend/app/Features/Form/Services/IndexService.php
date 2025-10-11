@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Features\Form\Services;
 
 use App\Features\Form\Models\Form;
@@ -30,7 +31,7 @@ class IndexService
      * @param array $fields
      * @return array
      */
-    public function create(Admin $admin, string $title, string $description, int $enabled, int $numberingStyle, array $fields) : array
+    public function create(Admin $admin, string $title, string $description, int $enabled, int $numberingStyle, array $fields): array
     {
         // get form data
         $data = [
@@ -81,7 +82,7 @@ class IndexService
      * @param array $fields
      * @return array
      */
-    public function update(Admin $admin, int $id, string $title, string $description, int $enabled, int $numberingStyle, array $fields) : array
+    public function update(Admin $admin, int $id, string $title, string $description, int $enabled, int $numberingStyle, array $fields): array
     {
         // get form
         $form = Form::with('fields')->find($id);
@@ -152,7 +153,7 @@ class IndexService
      * @param int $id
      * @return array
      */
-    public function detail(Admin $admin, int $id) : array
+    public function detail(Admin $admin, int $id): array
     {
         // get form
         $form = Form::where('id', $id)->with(['fields' => function ($query) {
@@ -182,7 +183,7 @@ class IndexService
      * @param string|null $orderType
      * @return array
      */
-    public function list(Admin $admin, ?string $keyword = null, ?string $createdAtStart = null, ?string $createdAtEnd = null, ?int $submissionsCountStart = null, ?int $submissionsCountEnd = null, ?int $status = null, ?string $orderBy = null, ?string $orderType = null) : array
+    public function list(Admin $admin, ?string $keyword = null, ?string $createdAtStart = null, ?string $createdAtEnd = null, ?int $submissionsCountStart = null, ?int $submissionsCountEnd = null, ?int $status = null, ?string $orderBy = null, ?string $orderType = null): array
     {
         $query = Form::select('id', 'uuid', 'title', 'enabled', 'created_at')->withCount('submissions');
 
@@ -190,7 +191,7 @@ class IndexService
         if ($keyword) {
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', '%' . $keyword . '%')
-                  ->orWhere('description', 'like', '%' . $keyword . '%');
+                    ->orWhere('description', 'like', '%' . $keyword . '%');
             });
         }
 
@@ -206,7 +207,7 @@ class IndexService
 
         // filter by submissions count range
         $submissionsCountSubquery = '(SELECT COUNT(*) FROM form_submissions WHERE forms.id = form_submissions.form_id AND form_submissions.deleted_at IS NULL)';
-        
+
         if ($submissionsCountStart !== null) {
             $query->whereRaw($submissionsCountSubquery . ' >= ?', [$submissionsCountStart]);
         }
@@ -240,7 +241,7 @@ class IndexService
      * @param Admin $admin
      * @param array $ids
      */
-    public function delete(Admin $admin, array $ids) : void
+    public function delete(Admin $admin, array $ids): void
     {
         foreach ($ids as $id) {
             // get form
@@ -271,7 +272,7 @@ class IndexService
      * @param array $items
      * @return void
      */
-    public function batchUpdateEnabled(Admin $admin, array $items) : void
+    public function batchUpdateEnabled(Admin $admin, array $items): void
     {
         foreach ($items as $item) {
             // get form
@@ -292,7 +293,7 @@ class IndexService
      *
      * @return array
      */
-    public function controls() : array
+    public function controls(): array
     {
         // check if controls table has data
         $controlsCount = Control::count();
@@ -313,7 +314,7 @@ class IndexService
      *
      * @return void
      */
-    public function scanAndImportControls() : void
+    public function scanAndImportControls(): void
     {
         $frontendControlsPath = base_path('../frontend/src/plugins/controls');
 
@@ -349,7 +350,7 @@ class IndexService
      * @param string $uuid
      * @return array
      */
-    public function frontDetail(string $uuid) : array
+    public function frontDetail(string $uuid): array
     {
         // get form with fields
         $form = Form::with(['fields' => function ($query) {
@@ -377,7 +378,7 @@ class IndexService
      * @param string $userAgent
      * @return void
      */
-    public function submit(string $uuid, array $data, int $version, string $ipv4, string $ipv6, string $visitorId, string $userAgent) : void
+    public function submit(string $uuid, array $data, int $version, string $ipv4, string $ipv6, string $visitorId, string $userAgent): void
     {
         // get form
         $form = Form::where('uuid', $uuid)->where('enabled', 1)->first();
@@ -385,6 +386,15 @@ class IndexService
         // check form
         if (!$form) {
             throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
+        }
+
+        // check if visitor has submitted 
+        $exists = FormSubmission::where('form_id', $form->id)
+            ->where('version', $version)
+            ->where('visitor_id', $visitorId)
+            ->exists();
+        if ($exists) {
+            throw new BusinessException(Code::FORM_ALREADY_SUBMITTED->message(), Code::FORM_ALREADY_SUBMITTED->value);
         }
 
         // validate form fields data
@@ -428,7 +438,7 @@ class IndexService
      * @param array $data
      * @return void
      */
-    private function validateFormFieldsData(Form $form, array $data) : void
+    private function validateFormFieldsData(Form $form, array $data): void
     {
         // get form fields
         $formFields = $form->fields()->get();
@@ -468,7 +478,7 @@ class IndexService
      * @param mixed $value
      * @return void
      */
-    private function validateConfigRegex(FormField $field, $value) : void
+    private function validateConfigRegex(FormField $field, $value): void
     {
         // get config regex and warning message
         $configRegex = $field->config['regex']['value'] ?? '';
@@ -500,7 +510,7 @@ class IndexService
      * @param string $regex
      * @return bool
      */
-    private function validateValueAgainstRegex($value, string $regex) : bool
+    private function validateValueAgainstRegex($value, string $regex): bool
     {
         // if value is array, validate each element
         if (is_array($value)) {
@@ -527,10 +537,10 @@ class IndexService
      * @param array $newFields
      * @return bool
      */
-    private function hasFieldsChanged(Form $form, array $newFields) : bool
+    private function hasFieldsChanged(Form $form, array $newFields): bool
     {
         $existingFields = $form->fields->sortBy('sort')->values()->toArray();
-        
+
         // check if number of fields changed
         if (count($existingFields) !== count($newFields)) {
             return true;
@@ -550,7 +560,7 @@ class IndexService
         // check if any field was removed or added
         $existingUuids = array_keys($existingFieldsLookup);
         $newUuids = array_keys($newFieldsLookup);
-        
+
         if (array_diff($existingUuids, $newUuids) || array_diff($newUuids, $existingUuids)) {
             return true;
         }
@@ -558,7 +568,7 @@ class IndexService
         // check if field order changed by comparing the UUID sequence
         $existingUuidSequence = array_column($existingFields, 'uuid');
         $newUuidSequence = array_column($newFields, 'uuid');
-        
+
         if ($existingUuidSequence !== $newUuidSequence) {
             return true;
         }
@@ -566,20 +576,20 @@ class IndexService
         // check if any field properties changed
         foreach ($newFields as $index => $newField) {
             $uuid = $newField['uuid'];
-            
+
             if (!isset($existingFieldsLookup[$uuid])) {
                 return true; // new field
             }
 
             $existingField = $existingFieldsLookup[$uuid];
-            
+
             // compare important field properties (excluding id, form_id, timestamps, sort)
             $fieldsToCompare = ['type', 'title', 'required', 'config'];
-            
+
             foreach ($fieldsToCompare as $fieldName) {
                 $existingValue = $existingField[$fieldName] ?? null;
                 $newValue = $newField[$fieldName] ?? null;
-                
+
                 // for arrays (like config), compare as JSON strings
                 if (is_array($existingValue) || is_array($newValue)) {
                     if (json_encode($existingValue) !== json_encode($newValue)) {
@@ -602,7 +612,7 @@ class IndexService
      * @param array $field
      * @return array
      */
-    private function processFieldConfig(array $field) : array
+    private function processFieldConfig(array $field): array
     {
         // check if config exists
         if (!isset($field['config']) || !is_array($field['config'])) {
@@ -629,12 +639,12 @@ class IndexService
                 // for options type, set regex to match any of the option values
                 $field = $this->processOptionsFieldConfig($field);
                 break;
-            
+
             case 'boolean':
                 // for boolean type, set regex to match true or false
                 $field['config']['regex']['value'] = '^(true|false)$';
                 break;
-            
+
             case 'string':
                 // for string type, keep regex unchanged
                 break;
@@ -649,7 +659,7 @@ class IndexService
      * @param array $field
      * @return array
      */
-    private function processOptionsFieldConfig(array $field) : array
+    private function processOptionsFieldConfig(array $field): array
     {
         // check if options exist
         if (!isset($field['config']['options']['default_options']) || !is_array($field['config']['options']['default_options'])) {
@@ -658,11 +668,11 @@ class IndexService
 
         $optionValues = [];
         $selectedValues = [];
-        
+
         foreach ($field['config']['options']['default_options'] as $option) {
             if (isset($option['val'])) {
                 $optionValues[] = preg_quote($option['val'], '/');
-                
+
                 // collect selected values for default_value
                 if (isset($option['selected']) && $option['selected'] === true) {
                     $selectedValues[] = $option['val'];
@@ -715,26 +725,15 @@ class IndexService
             throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
         }
 
-        // check if already recorded in 24 hours (same visitor_id + ip combination)
-        $exists = FormView::where('form_id', $form->id)
-            ->where('form_version', $version)
-            ->where('visitor_id', $visitorId)
-            ->where('ipv4', ip2long($ipv4))
-            ->where('ipv6', $ipv6)
-            ->where('created_at', '>=', now()->subHours(24))
-            ->exists();
-
-        if (!$exists) {
-            // create form view record
-            FormView::create([
-                'form_id' => $form->id,
-                'form_version' => $version,
-                'visitor_id' => $visitorId,
-                'ipv4' => $ipv4,
-                'ipv6' => $ipv6,
-                'user_agent' => $userAgent,
-                'created_at' => now(),
-            ]);
-        }
+        // create form view record
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => $version,
+            'visitor_id' => $visitorId,
+            'ipv4' => $ipv4,
+            'ipv6' => $ipv6,
+            'user_agent' => $userAgent,
+            'created_at' => now(),
+        ]);
     }
 }

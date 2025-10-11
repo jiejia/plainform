@@ -49,4 +49,5 @@ return [
     'version_for_fields_required' => 'Version for fields is required',
     'version_for_fields_integer' => 'Version for fields must be an integer',
     'version_for_fields_min' => 'Version for fields must be at least 1',
+    'form_already_submitted' => 'You have already submitted this form',
 ];

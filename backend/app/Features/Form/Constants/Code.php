@@ -15,6 +15,7 @@ enum Code: int
     case FORM_FIELD_INVALID_DATE = 40010;
     case FORM_FIELD_INVALID_REGEX = 40011;
     case FORM_FIELD_CONFIG_REGEX_FAILED = 40012;
+    case FORM_ALREADY_SUBMITTED = 40013;
     
     public function message(): string
     {
@@ -31,6 +32,7 @@ enum Code: int
             self::FORM_FIELD_INVALID_DATE => __('form.form_field_invalid_date'),
             self::FORM_FIELD_INVALID_REGEX => __('form.form_field_invalid_regex'),
             self::FORM_FIELD_CONFIG_REGEX_FAILED => __('form.form_field_config_regex_failed'),
+            self::FORM_ALREADY_SUBMITTED => __('form.form_already_submitted'),
         };
 
         return __($key);

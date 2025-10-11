@@ -32,16 +32,12 @@ class FormView extends Model
         'region',
         'user_agent',
         'created_at',
-        'updated_at',
-        'completed_at',
     ];
 
     protected $casts = [
         'form_version' => 'integer',
         'ipv4' => 'integer',
         'created_at' => 'datetime:Y-m-d H:i:s',
-        'updated_at' => 'datetime:Y-m-d H:i:s',
-        'completed_at' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
     ];
 

@@ -177,10 +177,14 @@ export default function Detail({ form }: { form: FormType }) {
     useEffect(() => {
         initializeFormData();
         initializeErrors();
+
+    }, [form.fields]);
+
+    useEffect(() => {
         if (form.uuid && form.version) {
             recordFormView(form.uuid, getOrCreateVisitorId(), form.version || 1, navigator.userAgent);
         }
-    }, [form.fields]);
+    }, [form.uuid, form.version]);
 
 
     return (
