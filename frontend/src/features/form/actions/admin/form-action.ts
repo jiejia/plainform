@@ -8,9 +8,6 @@ import { SearchParams} from "@/features/form/types/list/search-params";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Form as FormInList } from "@/features/form/types/list/form";
 import { initialSearchParams } from "@/features/form/data/initial-search-params";
-import { initialSearchParams as initialSubmissionSearchParams } from "@/features/form/data/submission/initial-search-params";
-import { SearchParams as SubmissionSearchParams } from "@/features/form/types/submission/search-params";
-import { Submission } from "@/features/form/types/submission/submission";
 
 /**
  * get controls
@@ -130,3 +127,17 @@ export async function batchDelete(ids: number[]) {
     return res;
 }
  
+/**
+ * get statistics
+ * 
+ * @param id 
+ * @param version 
+ * @param periodType 
+ * @returns 
+ */
+export async function statistics(id: number, version: number, periodType: string) {
+    const res: Result<any> = await api.post(`api/admin/form/${id}/statistics`, {
+        json: { version, period_type: periodType }
+    }).json();
+    return res;
+}

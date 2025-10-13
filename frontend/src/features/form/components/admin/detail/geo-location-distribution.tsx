@@ -2,7 +2,6 @@
 
 import React from "react";
 import Chart from "@/features/core/components/admin/statistic/chart";
-import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,7 +10,6 @@ import {
     Title,
     Tooltip,
     Legend,
-    ChartOptions,
 } from 'chart.js';
 
 ChartJS.register(
@@ -23,7 +21,7 @@ ChartJS.register(
     Legend
 );
 
-export default function AdditionalStats() {
+export default function GeoLocationDistribution() {
     // IP地理位置分布
     const locationData = [
         { city: '北京', count: 342, percentage: 27.7 },
@@ -47,77 +45,8 @@ export default function AdditionalStats() {
         { period: '21-24', count: 89, label: '夜晚' },
     ];
 
-    const chartData = {
-        labels: timeSlotData.map(item => item.period),
-        datasets: [
-            {
-                label: '提交次数',
-                data: timeSlotData.map(item => item.count),
-                backgroundColor: '#059669',
-                borderRadius: 4,
-                borderSkipped: false,
-            },
-        ],
-    };
-
-    const options: ChartOptions<'bar'> = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false,
-            },
-            tooltip: {
-                backgroundColor: 'white',
-                titleColor: '#1f2937',
-                bodyColor: '#6b7280',
-                borderColor: '#e5e7eb',
-                borderWidth: 1,
-                padding: 12,
-                boxPadding: 6,
-                callbacks: {
-                    title: function (context) {
-                        const index = context[0].dataIndex;
-                        return timeSlotData[index].label;
-                    },
-                    label: function (context) {
-                        return context.parsed.y + ' 次';
-                    },
-                },
-            },
-        },
-        scales: {
-            x: {
-                grid: {
-                    display: false,
-                },
-                border: {
-                    display: false,
-                },
-                ticks: {
-                    font: {
-                        size: 12,
-                    },
-                },
-            },
-            y: {
-                border: {
-                    display: false,
-                },
-                grid: {
-                    color: '#f0f0f0',
-                },
-                ticks: {
-                    font: {
-                        size: 12,
-                    },
-                },
-            },
-        },
-    };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Chart title="地理位置分布 (Top 7)">
                 <div className="space-y-3">
                     {locationData.map((location, index) => (
@@ -150,13 +79,6 @@ export default function AdditionalStats() {
                     ))}
                 </div>
             </Chart>
-
-            <Chart title="提交时段分析">
-                <div className="w-full" style={{ height: '280px' }}>
-                    <Bar data={chartData} options={options} />
-                </div>
-            </Chart>
-        </div>
     );
 }
 

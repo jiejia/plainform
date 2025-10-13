@@ -151,7 +151,7 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
             
-            msg("导出成功", "Excel文件已开始下载", 'success');
+            // msg("导出成功", "Excel文件已开始下载", 'success');
         } else {
             msg("导出失败", res.msg, 'warning');
         }

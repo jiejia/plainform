@@ -5,6 +5,8 @@ namespace Tests\Unit\Modules\Form;
 use Tests\TestCase;
 use App\Features\Form\Services\IndexService;
 use App\Features\Form\Models\Form;
+use App\Features\Form\Models\FormSubmission;
+use App\Features\Form\Models\FormView;
 use App\Features\Admin\Models\Admin;
 use App\Features\Form\Constants\Code;
 use App\Features\Core\Exceptions\BusinessException;
@@ -597,5 +599,372 @@ class FormServiceTest extends TestCase
         // assert default_value.value is empty string when no radio option is selected
         $expectedDefaultValue = '';
         $this->assertEquals($expectedDefaultValue, $result['fields'][0]['config']['default_value']['value']);
+    }
+
+    /**
+     * test statistics with today period
+     *
+     * @return void
+     */
+    public function testStatisticsWithTodayPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // create today's submissions
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now(),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => now(),
+        ]);
+
+        // create today's views
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'visitor1',
+            'ipv6' => '192.168.1.1',
+            'created_at' => now(),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'visitor3',
+            'ipv6' => '192.168.1.3',
+            'created_at' => now(),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'visitor4',
+            'ipv6' => '192.168.1.4',
+            'created_at' => now(),
+        ]);
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'today');
+
+        // assert result structure
+        $this->assertArrayHasKey('figures', $result);
+        $this->assertCount(4, $result['figures']);
+
+        // get figures
+        $figures = $result['figures'];
+
+        // assert total_submission_number
+        $this->assertEquals(2, $figures['total_submission_number']['value']);
+
+        // assert average_submission_number (2 submissions / 1 day = 2)
+        $this->assertEquals(2, $figures['average_submission_number']['value']);
+
+        // assert average_finishing_rate (2 submissions / 3 views = 66.67%)
+        $this->assertEquals(66.67, $figures['average_finishing_rate']['value']);
+
+        // assert independent_ip_number (4 unique IPs from both submissions and views: 1.1, 1.2, 1.3, 1.4)
+        $this->assertEquals(4, $figures['independent_ip_number']['value']);
+    }
+
+    /**
+     * test statistics with week period
+     *
+     * @return void
+     */
+    public function testStatisticsWithWeekPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // create this week's submissions
+        $thisWeekStart = now()->startOfWeek();
+        
+        for ($i = 0; $i < 7; $i++) {
+            FormSubmission::create([
+                'form_id' => $form->id,
+                'version' => 1,
+                'data' => [],
+                'ipv6' => '192.168.1.' . ($i + 1),
+                'visitor_id' => 'visitor' . ($i + 1),
+                'created_at' => $thisWeekStart->copy()->addDays($i),
+            ]);
+        }
+
+        // create this week's views
+        for ($i = 0; $i < 14; $i++) {
+            FormView::create([
+                'form_id' => $form->id,
+                'form_version' => 1,
+                'visitor_id' => 'visitor' . ($i + 1),
+                'ipv6' => '192.168.1.' . ($i + 1),
+                'created_at' => $thisWeekStart->copy()->addDays($i % 7),
+            ]);
+        }
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'week');
+
+        // assert result structure
+        $this->assertArrayHasKey('figures', $result);
+        $this->assertCount(4, $result['figures']);
+
+        // get figures
+        $figures = $result['figures'];
+
+        // assert total_submission_number
+        $this->assertEquals(7, $figures['total_submission_number']['value']);
+
+        // assert average_submission_number (7 submissions / 7 days = 1)
+        $this->assertEquals(1, $figures['average_submission_number']['value']);
+    }
+
+    /**
+     * test statistics with month period
+     *
+     * @return void
+     */
+    public function testStatisticsWithMonthPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // create this month's submissions
+        $thisMonthStart = now()->startOfMonth();
+        
+        for ($i = 0; $i < 10; $i++) {
+            FormSubmission::create([
+                'form_id' => $form->id,
+                'version' => 1,
+                'data' => [],
+                'ipv6' => '192.168.1.' . ($i + 1),
+                'visitor_id' => 'visitor' . ($i + 1),
+                'created_at' => $thisMonthStart->copy()->addDays($i),
+            ]);
+        }
+
+        // create this month's views
+        for ($i = 0; $i < 20; $i++) {
+            FormView::create([
+                'form_id' => $form->id,
+                'form_version' => 1,
+                'visitor_id' => 'viewer' . ($i + 1),
+                'ipv6' => '192.168.2.' . ($i + 1),
+                'created_at' => $thisMonthStart->copy()->addDays($i % 10),
+            ]);
+        }
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'month');
+
+        // assert result structure
+        $this->assertArrayHasKey('figures', $result);
+        $this->assertCount(4, $result['figures']);
+
+        // get figures
+        $figures = $result['figures'];
+
+        // assert total_submission_number
+        $this->assertEquals(10, $figures['total_submission_number']['value']);
+    }
+
+    /**
+     * test statistics with non-existent form
+     *
+     * @return void
+     */
+    public function testStatisticsWithNonExistentForm(): void
+    {
+        // expect exception
+        $this->expectException(BusinessException::class);
+        $this->expectExceptionCode(Code::FORM_NOT_FOUND->value);
+
+        // execute statistics with invalid form id
+        $this->service->statistics(999999, 1, 'today');
+    }
+
+    /**
+     * test statistics with no data
+     *
+     * @return void
+     */
+    public function testStatisticsWithNoData(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // execute statistics with no submissions or views
+        $result = $this->service->statistics($form->id, 1, 'today');
+
+        // assert result structure
+        $this->assertArrayHasKey('figures', $result);
+        $this->assertCount(4, $result['figures']);
+
+        // get figures
+        $figures = $result['figures'];
+
+        // assert all values are 0
+        $this->assertEquals(0, $figures['total_submission_number']['value']);
+        $this->assertEquals(0, $figures['average_submission_number']['value']);
+        $this->assertEquals(0, $figures['average_finishing_rate']['value']);
+        $this->assertEquals(0, $figures['independent_ip_number']['value']);
+    }
+
+    /**
+     * test statistics growth rate calculation
+     *
+     * @return void
+     */
+    public function testStatisticsGrowthRateCalculation(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // create yesterday's submission
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now()->subDay(),
+        ]);
+
+        // create today's submissions (2 submissions)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => now(),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => now(),
+        ]);
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'today');
+
+        // get figures
+        $figures = $result['figures'];
+
+        // assert growth rate is 100% (from 1 to 2 = 100% increase)
+        $this->assertEquals(100.00, $figures['total_submission_number']['growth_rate']);
+    }
+
+    /**
+     * test statistics with all period
+     *
+     * @return void
+     */
+    public function testStatisticsWithAllPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // create submissions across different times
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now()->subDays(30),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => now()->subDays(15),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => now(),
+        ]);
+
+        // create views across different times
+        for ($i = 0; $i < 5; $i++) {
+            FormView::create([
+                'form_id' => $form->id,
+                'form_version' => 1,
+                'visitor_id' => 'viewer' . $i,
+                'ipv6' => '192.168.2.' . ($i + 1),
+                'created_at' => now()->subDays(rand(0, 30)),
+            ]);
+        }
+
+        // execute statistics with 'all' period
+        $result = $this->service->statistics($form->id, 1, 'all');
+
+        // assert result structure
+        $this->assertArrayHasKey('figures', $result);
+        $this->assertCount(4, $result['figures']);
+
+        // get figures
+        $figures = $result['figures'];
+
+        // assert total_submission_number is 3
+        $this->assertEquals(3, $figures['total_submission_number']['value']);
+
+        // assert growth rate is always 100 for 'all' period
+        $this->assertEquals(100.00, $figures['total_submission_number']['growth_rate']);
+        $this->assertEquals(100.00, $figures['average_submission_number']['growth_rate']);
+        $this->assertEquals(100.00, $figures['average_finishing_rate']['growth_rate']);
+        $this->assertEquals(100.00, $figures['independent_ip_number']['growth_rate']);
+    }
+
+    /**
+     * test statistics with all period and no data
+     *
+     * @return void
+     */
+    public function testStatisticsWithAllPeriodNoData(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // execute statistics with 'all' period and no data
+        $result = $this->service->statistics($form->id, 1, 'all');
+
+        // get figures
+        $figures = $result['figures'];
+
+        // assert all values are 0
+        $this->assertEquals(0, $figures['total_submission_number']['value']);
+        $this->assertEquals(0, $figures['average_submission_number']['value']);
+        $this->assertEquals(0, $figures['average_finishing_rate']['value']);
+        $this->assertEquals(0, $figures['independent_ip_number']['value']);
+
+        // assert growth rate is always 100 for 'all' period even with no data
+        $this->assertEquals(100.00, $figures['total_submission_number']['growth_rate']);
+        $this->assertEquals(100.00, $figures['average_submission_number']['growth_rate']);
+        $this->assertEquals(100.00, $figures['average_finishing_rate']['growth_rate']);
+        $this->assertEquals(100.00, $figures['independent_ip_number']['growth_rate']);
     }
 }

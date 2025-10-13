@@ -50,6 +50,8 @@ class IndexValidator extends AbstractValidator
             'version' => 'nullable|integer|min:1',
             'visitor_id' => 'required|string',
             'user_agent' => 'nullable|string|max:500',
+
+            'period_type' => 'required|in:today,week,month,all',
         ];
     }
 
@@ -130,6 +132,9 @@ class IndexValidator extends AbstractValidator
             'visitor_id.string' => 'Visitor ID must be a string',
             'user_agent.string' => 'User agent must be a string',
             'user_agent.max' => 'User agent cannot exceed 500 characters',
+
+            'period_type.required' => 'Period type is required',
+            'period_type.in' => 'Period type must be one of: today, week, month, all',
         ];
     }
 
@@ -143,6 +148,7 @@ class IndexValidator extends AbstractValidator
             'batch_update_enabled' => ['items', 'items.*.id', 'items.*.enabled'],
             'submit' => ['data', 'data.*.name', 'data.*.value', 'version', 'visitor_id', 'user_agent'],
             'view' => ['version', 'visitor_id', 'user_agent'],
+            'statistics' => ['version', 'period_type'],
         ];
     }
 }

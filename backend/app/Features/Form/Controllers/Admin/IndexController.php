@@ -149,4 +149,22 @@ class IndexController
         $data = $this->service->controls();
         return json($data);
     }
+
+    /**
+     * statistics
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function statistics(Request $request, int $id) : JsonResponse
+    {
+        $this->validator->scene('statistics')->validate($request->all());
+
+        $version = $request->input('version');
+        $periodType = $request->input('period_type');
+
+        $data = $this->service->statistics($id, $version, $periodType);
+        return json($data);
+    }
 }

@@ -736,4 +736,274 @@ class IndexService
             'created_at' => now(),
         ]);
     }
+
+    /**
+     * statistics
+     *
+     * @param int $formId
+     * @param int $version
+     * @param string $periodType
+     * @return array
+     */
+    public function statistics(int $formId, int $version, string $periodType): array
+    {
+        // check form exists
+        $form = Form::find($formId);
+        if (!$form) {
+            throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
+        }
+
+        // calculate period date ranges
+        $periods = $this->calculatePeriodRanges($periodType);
+        $currentPeriod = $periods['current'];
+        $previousPeriod = $periods['previous'];
+        $daysInPeriod = $periods['days'];
+
+        // get current period statistics
+        $currentStats = $this->getPeriodStatistics($formId, $version, $currentPeriod['start'], $currentPeriod['end'], $daysInPeriod);
+
+        // for 'all' period type, growth rate is always 100
+        if ($periodType === 'all') {
+            $figures = [
+                'total_submission_number' => [
+                    'value' => $currentStats['total_submissions'],
+                    'growth_rate' => 100.00,
+                ],
+                'average_submission_number' => [
+                    'value' => $currentStats['average_submissions_per_day'],
+                    'growth_rate' => 100.00,
+                ],
+                'average_finishing_rate' => [
+                    'value' => $currentStats['finishing_rate'],
+                    'growth_rate' => 100.00,
+                ],
+                'independent_ip_number' => [
+                    'value' => $currentStats['independent_ips'],
+                    'growth_rate' => 100.00,
+                ],
+            ];
+        } else {
+            // get previous period statistics
+            $previousStats = $this->getPeriodStatistics($formId, $version, $previousPeriod['start'], $previousPeriod['end'], $periods['previous_days']);
+
+            // calculate figures with growth rates
+            $figures = [
+                'total_submission_number' => [
+                    'value' => $currentStats['total_submissions'],
+                    'growth_rate' => $this->calculateGrowthRate($currentStats['total_submissions'], $previousStats['total_submissions']),
+                ],
+                'average_submission_number' => [
+                    'value' => $currentStats['average_submissions_per_day'],
+                    'growth_rate' => $this->calculateGrowthRate($currentStats['average_submissions_per_day'], $previousStats['average_submissions_per_day']),
+                ],
+                'average_finishing_rate' => [
+                    'value' => $currentStats['finishing_rate'],
+                    'growth_rate' => $this->calculateGrowthRate($currentStats['finishing_rate'], $previousStats['finishing_rate']),
+                ],
+                'independent_ip_number' => [
+                    'value' => $currentStats['independent_ips'],
+                    'growth_rate' => $this->calculateGrowthRate($currentStats['independent_ips'], $previousStats['independent_ips']),
+                ],
+            ];
+        }
+
+        return [
+            'figures' => $figures,
+        ];
+    }
+
+    /**
+     * calculatePeriodRanges
+     *
+     * @param string $periodType
+     * @return array
+     */
+    private function calculatePeriodRanges(string $periodType): array
+    {
+        $now = now();
+
+        switch ($periodType) {
+            case 'today':
+                $currentStart = $now->copy()->startOfDay();
+                $currentEnd = $now->copy()->endOfDay();
+                $previousStart = $now->copy()->subDay()->startOfDay();
+                $previousEnd = $now->copy()->subDay()->endOfDay();
+                $days = 1;
+                $previousDays = 1;
+                break;
+
+            case 'week':
+                $currentStart = $now->copy()->startOfWeek();
+                $currentEnd = $now->copy()->endOfWeek();
+                $previousStart = $now->copy()->subWeek()->startOfWeek();
+                $previousEnd = $now->copy()->subWeek()->endOfWeek();
+                $days = 7;
+                $previousDays = 7;
+                break;
+
+            case 'month':
+                $currentStart = $now->copy()->startOfMonth();
+                $currentEnd = $now->copy()->endOfMonth();
+                $previousStart = $now->copy()->subMonth()->startOfMonth();
+                $previousEnd = $now->copy()->subMonth()->endOfMonth();
+                $days = $currentStart->daysInMonth;
+                $previousDays = $previousStart->daysInMonth;
+                break;
+
+            case 'all':
+                // for all time, use a very early date as start
+                $currentStart = $now->copy()->subYears(100);
+                $currentEnd = $now->copy()->endOfDay();
+                // previous period not used for 'all' type
+                $previousStart = $now->copy()->subYears(100);
+                $previousEnd = $now->copy()->subYears(100);
+                // calculate actual days from earliest record to now
+                $days = $currentStart->diffInDays($currentEnd) + 1;
+                $previousDays = 1;
+                break;
+
+            default:
+                $currentStart = $now->copy()->startOfDay();
+                $currentEnd = $now->copy()->endOfDay();
+                $previousStart = $now->copy()->subDay()->startOfDay();
+                $previousEnd = $now->copy()->subDay()->endOfDay();
+                $days = 1;
+                $previousDays = 1;
+                break;
+        }
+
+        return [
+            'current' => [
+                'start' => $currentStart,
+                'end' => $currentEnd,
+            ],
+            'previous' => [
+                'start' => $previousStart,
+                'end' => $previousEnd,
+            ],
+            'days' => $days,
+            'previous_days' => $previousDays,
+        ];
+    }
+
+    /**
+     * getPeriodStatistics
+     *
+     * @param int $formId
+     * @param int $version
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @param int $daysInPeriod
+     * @return array
+     */
+    private function getPeriodStatistics(int $formId, int $version, $startDate, $endDate, int $daysInPeriod): array
+    {
+        // get total submissions count
+        $totalSubmissions = FormSubmission::where('form_id', $formId)
+            ->where('version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
+        // get total views count
+        $totalViews = FormView::where('form_id', $formId)
+            ->where('form_version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
+        // get independent IPs count from both submissions and views
+        $submissionIps = $this->getIpsFromSubmissions($formId, $version, $startDate, $endDate);
+        $viewIps = $this->getIpsFromViews($formId, $version, $startDate, $endDate);
+        
+        // merge and count unique IPs
+        $allIps = array_filter(array_merge($submissionIps, $viewIps));
+        $independentIps = count(array_unique($allIps));
+
+        // calculate average submissions per day
+        $averageSubmissionsPerDay = $daysInPeriod > 0 ? round($totalSubmissions / $daysInPeriod, 2) : 0;
+
+        // calculate finishing rate (submission / view)
+        $finishingRate = $totalViews > 0 ? round(($totalSubmissions / $totalViews) * 100, 2) : 0;
+
+        return [
+            'total_submissions' => $totalSubmissions,
+            'total_views' => $totalViews,
+            'independent_ips' => $independentIps,
+            'average_submissions_per_day' => $averageSubmissionsPerDay,
+            'finishing_rate' => $finishingRate,
+        ];
+    }
+
+    /**
+     * calculateGrowthRate
+     *
+     * @param float $currentValue
+     * @param float $previousValue
+     * @return float
+     */
+    private function calculateGrowthRate(float $currentValue, float $previousValue): float
+    {
+        if ($previousValue == 0) {
+            return $currentValue > 0 ? 100.00 : 0.00;
+        }
+
+        return round((($currentValue - $previousValue) / $previousValue) * 100, 2);
+    }
+
+    /**
+     * getIpsFromSubmissions
+     *
+     * @param int $formId
+     * @param int $version
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getIpsFromSubmissions(int $formId, int $version, $startDate, $endDate): array
+    {
+        $ipv4s = FormSubmission::where('form_id', $formId)
+            ->where('version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereNotNull('ipv4')
+            ->pluck('ipv4')
+            ->map(fn($ip) => (string)$ip)
+            ->toArray();
+
+        $ipv6s = FormSubmission::where('form_id', $formId)
+            ->where('version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereNotNull('ipv6')
+            ->pluck('ipv6')
+            ->toArray();
+
+        return array_merge($ipv4s, $ipv6s);
+    }
+
+    /**
+     * getIpsFromViews
+     *
+     * @param int $formId
+     * @param int $version
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getIpsFromViews(int $formId, int $version, $startDate, $endDate): array
+    {
+        $ipv4s = FormView::where('form_id', $formId)
+            ->where('form_version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereNotNull('ipv4')
+            ->pluck('ipv4')
+            ->map(fn($ip) => (string)$ip)
+            ->toArray();
+
+        $ipv6s = FormView::where('form_id', $formId)
+            ->where('form_version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereNotNull('ipv6')
+            ->pluck('ipv6')
+            ->toArray();
+
+        return array_merge($ipv4s, $ipv6s);
+    }
 }

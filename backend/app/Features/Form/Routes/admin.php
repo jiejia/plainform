@@ -12,6 +12,7 @@ Route::prefix('form')->group(function () {
     Route::put('/{id}', [IndexController::class, 'update'])->name('admin.form.update');
     Route::delete('/', [IndexController::class, 'delete'])->name('admin.form.delete');
     Route::patch('/batch-update-enabled', [IndexController::class, 'batchUpdateEnabled'])->name('admin.form.batch_update_enabled');
+    Route::post('/{id}/statistics', [IndexController::class, 'statistics'])->name('admin.form.statistics');
 
     // Submission routes
     Route::prefix('{formId}/submission')->group(function () {

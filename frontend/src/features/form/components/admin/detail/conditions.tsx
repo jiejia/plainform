@@ -1,23 +1,18 @@
 'use client'
 
-import React, { useState } from "react";
+import React from "react";
 import { Button, ButtonGroup, Select, SelectItem } from "@heroui/react";
 import { ListFilterPlus } from "lucide-react";
+import { SearchParams } from "@/features/form/types/detail/search-params";
 
 
-export default function Conditions() {
-    const [selectedRange, setSelectedRange] = useState("1");
-
-    const versions = [
-        { key: "cat", label: "版本1" },
-        { key: "dog", label: "版本2" },
-        { key: "bird", label: "版本3" },
-    ];
+export default function Conditions({ searchParams, setSearchParams, versions }: { searchParams: SearchParams, setSearchParams: (searchParams: SearchParams) => void, versions: number[] }) {
 
     const ranges = [
-        { key: "1", label: "今天" },
-        { key: "7", label: "7天" },
-        { key: "30", label: "一月" },
+        { key: "today", label: "今天" },
+        { key: "week", label: "7天" },
+        { key: "month", label: "一月" },
+        { key: "all", label: "所有" },
     ];
 
     return (
@@ -29,12 +24,13 @@ export default function Conditions() {
             <Select
                 isRequired
                 className="w-24"
-                defaultSelectedKeys={["cat"]}
+                defaultSelectedKeys={[searchParams.version.toString()]}
                 placeholder="选择版本"
                 size="sm"
+                onSelectionChange={(e) => setSearchParams({ ...searchParams, version: parseInt(e.currentKey || '') })}
             >
                 {versions.map((version) => (
-                    <SelectItem key={version.key}>{version.label}</SelectItem>
+                    <SelectItem key={version.toString()} textValue={"版本" + version.toString()}>版本{version}</SelectItem>
                 ))}
             </Select>
             
@@ -42,9 +38,9 @@ export default function Conditions() {
                 {ranges.map((range) => (
                     <Button
                         key={range.key}
-                        color={selectedRange === range.key ? "primary" : "default"}
-                        variant={selectedRange === range.key ? "solid" : "flat"}
-                        onPress={() => setSelectedRange(range.key)}
+                        color={searchParams.type === range.key ? "primary" : "default"}
+                        variant={searchParams.type === range.key ? "solid" : "flat"}
+                        onPress={() => setSearchParams({ ...searchParams, type: range.key })}
                     >
                         {range.label}
                     </Button>

@@ -11,6 +11,7 @@ export default function Conditions() {
         { key: "1", label: "今天" },
         { key: "7", label: "7天" },
         { key: "30", label: "一月" },
+        { key: "all", label: "所有" },
     ];
 
     return (
