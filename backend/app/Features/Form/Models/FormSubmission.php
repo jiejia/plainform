@@ -33,6 +33,8 @@ class FormSubmission extends Model
         'created_at',
         'ipv6',
         'region',
+        'country',
+        'city',
         'visitor_id',
         'user_agent',
     ];

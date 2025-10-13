@@ -51,7 +51,7 @@ export default function Index({ initialData, formId, versions }: { initialData: 
                     
                     {/* 其他统计 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <GeoLocationDistribution />
+                        <GeoLocationDistribution data={data.geo_location_distribution} />
                         <SubmissionPeriod />
                     </div>
                 </div>

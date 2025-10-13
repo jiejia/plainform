@@ -1484,11 +1484,11 @@ class FormServiceTest extends TestCase
         $this->assertIsArray($timeHeatMap);
         $this->assertCount(7, $timeHeatMap);
 
-        // assert Monday (dayIndex=0) hour 10 has average of 2 (only one Monday in a week)
-        $this->assertEquals(2, $timeHeatMap[0][10]);
+        // assert Monday (dayIndex=0) hour 10 has average of 2.00 (only one Monday in a week)
+        $this->assertEquals(2.00, $timeHeatMap[0][10]);
 
-        // assert Wednesday (dayIndex=2) hour 15 has average of 1
-        $this->assertEquals(1, $timeHeatMap[2][15]);
+        // assert Wednesday (dayIndex=2) hour 15 has average of 1.00
+        $this->assertEquals(1.00, $timeHeatMap[2][15]);
 
         // assert other hours are 0
         $this->assertEquals(0, $timeHeatMap[0][0]);
@@ -1548,8 +1548,8 @@ class FormServiceTest extends TestCase
         // Monday is dayIndex=0
         // In October 2024, there are 4 Mondays (7th, 14th, 21st, 28th)
         // We have 4 submissions on hour 9 across 2 Mondays
-        // average = 4 / 4 Mondays = 1
-        $this->assertEquals(1, $timeHeatMap[0][9]);
+        // average = 4 / 4 Mondays = 1.00
+        $this->assertEquals(1.00, $timeHeatMap[0][9]);
     }
 
     /**
@@ -1629,8 +1629,8 @@ class FormServiceTest extends TestCase
         // Tuesday is dayIndex=1
         // In the period Oct 1-15, there are 3 Tuesdays (1st, 8th, 15th)
         // We have 6 submissions on hour 13 across 2 Tuesdays (1st and 8th)
-        // average = 6 / 3 Tuesdays = 2
-        $this->assertEquals(2, $timeHeatMap[1][13]);
+        // average = 6 / 3 Tuesdays = 2.00
+        $this->assertEquals(2.00, $timeHeatMap[1][13]);
     }
 
     /**

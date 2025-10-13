@@ -25,8 +25,15 @@ export type Trend = {
 
 export type TimeHeatmap = number[][];
 
+export type GeoLocationDistribution = {
+    city: string;
+    count: number;
+    percentage: number;
+};
+
 export type Statistic = {
     figures: Figures;
     trends: Trend[];
     time_heat_map: TimeHeatmap;
+    geo_location_distribution: GeoLocationDistribution[];
 }

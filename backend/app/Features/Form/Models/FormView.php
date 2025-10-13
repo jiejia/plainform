@@ -30,6 +30,8 @@ class FormView extends Model
         'ipv4',
         'ipv6',
         'region',
+        'country',
+        'city',
         'user_agent',
         'created_at',
     ];

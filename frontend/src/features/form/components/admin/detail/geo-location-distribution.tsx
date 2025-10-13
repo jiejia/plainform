@@ -11,6 +11,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
+import { GeoLocationDistribution as GeoLocationDistributionType } from "@/features/form/types/statistic";
 
 ChartJS.register(
     CategoryScale,
@@ -21,30 +22,9 @@ ChartJS.register(
     Legend
 );
 
-export default function GeoLocationDistribution() {
+export default function GeoLocationDistribution( { data }: { data: GeoLocationDistributionType[] } ) {
     // IP地理位置分布
-    const locationData = [
-        { city: '北京', count: 342, percentage: 27.7 },
-        { city: '上海', count: 256, percentage: 20.7 },
-        { city: '深圳', count: 198, percentage: 16.0 },
-        { city: '广州', count: 145, percentage: 11.7 },
-        { city: '杭州', count: 112, percentage: 9.1 },
-        { city: '成都', count: 89, percentage: 7.2 },
-        { city: '其他', count: 92, percentage: 7.5 },
-    ];
-
-    // 提交时段分析（按时间段）
-    const timeSlotData = [
-        { period: '00-03', count: 12, label: '凌晨' },
-        { period: '03-06', count: 8, label: '清晨' },
-        { period: '06-09', count: 45, label: '早晨' },
-        { period: '09-12', count: 156, label: '上午' },
-        { period: '12-15', count: 134, label: '中午' },
-        { period: '15-18', count: 178, label: '下午' },
-        { period: '18-21', count: 142, label: '傍晚' },
-        { period: '21-24', count: 89, label: '夜晚' },
-    ];
-
+    const locationData = data;
 
     return (
             <Chart title="地理位置分布 (Top 7)">

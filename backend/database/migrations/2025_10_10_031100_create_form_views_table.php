@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('ipv4')->nullable();
             $table->ipAddress('ipv6')->nullable();
             $table->string('region', 255)->nullable();
+            $table->string('country', 255)->nullable();
+            $table->string('city', 255)->nullable();
             $table->string('user_agent', 500)->nullable();
             $table->timestamp('created_at')->useCurrent();
         });

@@ -12,6 +12,8 @@ use App\Features\Form\Constants\Code;
 use App\Features\Core\Exceptions\BusinessException;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
+use GeoIp2\Database\Reader;
+use GeoIp2\Exception\AddressNotFoundException;
 
 /**
  * IndexService
@@ -418,17 +420,58 @@ class IndexService
         //     }
         // }
 
+        // get country and city
+        $country = $this->getCountry($ipv4);
+        $city = $this->getCity($ipv4, $country);
+
         // create form submission
         FormSubmission::create([
             'form_id' => $form->id,
             'data' => $data,
             'version' => $version,
             'ipv4' => $ipv4,
+            'country' => $country,
+            'city' => $city,
             'created_at' => now(),
             'ipv6' => $ipv6,
             'visitor_id' => $visitorId,
             'user_agent' => $userAgent,
         ]);
+    }
+
+    /**
+     * getCountry
+     *
+     * @param string $ipv4
+     * @return string
+     */
+    private function getCountry(string $ipv4): string
+    {
+        $reader = new Reader(base_path('database/geoip/GeoIP2-Country-Test.mmdb'));
+        try {
+            $record = $reader->country($ipv4);
+            return $record->country->name;
+        } catch (AddressNotFoundException $e) {
+            return $ipv4;
+        }
+    }   
+    
+
+    /**
+     * getCity
+     *
+     * @param string $ipv4
+     * @return string
+     */
+    private function getCity(string $ipv4): string
+    {
+        $reader = new Reader(base_path('database/geoip/GeoIP2-City-Test.mmdb'));
+        try {
+            $record = $reader->city($ipv4);
+            return $record->city->name;
+        } catch (AddressNotFoundException $e) {
+            return $ipv4;
+        }
     }
 
     /**
@@ -725,12 +768,18 @@ class IndexService
             throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
         }
 
+        // get country and city
+        $country = $this->getCountry($ipv4);
+        $city = $this->getCity($ipv4, $country);
+
         // create form view record
         FormView::create([
             'form_id' => $form->id,
             'form_version' => $version,
             'visitor_id' => $visitorId,
             'ipv4' => $ipv4,
+            'country' => $country,
+            'city' => $city,
             'ipv6' => $ipv6,
             'user_agent' => $userAgent,
             'created_at' => now(),
@@ -813,10 +862,14 @@ class IndexService
         // get time heat map data
         $timeHeatMap = $this->getTimeHeatMap($formId, $version, $periodType, $currentPeriod['start'], $currentPeriod['end']);
 
+        // get geo location distribution
+        $geoLocationDistribution = $this->getGeoLocationDistribution($formId, $version, $currentPeriod['start'], $currentPeriod['end']);
+
         return [
             'figures' => $figures,
             'trends' => $trends,
             'time_heat_map' => $timeHeatMap,
+            'geo_location_distribution' => $geoLocationDistribution,
         ];
     }
 
@@ -1246,7 +1299,7 @@ class IndexService
                 $occurrences = $dayOccurrences[$originalDayOfWeek] ?? 1;
                 
                 foreach ($hours as $hour => $totalCount) {
-                    $heatMap[$dayIndex][$hour] = (int)round($totalCount / $occurrences);
+                    $heatMap[$dayIndex][$hour] = round($totalCount / $occurrences, 2);
                 }
             }
         }
@@ -1275,5 +1328,48 @@ class IndexService
         }
         
         return $occurrences;
+    }
+
+    /**
+     * getGeoLocationDistribution
+     *
+     * @param int $formId
+     * @param int $version
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getGeoLocationDistribution(int $formId, int $version, $startDate, $endDate): array
+    {
+        // get total count for percentage calculation
+        $totalCount = FormView::where('form_id', $formId)
+            ->where('form_version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
+        // get location distribution grouped by country and city
+        $locations = FormView::where('form_id', $formId)
+            ->where('form_version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->select('country', 'city', DB::raw('COUNT(*) as count'))
+            ->groupBy('country', 'city')
+            ->orderByDesc('count')
+            ->get();
+
+        // format result with percentage
+        $result = [];
+        foreach ($locations as $location) {
+            $city = trim($location->country . ' ' . $location->city);
+            $count = (int)$location->count;
+            $percentage = $totalCount > 0 ? round(($count / $totalCount) * 100, 1) : 0;
+            
+            $result[] = [
+                'city' => $city,
+                'count' => $count,
+                'percentage' => $percentage,
+            ];
+        }
+
+        return $result;
     }
 }
