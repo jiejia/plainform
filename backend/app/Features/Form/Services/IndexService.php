@@ -879,11 +879,15 @@ class IndexService
         // get geo location distribution
         $geoLocationDistribution = $this->getGeoLocationDistribution($formId, $version, $currentPeriod['start'], $currentPeriod['end']);
 
+        // get submission period distribution
+        $submissionPeriod = $this->getSubmissionPeriodDistribution($formId, $version, $currentPeriod['start'], $currentPeriod['end']);
+
         return [
             'figures' => $figures,
             'trends' => $trends,
             'time_heat_map' => $timeHeatMap,
             'geo_location_distribution' => $geoLocationDistribution,
+            'submission_period' => $submissionPeriod,
         ];
     }
 
@@ -1408,6 +1412,66 @@ class IndexService
                 'city' => $city,
                 'count' => $count,
                 'percentage' => $percentage,
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * getSubmissionPeriodDistribution
+     *
+     * Get submission count distribution by time periods
+     *
+     * @param int $formId
+     * @param int|null $version
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getSubmissionPeriodDistribution(int $formId, ?int $version, $startDate, $endDate): array
+    {
+        // define time periods
+        $periods = [
+            ['start' => 0, 'end' => 3, 'period' => '00:00-03:00', 'label' => '凌晨'],
+            ['start' => 3, 'end' => 6, 'period' => '03:00-06:00', 'label' => '清晨'],
+            ['start' => 6, 'end' => 9, 'period' => '06:00-09:00', 'label' => '早晨'],
+            ['start' => 9, 'end' => 12, 'period' => '09:00-12:00', 'label' => '上午'],
+            ['start' => 12, 'end' => 15, 'period' => '12:00-15:00', 'label' => '中午'],
+            ['start' => 15, 'end' => 18, 'period' => '15:00-18:00', 'label' => '下午'],
+            ['start' => 18, 'end' => 21, 'period' => '18:00-21:00', 'label' => '傍晚'],
+            ['start' => 21, 'end' => 24, 'period' => '21:00-24:00', 'label' => '夜晚'],
+        ];
+
+        // determine database driver
+        $driver = config('database.default');
+        $hourExpression = $driver === 'sqlite' 
+            ? "CAST(strftime('%H', created_at) as INTEGER) as hour"
+            : 'EXTRACT(HOUR FROM created_at) as hour';
+
+        // get submissions grouped by hour
+        $submissionsQuery = FormSubmission::where('form_id', $formId);
+        if ($version !== null) {
+            $submissionsQuery->where('version', $version);
+        }
+        $submissions = $submissionsQuery->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw("$hourExpression, COUNT(*) as count")
+            ->groupBy('hour')
+            ->pluck('count', 'hour')
+            ->toArray();
+
+        // aggregate submissions by time periods
+        $result = [];
+        foreach ($periods as $period) {
+            $count = 0;
+            for ($hour = $period['start']; $hour < $period['end']; $hour++) {
+                $count += (int)($submissions[$hour] ?? 0);
+            }
+            
+            $result[] = [
+                'period' => $period['period'],
+                'count' => $count,
+                'label' => $period['label'],
             ];
         }
 

@@ -31,9 +31,16 @@ export type GeoLocationDistribution = {
     percentage: number;
 };
 
+export type SubmissionPeriod = {
+    period: string;
+    count: number;
+    label: string;
+};
+
 export type Statistic = {
     figures: Figures;
     trends: Trend[];
     time_heat_map: TimeHeatmap;
     geo_location_distribution: GeoLocationDistribution[];
+    submission_period: SubmissionPeriod[];
 }
