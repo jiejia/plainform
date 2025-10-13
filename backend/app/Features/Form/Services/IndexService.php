@@ -754,7 +754,7 @@ class IndexService
         }
 
         // calculate period date ranges
-        $periods = $this->calculatePeriodRanges($periodType);
+        $periods = $this->calculatePeriodRanges($periodType, $formId, $version);
         $currentPeriod = $periods['current'];
         $previousPeriod = $periods['previous'];
         $daysInPeriod = $periods['days'];
@@ -807,8 +807,12 @@ class IndexService
             ];
         }
 
+        // get trends data
+        $trends = $this->getTrends($formId, $version, $periodType, $currentPeriod['start'], $currentPeriod['end']);
+
         return [
             'figures' => $figures,
+            'trends' => $trends,
         ];
     }
 
@@ -816,9 +820,11 @@ class IndexService
      * calculatePeriodRanges
      *
      * @param string $periodType
+     * @param int $formId
+     * @param int $version
      * @return array
      */
-    private function calculatePeriodRanges(string $periodType): array
+    private function calculatePeriodRanges(string $periodType, int $formId, int $version): array
     {
         $now = now();
 
@@ -851,13 +857,30 @@ class IndexService
                 break;
 
             case 'all':
-                // for all time, use a very early date as start
-                $currentStart = $now->copy()->subYears(100);
-                $currentEnd = $now->copy()->endOfDay();
+                // for all time, get earliest and latest records from form_views
+                $earliestView = FormView::where('form_id', $formId)
+                    ->where('form_version', $version)
+                    ->orderBy('created_at', 'asc')
+                    ->first();
+
+                $latestView = FormView::where('form_id', $formId)
+                    ->where('form_version', $version)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                if ($earliestView && $latestView) {
+                    $currentStart = $earliestView->created_at->copy()->startOfDay();
+                    $currentEnd = $latestView->created_at->copy()->endOfDay();
+                } else {
+                    // if no views, use current day
+                    $currentStart = $now->copy()->startOfDay();
+                    $currentEnd = $now->copy()->endOfDay();
+                }
+
                 // previous period not used for 'all' type
-                $previousStart = $now->copy()->subYears(100);
-                $previousEnd = $now->copy()->subYears(100);
-                // calculate actual days from earliest record to now
+                $previousStart = $currentStart->copy();
+                $previousEnd = $currentStart->copy();
+                // calculate actual days from earliest to latest record
                 $days = $currentStart->diffInDays($currentEnd) + 1;
                 $previousDays = 1;
                 break;
@@ -1005,5 +1028,132 @@ class IndexService
             ->toArray();
 
         return array_merge($ipv4s, $ipv6s);
+    }
+
+    /**
+     * getTrends
+     *
+     * @param int $formId
+     * @param int $version
+     * @param string $periodType
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getTrends(int $formId, int $version, string $periodType, $startDate, $endDate): array
+    {
+        $trends = [];
+
+        if ($periodType === 'today') {
+            // for today, group by hour (24 hours)
+            $trends = $this->getTrendsByHour($formId, $version, $startDate, $endDate);
+        } else {
+            // for all, week, month, group by day
+            $trends = $this->getTrendsByDay($formId, $version, $startDate, $endDate, $periodType);
+        }
+
+        return $trends;
+    }
+
+    /**
+     * getTrendsByHour
+     *
+     * @param int $formId
+     * @param int $version
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getTrendsByHour(int $formId, int $version, $startDate, $endDate): array
+    {
+        $trends = [];
+
+        // determine database driver
+        $driver = config('database.default');
+        $hourExpression = $driver === 'sqlite' 
+            ? "CAST(strftime('%H', created_at) as INTEGER) as hour"
+            : 'EXTRACT(HOUR FROM created_at) as hour';
+
+        // get submissions grouped by hour
+        $submissions = FormSubmission::where('form_id', $formId)
+            ->where('version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw("$hourExpression, COUNT(*) as count")
+            ->groupBy('hour')
+            ->pluck('count', 'hour')
+            ->toArray();
+
+        // get views grouped by hour
+        $views = FormView::where('form_id', $formId)
+            ->where('form_version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw("$hourExpression, COUNT(*) as count")
+            ->groupBy('hour')
+            ->pluck('count', 'hour')
+            ->toArray();
+
+        // generate all 24 hours
+        for ($hour = 0; $hour < 24; $hour++) {
+            $trends[] = [
+                'point' => sprintf('%02d:00', $hour),
+                'views_count' => (int)($views[$hour] ?? 0),
+                'submissions_count' => (int)($submissions[$hour] ?? 0),
+            ];
+        }
+
+        return $trends;
+    }
+
+    /**
+     * getTrendsByDay
+     *
+     * @param int $formId
+     * @param int $version
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @param string $periodType
+     * @return array
+     */
+    private function getTrendsByDay(int $formId, int $version, $startDate, $endDate, string $periodType): array
+    {
+        $trends = [];
+
+        // determine database driver
+        $driver = config('database.default');
+        $dateExpression = $driver === 'sqlite' 
+            ? "date(created_at) as date"
+            : 'DATE(created_at) as date';
+
+        // get submissions grouped by date
+        $submissions = FormSubmission::where('form_id', $formId)
+            ->where('version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw("$dateExpression, COUNT(*) as count")
+            ->groupBy('date')
+            ->pluck('count', 'date')
+            ->toArray();
+
+        // get views grouped by date
+        $views = FormView::where('form_id', $formId)
+            ->where('form_version', $version)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw("$dateExpression, COUNT(*) as count")
+            ->groupBy('date')
+            ->pluck('count', 'date')
+            ->toArray();
+
+        // generate all dates in the period
+        $currentDate = $startDate->copy();
+        while ($currentDate->lte($endDate)) {
+            $dateKey = $currentDate->format('Y-m-d');
+            $trends[] = [
+                'point' => $currentDate->format('m/d'),
+                'views_count' => (int)($views[$dateKey] ?? 0),
+                'submissions_count' => (int)($submissions[$dateKey] ?? 0),
+            ];
+            $currentDate->addDay();
+        }
+
+        return $trends;
     }
 }

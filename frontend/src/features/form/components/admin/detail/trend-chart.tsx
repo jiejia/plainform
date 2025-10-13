@@ -15,10 +15,11 @@ import {
     Filler,
     ChartOptions,
 } from 'chart.js';
+import { Trend } from "@/features/form/types/statistic";
 
 ChartJS.register(
     CategoryScale,
-    LinearScale,
+    LinearScale,    
     PointElement,
     LineElement,
     Title,
@@ -27,32 +28,14 @@ ChartJS.register(
     Filler
 );
 
-export default function SubmissionTrend() {
-    const [period, setPeriod] = useState('7');
-
-    // 静态数据
-    const data = [
-        { date: '10/03', count: 45, success: 42 },
-        { date: '10/04', count: 52, success: 48 },
-        { date: '10/05', count: 48, success: 45 },
-        { date: '10/06', count: 68, success: 65 },
-        { date: '10/07', count: 58, success: 55 },
-        { date: '10/08', count: 72, success: 70 },
-        { date: '10/09', count: 65, success: 62 },
-    ];
-
-    const stats = {
-        peak: { date: '10/08', count: 72 },
-        average: 58,
-        growth: '+12.5%',
-    };
+export default function TrendChart( { data }: { data: Trend[] } ) {
 
     const chartData = {
-        labels: data.map(item => item.date),
+        labels: data.map(item => item.point),
         datasets: [
             {
-                label: '总提交',
-                data: data.map(item => item.count),
+                label: '浏览量',
+                data: data.map(item => item.views_count),
                 borderColor: '#0070f3',
                 backgroundColor: 'rgba(0, 112, 243, 0.1)',
                 fill: true,
@@ -64,8 +47,8 @@ export default function SubmissionTrend() {
                 pointBorderWidth: 2,
             },
             {
-                label: '有效提交',
-                data: data.map(item => item.success),
+                label: '提交量',
+                data: data.map(item => item.submissions_count),
                 borderColor: '#10b981',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
                 fill: true,
@@ -152,7 +135,7 @@ export default function SubmissionTrend() {
     };
 
     return (
-        <Chart title="提交趋势">
+        <Chart title="趋势图">
             <div style={{ height: '300px' }}>
                 <Line data={chartData} options={options} />
             </div>

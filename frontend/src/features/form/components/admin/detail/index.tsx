@@ -5,7 +5,6 @@ import { Card, CardBody } from "@heroui/react";
 import Conditions from "./conditions";
 import Scroll from "@/features/core/components/shared/scroll";
 import MetricCards from "./metric-cards";
-import SubmissionTrend from "./submission-trend";
 import TimeHeatmap from "./time-heatmap";
 import { Statistic } from "@/features/form/types/statistic";
 import GeoLocationDistribution from "./geo-location-distribution";
@@ -13,6 +12,7 @@ import SubmissionPeriod from "./submission-period";
 import { statistics as getStatistics } from "@/features/form/actions/admin/form-action";
 import { useState, useEffect } from "react";
 import { SearchParams } from "@/features/form/types/detail/search-params";
+import TrendChart from "./trend-chart";
 
 export default function Index({ initialData, formId, versions }: { initialData: Statistic, formId: number, versions: number[] }) {
 
@@ -45,7 +45,7 @@ export default function Index({ initialData, formId, versions }: { initialData: 
                     
                     {/* 提交趋势图和提交时段热力图 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <SubmissionTrend /> 
+                        <TrendChart data={data.trends} /> 
                         <TimeHeatmap />
                     </div>
                     

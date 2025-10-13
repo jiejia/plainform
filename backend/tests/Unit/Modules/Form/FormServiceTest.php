@@ -908,16 +908,46 @@ class FormServiceTest extends TestCase
             'created_at' => now(),
         ]);
 
-        // create views across different times
-        for ($i = 0; $i < 5; $i++) {
-            FormView::create([
-                'form_id' => $form->id,
-                'form_version' => 1,
-                'visitor_id' => 'viewer' . $i,
-                'ipv6' => '192.168.2.' . ($i + 1),
-                'created_at' => now()->subDays(rand(0, 30)),
-            ]);
-        }
+        // create views across different times, covering the full range of submissions
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer0',
+            'ipv6' => '192.168.2.1',
+            'created_at' => now()->subDays(30),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer1',
+            'ipv6' => '192.168.2.2',
+            'created_at' => now()->subDays(25),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer2',
+            'ipv6' => '192.168.2.3',
+            'created_at' => now()->subDays(15),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer3',
+            'ipv6' => '192.168.2.4',
+            'created_at' => now()->subDays(5),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer4',
+            'ipv6' => '192.168.2.5',
+            'created_at' => now(),
+        ]);
 
         // execute statistics with 'all' period
         $result = $this->service->statistics($form->id, 1, 'all');
@@ -966,5 +996,366 @@ class FormServiceTest extends TestCase
         $this->assertEquals(100.00, $figures['average_submission_number']['growth_rate']);
         $this->assertEquals(100.00, $figures['average_finishing_rate']['growth_rate']);
         $this->assertEquals(100.00, $figures['independent_ip_number']['growth_rate']);
+    }
+
+    /**
+     * test statistics trends with today period
+     *
+     * @return void
+     */
+    public function testStatisticsTrendsWithTodayPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // create submissions at different hours of today
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now()->startOfDay()->addHours(8),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => now()->startOfDay()->addHours(8)->addMinutes(30),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => now()->startOfDay()->addHours(14),
+        ]);
+
+        // create views at different hours of today
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer1',
+            'ipv6' => '192.168.1.4',
+            'created_at' => now()->startOfDay()->addHours(8),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer2',
+            'ipv6' => '192.168.1.5',
+            'created_at' => now()->startOfDay()->addHours(14),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer3',
+            'ipv6' => '192.168.1.6',
+            'created_at' => now()->startOfDay()->addHours(14),
+        ]);
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'today');
+
+        // assert trends structure
+        $this->assertArrayHasKey('trends', $result);
+        $this->assertIsArray($result['trends']);
+        $this->assertCount(24, $result['trends']);
+
+        // assert trends data structure for hour 8
+        $hour8Trend = $result['trends'][8];
+        $this->assertEquals('08:00', $hour8Trend['point']);
+        $this->assertEquals(2, $hour8Trend['submissions_count']);
+        $this->assertEquals(1, $hour8Trend['views_count']);
+
+        // assert trends data structure for hour 14
+        $hour14Trend = $result['trends'][14];
+        $this->assertEquals('14:00', $hour14Trend['point']);
+        $this->assertEquals(1, $hour14Trend['submissions_count']);
+        $this->assertEquals(2, $hour14Trend['views_count']);
+
+        // assert trends data structure for hour 0 (no data)
+        $hour0Trend = $result['trends'][0];
+        $this->assertEquals('00:00', $hour0Trend['point']);
+        $this->assertEquals(0, $hour0Trend['submissions_count']);
+        $this->assertEquals(0, $hour0Trend['views_count']);
+    }
+
+    /**
+     * test statistics trends with week period
+     *
+     * @return void
+     */
+    public function testStatisticsTrendsWithWeekPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        $weekStart = now()->startOfWeek();
+
+        // create submissions on different days of the week
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => $weekStart->copy()->addDays(0),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => $weekStart->copy()->addDays(2),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => $weekStart->copy()->addDays(2),
+        ]);
+
+        // create views on different days of the week
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer1',
+            'ipv6' => '192.168.1.4',
+            'created_at' => $weekStart->copy()->addDays(0),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer2',
+            'ipv6' => '192.168.1.5',
+            'created_at' => $weekStart->copy()->addDays(0),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer3',
+            'ipv6' => '192.168.1.6',
+            'created_at' => $weekStart->copy()->addDays(2),
+        ]);
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'week');
+
+        // assert trends structure
+        $this->assertArrayHasKey('trends', $result);
+        $this->assertIsArray($result['trends']);
+        $this->assertCount(7, $result['trends']);
+
+        // assert first day of week
+        $firstDayTrend = $result['trends'][0];
+        $this->assertEquals($weekStart->format('m/d'), $firstDayTrend['point']);
+        $this->assertEquals(1, $firstDayTrend['submissions_count']);
+        $this->assertEquals(2, $firstDayTrend['views_count']);
+
+        // assert third day of week
+        $thirdDayTrend = $result['trends'][2];
+        $this->assertEquals($weekStart->copy()->addDays(2)->format('m/d'), $thirdDayTrend['point']);
+        $this->assertEquals(2, $thirdDayTrend['submissions_count']);
+        $this->assertEquals(1, $thirdDayTrend['views_count']);
+
+        // assert day with no data
+        $fourthDayTrend = $result['trends'][3];
+        $this->assertEquals(0, $fourthDayTrend['submissions_count']);
+        $this->assertEquals(0, $fourthDayTrend['views_count']);
+    }
+
+    /**
+     * test statistics trends with month period
+     *
+     * @return void
+     */
+    public function testStatisticsTrendsWithMonthPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        $monthStart = now()->startOfMonth();
+        $daysInMonth = $monthStart->daysInMonth;
+
+        // create submissions on specific days
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => $monthStart->copy()->addDays(0),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => $monthStart->copy()->addDays(5),
+        ]);
+
+        // create views on specific days
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer1',
+            'ipv6' => '192.168.1.3',
+            'created_at' => $monthStart->copy()->addDays(0),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer2',
+            'ipv6' => '192.168.1.4',
+            'created_at' => $monthStart->copy()->addDays(5),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer3',
+            'ipv6' => '192.168.1.5',
+            'created_at' => $monthStart->copy()->addDays(5),
+        ]);
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'month');
+
+        // assert trends structure
+        $this->assertArrayHasKey('trends', $result);
+        $this->assertIsArray($result['trends']);
+        $this->assertCount($daysInMonth, $result['trends']);
+
+        // assert first day of month
+        $firstDayTrend = $result['trends'][0];
+        $this->assertEquals($monthStart->format('m/d'), $firstDayTrend['point']);
+        $this->assertEquals(1, $firstDayTrend['submissions_count']);
+        $this->assertEquals(1, $firstDayTrend['views_count']);
+
+        // assert sixth day of month
+        $sixthDayTrend = $result['trends'][5];
+        $this->assertEquals($monthStart->copy()->addDays(5)->format('m/d'), $sixthDayTrend['point']);
+        $this->assertEquals(1, $sixthDayTrend['submissions_count']);
+        $this->assertEquals(2, $sixthDayTrend['views_count']);
+    }
+
+    /**
+     * test statistics trends with all period
+     *
+     * @return void
+     */
+    public function testStatisticsTrendsWithAllPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // create submissions across multiple days
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now()->subDays(5),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => now()->subDays(2),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => now(),
+        ]);
+
+        // create views across multiple days
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer1',
+            'ipv6' => '192.168.1.4',
+            'created_at' => now()->subDays(5),
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer2',
+            'ipv6' => '192.168.1.5',
+            'created_at' => now(),
+        ]);
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'all');
+
+        // assert trends structure
+        $this->assertArrayHasKey('trends', $result);
+        $this->assertIsArray($result['trends']);
+        
+        // for 'all' period, trends should cover all days from first record to now
+        // we have records spanning from 5 days ago to now, so should be at least 6 days
+        $this->assertGreaterThanOrEqual(6, count($result['trends']));
+
+        // verify trend structure
+        foreach ($result['trends'] as $trend) {
+            $this->assertArrayHasKey('point', $trend);
+            $this->assertArrayHasKey('views_count', $trend);
+            $this->assertArrayHasKey('submissions_count', $trend);
+            $this->assertIsString($trend['point']);
+            $this->assertIsInt($trend['views_count']);
+            $this->assertIsInt($trend['submissions_count']);
+        }
+    }
+
+    /**
+     * test statistics trends with no data
+     *
+     * @return void
+     */
+    public function testStatisticsTrendsWithNoData(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // execute statistics with today period and no data
+        $result = $this->service->statistics($form->id, 1, 'today');
+
+        // assert trends structure
+        $this->assertArrayHasKey('trends', $result);
+        $this->assertIsArray($result['trends']);
+        $this->assertCount(24, $result['trends']);
+
+        // verify all hours have 0 counts
+        foreach ($result['trends'] as $trend) {
+            $this->assertEquals(0, $trend['views_count']);
+            $this->assertEquals(0, $trend['submissions_count']);
+        }
     }
 }

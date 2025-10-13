@@ -17,7 +17,14 @@ export type Figures = {
     };
 };
 
+export type Trend = {
+    point: string;
+    views_count: number;
+    submissions_count: number;
+};
+
 
 export type Statistic = {
     figures: Figures;
+    trends: Trend[];
 }
