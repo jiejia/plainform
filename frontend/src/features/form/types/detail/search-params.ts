@@ -1,4 +1,4 @@
 export type SearchParams = {
     type: string;
-    version: number;
+    version: number | null;
 }

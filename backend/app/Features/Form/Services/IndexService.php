@@ -461,9 +461,10 @@ class IndexService
      * getCity
      *
      * @param string $ipv4
+     * @param string $country
      * @return string
      */
-    private function getCity(string $ipv4): string
+    private function getCity(string $ipv4, string $country): string
     {
         $reader = new Reader(base_path('database/geoip/GeoIP2-City-Test.mmdb'));
         try {
@@ -768,6 +769,19 @@ class IndexService
             throw new BusinessException(Code::FORM_NOT_FOUND->message(), Code::FORM_NOT_FOUND->value);
         }
 
+        // check if visitor has viewed in the last 24 hours
+        $twentyFourHoursAgo = now()->subHours(24);
+        $existingView = FormView::where('form_id', $form->id)
+            ->where('form_version', $version)
+            ->where('visitor_id', $visitorId)
+            ->where('created_at', '>=', $twentyFourHoursAgo)
+            ->exists();
+
+        // if visitor has already viewed in the last 24 hours, skip recording
+        if ($existingView) {
+            return;
+        }
+
         // get country and city
         $country = $this->getCountry($ipv4);
         $city = $this->getCity($ipv4, $country);
@@ -794,7 +808,7 @@ class IndexService
      * @param string $periodType
      * @return array
      */
-    public function statistics(int $formId, int $version, string $periodType): array
+    public function statistics(int $formId, ?int $version, string $periodType): array
     {
         // check form exists
         $form = Form::find($formId);
@@ -878,10 +892,10 @@ class IndexService
      *
      * @param string $periodType
      * @param int $formId
-     * @param int $version
+     * @param int|null $version
      * @return array
      */
-    private function calculatePeriodRanges(string $periodType, int $formId, int $version): array
+    private function calculatePeriodRanges(string $periodType, int $formId, ?int $version): array
     {
         $now = now();
 
@@ -915,15 +929,17 @@ class IndexService
 
             case 'all':
                 // for all time, get earliest and latest records from form_views
-                $earliestView = FormView::where('form_id', $formId)
-                    ->where('form_version', $version)
-                    ->orderBy('created_at', 'asc')
-                    ->first();
+                $earliestViewQuery = FormView::where('form_id', $formId);
+                if ($version !== null) {
+                    $earliestViewQuery->where('form_version', $version);
+                }
+                $earliestView = $earliestViewQuery->orderBy('created_at', 'asc')->first();
 
-                $latestView = FormView::where('form_id', $formId)
-                    ->where('form_version', $version)
-                    ->orderBy('created_at', 'desc')
-                    ->first();
+                $latestViewQuery = FormView::where('form_id', $formId);
+                if ($version !== null) {
+                    $latestViewQuery->where('form_version', $version);
+                }
+                $latestView = $latestViewQuery->orderBy('created_at', 'desc')->first();
 
                 if ($earliestView && $latestView) {
                     $currentStart = $earliestView->created_at->copy()->startOfDay();
@@ -970,25 +986,27 @@ class IndexService
      * getPeriodStatistics
      *
      * @param int $formId
-     * @param int $version
+     * @param int|null $version
      * @param \Carbon\Carbon $startDate
      * @param \Carbon\Carbon $endDate
      * @param int $daysInPeriod
      * @return array
      */
-    private function getPeriodStatistics(int $formId, int $version, $startDate, $endDate, int $daysInPeriod): array
+    private function getPeriodStatistics(int $formId, ?int $version, $startDate, $endDate, int $daysInPeriod): array
     {
         // get total submissions count
-        $totalSubmissions = FormSubmission::where('form_id', $formId)
-            ->where('version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
+        $submissionsQuery = FormSubmission::where('form_id', $formId);
+        if ($version !== null) {
+            $submissionsQuery->where('version', $version);
+        }
+        $totalSubmissions = $submissionsQuery->whereBetween('created_at', [$startDate, $endDate])->count();
 
         // get total views count
-        $totalViews = FormView::where('form_id', $formId)
-            ->where('form_version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
+        $viewsQuery = FormView::where('form_id', $formId);
+        if ($version !== null) {
+            $viewsQuery->where('form_version', $version);
+        }
+        $totalViews = $viewsQuery->whereBetween('created_at', [$startDate, $endDate])->count();
 
         // get independent IPs count from both submissions and views
         $submissionIps = $this->getIpsFromSubmissions($formId, $version, $startDate, $endDate);
@@ -1033,24 +1051,28 @@ class IndexService
      * getIpsFromSubmissions
      *
      * @param int $formId
-     * @param int $version
+     * @param int|null $version
      * @param \Carbon\Carbon $startDate
      * @param \Carbon\Carbon $endDate
      * @return array
      */
-    private function getIpsFromSubmissions(int $formId, int $version, $startDate, $endDate): array
+    private function getIpsFromSubmissions(int $formId, ?int $version, $startDate, $endDate): array
     {
-        $ipv4s = FormSubmission::where('form_id', $formId)
-            ->where('version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $ipv4Query = FormSubmission::where('form_id', $formId);
+        if ($version !== null) {
+            $ipv4Query->where('version', $version);
+        }
+        $ipv4s = $ipv4Query->whereBetween('created_at', [$startDate, $endDate])
             ->whereNotNull('ipv4')
             ->pluck('ipv4')
             ->map(fn($ip) => (string)$ip)
             ->toArray();
 
-        $ipv6s = FormSubmission::where('form_id', $formId)
-            ->where('version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $ipv6Query = FormSubmission::where('form_id', $formId);
+        if ($version !== null) {
+            $ipv6Query->where('version', $version);
+        }
+        $ipv6s = $ipv6Query->whereBetween('created_at', [$startDate, $endDate])
             ->whereNotNull('ipv6')
             ->pluck('ipv6')
             ->toArray();
@@ -1062,24 +1084,28 @@ class IndexService
      * getIpsFromViews
      *
      * @param int $formId
-     * @param int $version
+     * @param int|null $version
      * @param \Carbon\Carbon $startDate
      * @param \Carbon\Carbon $endDate
      * @return array
      */
-    private function getIpsFromViews(int $formId, int $version, $startDate, $endDate): array
+    private function getIpsFromViews(int $formId, ?int $version, $startDate, $endDate): array
     {
-        $ipv4s = FormView::where('form_id', $formId)
-            ->where('form_version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $ipv4Query = FormView::where('form_id', $formId);
+        if ($version !== null) {
+            $ipv4Query->where('form_version', $version);
+        }
+        $ipv4s = $ipv4Query->whereBetween('created_at', [$startDate, $endDate])
             ->whereNotNull('ipv4')
             ->pluck('ipv4')
             ->map(fn($ip) => (string)$ip)
             ->toArray();
 
-        $ipv6s = FormView::where('form_id', $formId)
-            ->where('form_version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $ipv6Query = FormView::where('form_id', $formId);
+        if ($version !== null) {
+            $ipv6Query->where('form_version', $version);
+        }
+        $ipv6s = $ipv6Query->whereBetween('created_at', [$startDate, $endDate])
             ->whereNotNull('ipv6')
             ->pluck('ipv6')
             ->toArray();
@@ -1091,13 +1117,13 @@ class IndexService
      * getTrends
      *
      * @param int $formId
-     * @param int $version
+     * @param int|null $version
      * @param string $periodType
      * @param \Carbon\Carbon $startDate
      * @param \Carbon\Carbon $endDate
      * @return array
      */
-    private function getTrends(int $formId, int $version, string $periodType, $startDate, $endDate): array
+    private function getTrends(int $formId, ?int $version, string $periodType, $startDate, $endDate): array
     {
         $trends = [];
 
@@ -1116,12 +1142,12 @@ class IndexService
      * getTrendsByHour
      *
      * @param int $formId
-     * @param int $version
+     * @param int|null $version
      * @param \Carbon\Carbon $startDate
      * @param \Carbon\Carbon $endDate
      * @return array
      */
-    private function getTrendsByHour(int $formId, int $version, $startDate, $endDate): array
+    private function getTrendsByHour(int $formId, ?int $version, $startDate, $endDate): array
     {
         $trends = [];
 
@@ -1132,18 +1158,22 @@ class IndexService
             : 'EXTRACT(HOUR FROM created_at) as hour';
 
         // get submissions grouped by hour
-        $submissions = FormSubmission::where('form_id', $formId)
-            ->where('version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $submissionsQuery = FormSubmission::where('form_id', $formId);
+        if ($version !== null) {
+            $submissionsQuery->where('version', $version);
+        }
+        $submissions = $submissionsQuery->whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw("$hourExpression, COUNT(*) as count")
             ->groupBy('hour')
             ->pluck('count', 'hour')
             ->toArray();
 
         // get views grouped by hour
-        $views = FormView::where('form_id', $formId)
-            ->where('form_version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $viewsQuery = FormView::where('form_id', $formId);
+        if ($version !== null) {
+            $viewsQuery->where('form_version', $version);
+        }
+        $views = $viewsQuery->whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw("$hourExpression, COUNT(*) as count")
             ->groupBy('hour')
             ->pluck('count', 'hour')
@@ -1165,13 +1195,13 @@ class IndexService
      * getTrendsByDay
      *
      * @param int $formId
-     * @param int $version
+     * @param int|null $version
      * @param \Carbon\Carbon $startDate
      * @param \Carbon\Carbon $endDate
      * @param string $periodType
      * @return array
      */
-    private function getTrendsByDay(int $formId, int $version, $startDate, $endDate, string $periodType): array
+    private function getTrendsByDay(int $formId, ?int $version, $startDate, $endDate, string $periodType): array
     {
         $trends = [];
 
@@ -1182,18 +1212,22 @@ class IndexService
             : 'DATE(created_at) as date';
 
         // get submissions grouped by date
-        $submissions = FormSubmission::where('form_id', $formId)
-            ->where('version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $submissionsQuery = FormSubmission::where('form_id', $formId);
+        if ($version !== null) {
+            $submissionsQuery->where('version', $version);
+        }
+        $submissions = $submissionsQuery->whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw("$dateExpression, COUNT(*) as count")
             ->groupBy('date')
             ->pluck('count', 'date')
             ->toArray();
 
         // get views grouped by date
-        $views = FormView::where('form_id', $formId)
-            ->where('form_version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $viewsQuery = FormView::where('form_id', $formId);
+        if ($version !== null) {
+            $viewsQuery->where('form_version', $version);
+        }
+        $views = $viewsQuery->whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw("$dateExpression, COUNT(*) as count")
             ->groupBy('date')
             ->pluck('count', 'date')
@@ -1218,13 +1252,13 @@ class IndexService
      * getTimeHeatMap
      *
      * @param int $formId
-     * @param int $version
+     * @param int|null $version
      * @param string $periodType
      * @param \Carbon\Carbon $startDate
      * @param \Carbon\Carbon $endDate
      * @return array
      */
-    private function getTimeHeatMap(int $formId, int $version, string $periodType, $startDate, $endDate): array
+    private function getTimeHeatMap(int $formId, ?int $version, string $periodType, $startDate, $endDate): array
     {
         // initialize heat map array (7 days x 24 hours)
         $heatMap = array_fill(0, 7, array_fill(0, 24, 0));
@@ -1243,9 +1277,11 @@ class IndexService
                 ? "CAST(strftime('%H', created_at) as INTEGER) as hour"
                 : 'EXTRACT(HOUR FROM created_at) as hour';
 
-            $submissions = FormSubmission::where('form_id', $formId)
-                ->where('version', $version)
-                ->whereBetween('created_at', [$startDate, $endDate])
+            $submissionsQuery = FormSubmission::where('form_id', $formId);
+            if ($version !== null) {
+                $submissionsQuery->where('version', $version);
+            }
+            $submissions = $submissionsQuery->whereBetween('created_at', [$startDate, $endDate])
                 ->selectRaw("$hourExpression, COUNT(*) as count")
                 ->groupBy('hour')
                 ->pluck('count', 'hour')
@@ -1266,9 +1302,11 @@ class IndexService
                 : 'EXTRACT(HOUR FROM created_at) as hour';
 
             // get submissions grouped by day of week and hour
-            $submissions = FormSubmission::where('form_id', $formId)
-                ->where('version', $version)
-                ->whereBetween('created_at', [$startDate, $endDate])
+            $submissionsQuery = FormSubmission::where('form_id', $formId);
+            if ($version !== null) {
+                $submissionsQuery->where('version', $version);
+            }
+            $submissions = $submissionsQuery->whereBetween('created_at', [$startDate, $endDate])
                 ->selectRaw("$dayExpression, $hourExpression, COUNT(*) as count")
                 ->groupBy('day_of_week', 'hour')
                 ->get();
@@ -1334,23 +1372,26 @@ class IndexService
      * getGeoLocationDistribution
      *
      * @param int $formId
-     * @param int $version
+     * @param int|null $version
      * @param \Carbon\Carbon $startDate
      * @param \Carbon\Carbon $endDate
      * @return array
      */
-    private function getGeoLocationDistribution(int $formId, int $version, $startDate, $endDate): array
+    private function getGeoLocationDistribution(int $formId, ?int $version, $startDate, $endDate): array
     {
         // get total count for percentage calculation
-        $totalCount = FormView::where('form_id', $formId)
-            ->where('form_version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
+        $totalCountQuery = FormView::where('form_id', $formId);
+        if ($version !== null) {
+            $totalCountQuery->where('form_version', $version);
+        }
+        $totalCount = $totalCountQuery->whereBetween('created_at', [$startDate, $endDate])->count();
 
         // get location distribution grouped by country and city
-        $locations = FormView::where('form_id', $formId)
-            ->where('form_version', $version)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $locationsQuery = FormView::where('form_id', $formId);
+        if ($version !== null) {
+            $locationsQuery->where('form_version', $version);
+        }
+        $locations = $locationsQuery->whereBetween('created_at', [$startDate, $endDate])
             ->select('country', 'city', DB::raw('COUNT(*) as count'))
             ->groupBy('country', 'city')
             ->orderByDesc('count')

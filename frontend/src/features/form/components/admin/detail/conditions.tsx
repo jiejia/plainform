@@ -21,32 +21,33 @@ export default function Conditions({ searchParams, setSearchParams, versions }: 
                 <ListFilterPlus className="w-4 h-4" />
             </div>
             <div className="grid grid-flow-col items-center gap-4 justify-end">
-            <Select
-                isRequired
-                className="w-24"
-                defaultSelectedKeys={[searchParams.version.toString()]}
-                placeholder="选择版本"
-                size="sm"
-                onSelectionChange={(e) => setSearchParams({ ...searchParams, version: parseInt(e.currentKey || '') })}
-            >
-                {versions.map((version) => (
-                    <SelectItem key={version.toString()} textValue={"版本" + version.toString()}>版本{version}</SelectItem>
-                ))}
-            </Select>
-            
-            <ButtonGroup size="sm" variant="flat">
-                {ranges.map((range) => (
-                    <Button
-                        key={range.key}
-                        color={searchParams.type === range.key ? "primary" : "default"}
-                        variant={searchParams.type === range.key ? "solid" : "flat"}
-                        onPress={() => setSearchParams({ ...searchParams, type: range.key })}
+                {versions.length > 0 && (
+                    <Select
+                        isRequired
+                        className="w-24"
+                        defaultSelectedKeys={[searchParams.version?.toString() || '']}
+                        placeholder="选择版本"
+                        size="sm"
+                        onSelectionChange={(e) => setSearchParams({ ...searchParams, version: parseInt(e.currentKey || '') })}
                     >
-                        {range.label}
-                    </Button>
-                ))}
-            </ButtonGroup>
-        </div>
+                        {versions.map((version) => (
+                            <SelectItem key={version.toString()} textValue={"版本" + version.toString()}>版本{version}</SelectItem>
+                        ))}
+                    </Select>
+                )}
+                <ButtonGroup size="sm" variant="flat">
+                    {ranges.map((range) => (
+                        <Button
+                            key={range.key}
+                            color={searchParams.type === range.key ? "primary" : "default"}
+                            variant={searchParams.type === range.key ? "solid" : "flat"}
+                            onPress={() => setSearchParams({ ...searchParams, type: range.key })}
+                        >
+                            {range.label}
+                        </Button>
+                    ))}
+                </ButtonGroup>
+            </div>
         </div>
 
     )

@@ -161,7 +161,7 @@ class IndexController
     {
         $this->validator->scene('statistics')->validate($request->all());
 
-        $version = $request->input('version');
+        $version = $request->input('version', null);
         $periodType = $request->input('period_type');
 
         $data = $this->service->statistics($id, $version, $periodType);

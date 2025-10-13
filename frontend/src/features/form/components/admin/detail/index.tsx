@@ -19,7 +19,7 @@ export default function Index({ initialData, formId, versions }: { initialData: 
     const [data, setData] = useState<Statistic>(initialData);
     const [searchParams, setSearchParams] = useState<SearchParams>({
         type: "today",
-        version: versions[0],
+        version: versions[0] || null,
     });
 
     useEffect(() => {

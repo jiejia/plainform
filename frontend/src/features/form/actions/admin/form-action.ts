@@ -135,7 +135,7 @@ export async function batchDelete(ids: number[]) {
  * @param periodType 
  * @returns 
  */
-export async function statistics(id: number, version: number, periodType: string) {
+export async function statistics(id: number, version: number | null, periodType: string) {
     const res: Result<any> = await api.post(`api/admin/form/${id}/statistics`, {
         json: { version, period_type: periodType }
     }).json();

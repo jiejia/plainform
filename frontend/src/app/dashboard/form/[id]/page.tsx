@@ -21,15 +21,15 @@ export default async function Detail({ params }: DetailProps) {
         notFound();
     }
 
-    // get statistics
-    const data = await statistics(id as unknown as number, 1, "today");
-    if (data.code !== 0) {
-        notFound();
-    }
-
     // get versions
     const versions = await getVersions(id as unknown as number);
     if (versions.code !== 0) {
+        notFound();
+    }
+
+    // get statistics
+    const data = await statistics(id as unknown as number, versions.data[0] || null, "today");
+    if (data.code !== 0) {
         notFound();
     }
 
