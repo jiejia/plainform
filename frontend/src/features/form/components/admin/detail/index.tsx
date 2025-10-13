@@ -46,7 +46,7 @@ export default function Index({ initialData, formId, versions }: { initialData: 
                     {/* 提交趋势图和提交时段热力图 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <TrendChart data={data.trends} /> 
-                        <TimeHeatmap />
+                        <TimeHeatmap data={data.time_heat_map} />
                     </div>
                     
                     {/* 其他统计 */}

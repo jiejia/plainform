@@ -1358,4 +1358,309 @@ class FormServiceTest extends TestCase
             $this->assertEquals(0, $trend['submissions_count']);
         }
     }
+
+    /**
+     * test statistics time heat map with today period
+     *
+     * @return void
+     */
+    public function testStatisticsTimeHeatMapWithTodayPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // create submissions at different hours of today
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now()->startOfDay()->addHours(8),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => now()->startOfDay()->addHours(8)->addMinutes(30),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => now()->startOfDay()->addHours(14),
+        ]);
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'today');
+
+        // assert time_heat_map exists
+        $this->assertArrayHasKey('time_heat_map', $result);
+        $timeHeatMap = $result['time_heat_map'];
+
+        // assert structure: 7 days x 24 hours
+        $this->assertIsArray($timeHeatMap);
+        $this->assertCount(7, $timeHeatMap);
+        
+        foreach ($timeHeatMap as $dayData) {
+            $this->assertIsArray($dayData);
+            $this->assertCount(24, $dayData);
+        }
+
+        // get current day of week (Monday=0, ..., Sunday=6)
+        $dayOfWeek = now()->dayOfWeek;
+        $dayIndex = $dayOfWeek == 0 ? 6 : $dayOfWeek - 1;
+
+        // assert today's data has values at hours 8 and 14
+        $this->assertEquals(2, $timeHeatMap[$dayIndex][8]);
+        $this->assertEquals(1, $timeHeatMap[$dayIndex][14]);
+        $this->assertEquals(0, $timeHeatMap[$dayIndex][0]);
+
+        // assert other days have all zeros
+        for ($i = 0; $i < 7; $i++) {
+            if ($i !== $dayIndex) {
+                foreach ($timeHeatMap[$i] as $hourValue) {
+                    $this->assertEquals(0, $hourValue);
+                }
+            }
+        }
+    }
+
+    /**
+     * test statistics time heat map with week period
+     *
+     * @return void
+     */
+    public function testStatisticsTimeHeatMapWithWeekPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        $weekStart = now()->startOfWeek();
+
+        // create submissions on Monday (dayIndex=0) at hour 10, twice
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => $weekStart->copy()->addDays(0)->addHours(10),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => $weekStart->copy()->addDays(0)->addHours(10)->addMinutes(30),
+        ]);
+
+        // create submission on Wednesday (dayIndex=2) at hour 15
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => $weekStart->copy()->addDays(2)->addHours(15),
+        ]);
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'week');
+
+        // assert time_heat_map exists
+        $this->assertArrayHasKey('time_heat_map', $result);
+        $timeHeatMap = $result['time_heat_map'];
+
+        // assert structure: 7 days x 24 hours
+        $this->assertIsArray($timeHeatMap);
+        $this->assertCount(7, $timeHeatMap);
+
+        // assert Monday (dayIndex=0) hour 10 has average of 2 (only one Monday in a week)
+        $this->assertEquals(2, $timeHeatMap[0][10]);
+
+        // assert Wednesday (dayIndex=2) hour 15 has average of 1
+        $this->assertEquals(1, $timeHeatMap[2][15]);
+
+        // assert other hours are 0
+        $this->assertEquals(0, $timeHeatMap[0][0]);
+        $this->assertEquals(0, $timeHeatMap[1][10]);
+    }
+
+    /**
+     * test statistics time heat map with month period
+     *
+     * @return void
+     */
+    public function testStatisticsTimeHeatMapWithMonthPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // use a fixed month to ensure we have multiple weeks
+        $monthStart = \Carbon\Carbon::parse('2024-10-01 00:00:00');
+        $firstMonday = \Carbon\Carbon::parse('2024-10-07 09:00:00'); // first Monday of Oct 2024
+        $secondMonday = \Carbon\Carbon::parse('2024-10-14 09:00:00'); // second Monday of Oct 2024
+
+        // create 3 submissions on first Monday at hour 9
+        for ($i = 0; $i < 3; $i++) {
+            FormSubmission::create([
+                'form_id' => $form->id,
+                'version' => 1,
+                'data' => [],
+                'ipv6' => '192.168.1.' . ($i + 1),
+                'visitor_id' => 'visitor' . ($i + 1),
+                'created_at' => $firstMonday->copy()->addMinutes($i * 15),
+            ]);
+        }
+
+        // create 1 submission on second Monday at hour 9
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv6' => '192.168.1.4',
+            'visitor_id' => 'visitor4',
+            'created_at' => $secondMonday,
+        ]);
+
+        // mock now() to be in October 2024
+        \Carbon\Carbon::setTestNow(\Carbon\Carbon::parse('2024-10-15 12:00:00'));
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'month');
+
+        // reset now()
+        \Carbon\Carbon::setTestNow();
+
+        // assert time_heat_map exists
+        $this->assertArrayHasKey('time_heat_map', $result);
+        $timeHeatMap = $result['time_heat_map'];
+
+        // Monday is dayIndex=0
+        // In October 2024, there are 4 Mondays (7th, 14th, 21st, 28th)
+        // We have 4 submissions on hour 9 across 2 Mondays
+        // average = 4 / 4 Mondays = 1
+        $this->assertEquals(1, $timeHeatMap[0][9]);
+    }
+
+    /**
+     * test statistics time heat map with all period
+     *
+     * @return void
+     */
+    public function testStatisticsTimeHeatMapWithAllPeriod(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // use fixed dates for testing
+        $startDate = \Carbon\Carbon::parse('2024-10-01 00:00:00');
+        $firstTuesday = \Carbon\Carbon::parse('2024-10-01 13:00:00'); // first Tuesday of Oct 2024
+        $secondTuesday = \Carbon\Carbon::parse('2024-10-08 13:00:00'); // second Tuesday of Oct 2024
+        $endDate = \Carbon\Carbon::parse('2024-10-15 23:59:59');
+
+        // create views first to establish the 'all' period range
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer1',
+            'ipv6' => '192.168.1.1',
+            'created_at' => $startDate,
+        ]);
+
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer2',
+            'ipv6' => '192.168.1.2',
+            'created_at' => $endDate,
+        ]);
+
+        // 4 submissions on first Tuesday at hour 13
+        for ($i = 0; $i < 4; $i++) {
+            FormSubmission::create([
+                'form_id' => $form->id,
+                'version' => 1,
+                'data' => [],
+                'ipv6' => '192.168.1.' . ($i + 10),
+                'visitor_id' => 'visitor' . ($i + 10),
+                'created_at' => $firstTuesday->copy()->addMinutes($i * 10),
+            ]);
+        }
+
+        // 2 submissions on second Tuesday at hour 13
+        for ($i = 0; $i < 2; $i++) {
+            FormSubmission::create([
+                'form_id' => $form->id,
+                'version' => 1,
+                'data' => [],
+                'ipv6' => '192.168.1.' . ($i + 20),
+                'visitor_id' => 'visitor' . ($i + 20),
+                'created_at' => $secondTuesday->copy()->addMinutes($i * 10),
+            ]);
+        }
+
+        // mock now() to be in the test period
+        \Carbon\Carbon::setTestNow(\Carbon\Carbon::parse('2024-10-15 12:00:00'));
+
+        // execute statistics
+        $result = $this->service->statistics($form->id, 1, 'all');
+
+        // reset now()
+        \Carbon\Carbon::setTestNow();
+
+        // assert time_heat_map exists
+        $this->assertArrayHasKey('time_heat_map', $result);
+        $timeHeatMap = $result['time_heat_map'];
+
+        // assert structure
+        $this->assertIsArray($timeHeatMap);
+        $this->assertCount(7, $timeHeatMap);
+
+        // Tuesday is dayIndex=1
+        // In the period Oct 1-15, there are 3 Tuesdays (1st, 8th, 15th)
+        // We have 6 submissions on hour 13 across 2 Tuesdays (1st and 8th)
+        // average = 6 / 3 Tuesdays = 2
+        $this->assertEquals(2, $timeHeatMap[1][13]);
+    }
+
+    /**
+     * test statistics time heat map with no data
+     *
+     * @return void
+     */
+    public function testStatisticsTimeHeatMapWithNoData(): void
+    {
+        // create test form
+        $form = Form::factory()->create(['admin_id' => $this->admin->id, 'version' => 1]);
+
+        // execute statistics with today period and no data
+        $result = $this->service->statistics($form->id, 1, 'today');
+
+        // assert time_heat_map exists
+        $this->assertArrayHasKey('time_heat_map', $result);
+        $timeHeatMap = $result['time_heat_map'];
+
+        // assert structure: 7 days x 24 hours, all zeros
+        $this->assertIsArray($timeHeatMap);
+        $this->assertCount(7, $timeHeatMap);
+
+        // verify all values are 0
+        foreach ($timeHeatMap as $dayData) {
+            $this->assertIsArray($dayData);
+            $this->assertCount(24, $dayData);
+            foreach ($dayData as $hourValue) {
+                $this->assertEquals(0, $hourValue);
+            }
+        }
+    }
 }

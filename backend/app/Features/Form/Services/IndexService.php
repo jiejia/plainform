@@ -810,9 +810,13 @@ class IndexService
         // get trends data
         $trends = $this->getTrends($formId, $version, $periodType, $currentPeriod['start'], $currentPeriod['end']);
 
+        // get time heat map data
+        $timeHeatMap = $this->getTimeHeatMap($formId, $version, $periodType, $currentPeriod['start'], $currentPeriod['end']);
+
         return [
             'figures' => $figures,
             'trends' => $trends,
+            'time_heat_map' => $timeHeatMap,
         ];
     }
 
@@ -1155,5 +1159,121 @@ class IndexService
         }
 
         return $trends;
+    }
+
+    /**
+     * getTimeHeatMap
+     *
+     * @param int $formId
+     * @param int $version
+     * @param string $periodType
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getTimeHeatMap(int $formId, int $version, string $periodType, $startDate, $endDate): array
+    {
+        // initialize heat map array (7 days x 24 hours)
+        $heatMap = array_fill(0, 7, array_fill(0, 24, 0));
+
+        // determine database driver
+        $driver = config('database.default');
+        
+        if ($periodType === 'today') {
+            // for today, only return data for current day of week
+            $dayOfWeek = now()->dayOfWeek; // 0=Sunday, 1=Monday, ..., 6=Saturday
+            // convert to Monday=0, ..., Sunday=6
+            $dayIndex = $dayOfWeek == 0 ? 6 : $dayOfWeek - 1;
+
+            // get hourly data for today
+            $hourExpression = $driver === 'sqlite' 
+                ? "CAST(strftime('%H', created_at) as INTEGER) as hour"
+                : 'EXTRACT(HOUR FROM created_at) as hour';
+
+            $submissions = FormSubmission::where('form_id', $formId)
+                ->where('version', $version)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->selectRaw("$hourExpression, COUNT(*) as count")
+                ->groupBy('hour')
+                ->pluck('count', 'hour')
+                ->toArray();
+
+            // fill today's data
+            foreach ($submissions as $hour => $count) {
+                $heatMap[$dayIndex][(int)$hour] = (int)$count;
+            }
+        } else {
+            // for week, month, all: calculate average by day of week and hour
+            $dayExpression = $driver === 'sqlite' 
+                ? "CAST(strftime('%w', created_at) as INTEGER) as day_of_week"
+                : 'EXTRACT(DOW FROM created_at) as day_of_week';
+            
+            $hourExpression = $driver === 'sqlite' 
+                ? "CAST(strftime('%H', created_at) as INTEGER) as hour"
+                : 'EXTRACT(HOUR FROM created_at) as hour';
+
+            // get submissions grouped by day of week and hour
+            $submissions = FormSubmission::where('form_id', $formId)
+                ->where('version', $version)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->selectRaw("$dayExpression, $hourExpression, COUNT(*) as count")
+                ->groupBy('day_of_week', 'hour')
+                ->get();
+
+            // count occurrences of each day of week for averaging
+            $dayOccurrences = $this->countDayOccurrences($startDate, $endDate);
+
+            // aggregate data
+            $aggregatedData = [];
+            foreach ($submissions as $submission) {
+                $dayOfWeek = (int)$submission->day_of_week; // 0=Sunday, 1=Monday, ..., 6=Saturday
+                $hour = (int)$submission->hour;
+                $count = (int)$submission->count;
+                
+                // convert to Monday=0, ..., Sunday=6
+                $dayIndex = $dayOfWeek == 0 ? 6 : $dayOfWeek - 1;
+                
+                if (!isset($aggregatedData[$dayIndex])) {
+                    $aggregatedData[$dayIndex] = [];
+                }
+                // SQL groupBy already returns total count for each (day_of_week, hour) combination
+                $aggregatedData[$dayIndex][$hour] = $count;
+            }
+
+            // calculate averages
+            foreach ($aggregatedData as $dayIndex => $hours) {
+                $originalDayOfWeek = $dayIndex == 6 ? 0 : $dayIndex + 1;
+                $occurrences = $dayOccurrences[$originalDayOfWeek] ?? 1;
+                
+                foreach ($hours as $hour => $totalCount) {
+                    $heatMap[$dayIndex][$hour] = (int)round($totalCount / $occurrences);
+                }
+            }
+        }
+
+        return $heatMap;
+    }
+
+    /**
+     * countDayOccurrences
+     *
+     * Count how many times each day of week occurs in the period
+     *
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function countDayOccurrences($startDate, $endDate): array
+    {
+        $occurrences = array_fill(0, 7, 0); // 0=Sunday, 1=Monday, ..., 6=Saturday
+        
+        $currentDate = $startDate->copy();
+        while ($currentDate->lte($endDate)) {
+            $dayOfWeek = $currentDate->dayOfWeek;
+            $occurrences[$dayOfWeek]++;
+            $currentDate->addDay();
+        }
+        
+        return $occurrences;
     }
 }

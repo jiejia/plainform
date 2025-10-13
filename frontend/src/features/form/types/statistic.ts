@@ -23,8 +23,10 @@ export type Trend = {
     submissions_count: number;
 };
 
+export type TimeHeatmap = number[][];
 
 export type Statistic = {
     figures: Figures;
     trends: Trend[];
+    time_heat_map: TimeHeatmap;
 }

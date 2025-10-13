@@ -3,23 +3,15 @@
 import React from "react";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import Chart from "@/features/core/components/admin/statistic/chart";
+import { TimeHeatmap as TimeHeatmapType } from "@/features/form/types/statistic";
 
-export default function TimeHeatmap() {
+export default function TimeHeatmap( { data }: { data: TimeHeatmapType } ) {
     // 生成静态热力图数据 (小时 x 星期)
     const hours = Array.from({ length: 24 }, (_, i) => i);
     const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
     // 静态数据：每个时间段的提交次数
-    const heatmapData: number[][] = [
-        // 周一到周日，每天24小时的数据
-        [2, 1, 0, 0, 0, 1, 3, 8, 15, 22, 18, 16, 14, 12, 18, 20, 22, 18, 12, 8, 5, 4, 3, 2],
-        [1, 1, 0, 0, 0, 2, 4, 10, 18, 25, 20, 18, 15, 14, 20, 22, 24, 20, 14, 9, 6, 4, 2, 1],
-        [2, 0, 0, 0, 1, 2, 5, 12, 20, 28, 24, 20, 18, 16, 22, 25, 26, 22, 16, 10, 7, 5, 3, 2],
-        [1, 1, 0, 0, 0, 1, 4, 9, 16, 24, 22, 19, 17, 15, 21, 23, 25, 21, 15, 11, 8, 6, 4, 2],
-        [2, 1, 0, 0, 0, 2, 5, 11, 19, 26, 23, 21, 19, 17, 23, 26, 28, 24, 17, 12, 9, 6, 4, 3],
-        [3, 2, 1, 0, 0, 1, 2, 5, 8, 12, 15, 14, 16, 18, 20, 22, 24, 20, 16, 12, 10, 8, 6, 4],
-        [2, 2, 1, 0, 0, 0, 1, 3, 6, 10, 12, 11, 13, 15, 18, 20, 22, 18, 14, 10, 8, 6, 5, 3],
-    ];
+    const heatmapData: number[][] = data;
 
     const maxValue = Math.max(...heatmapData.flat());
 
