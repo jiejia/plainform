@@ -38,8 +38,28 @@ export type SubmissionOverview = {
     unique: number;
 };
 
+export type ActiveForms = {
+    no: number;
+    form_id: number;
+    title: string;
+    submissions: number;
+    views: number;
+    rate: number;
+    trend: number;
+};
+
+export type RecentActivities = {
+    id: number;
+    form_title: string;
+    visitor_region: string;
+    time: string;
+    status: string;
+};
+
 export type Statistic = {
     figures: Figures;
     form_trends: FormTrend[];
     submission_overview: SubmissionOverview[];
+    active_forms: ActiveForms[];
+    recent_activities: RecentActivities[];
 }

@@ -951,5 +951,202 @@ class DashboardServiceTest extends TestCase
         $this->assertArrayHasKey('submission_overview', $result);
         $this->assertCount(10, $result['submission_overview']); // max 10 time points
     }
+
+    /**
+     * test recent activities
+     *
+     * @return void
+     */
+    public function testRecentActivities(): void
+    {
+        // create test forms
+        $form1 = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'title' => 'Contact Form',
+            'created_at' => now()->subHours(5),
+        ]);
+
+        $form2 = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'title' => 'Survey Form',
+            'created_at' => now()->subHours(4),
+        ]);
+
+        // create submissions with geographic information
+        FormSubmission::create([
+            'form_id' => $form1->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 111111,
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'country' => 'United States',
+            'city' => 'New York',
+            'created_at' => now()->subHours(3),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form2->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 222222,
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'country' => 'United Kingdom',
+            'city' => 'London',
+            'created_at' => now()->subHours(2),
+        ]);
+
+        // create views with geographic information
+        FormView::create([
+            'form_id' => $form1->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer1',
+            'ipv4' => 333333,
+            'ipv6' => '192.168.2.1',
+            'country' => 'Canada',
+            'city' => 'Toronto',
+            'created_at' => now()->subHours(1),
+        ]);
+
+        FormView::create([
+            'form_id' => $form2->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer2',
+            'ipv4' => 444444,
+            'ipv6' => '192.168.2.2',
+            'country' => 'Australia',
+            'city' => 'Sydney',
+            'created_at' => now()->subMinutes(30),
+        ]);
+
+        FormView::create([
+            'form_id' => $form1->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer3',
+            'ipv4' => 555555,
+            'ipv6' => '192.168.2.3',
+            'country' => 'Japan',
+            'city' => 'Tokyo',
+            'created_at' => now()->subMinutes(10),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('today');
+
+        // assert result has recent_activities
+        $this->assertArrayHasKey('recent_activities', $result);
+
+        // assert recent_activities has at most 5 items
+        $this->assertLessThanOrEqual(5, count($result['recent_activities']));
+        $this->assertEquals(5, count($result['recent_activities']));
+
+        // verify structure of each activity
+        foreach ($result['recent_activities'] as $activity) {
+            $this->assertArrayHasKey('id', $activity);
+            $this->assertArrayHasKey('form_title', $activity);
+            $this->assertArrayHasKey('visitor_region', $activity);
+            $this->assertArrayHasKey('time', $activity);
+            $this->assertArrayHasKey('status', $activity);
+
+            // verify status is either 'viewed' or 'completed'
+            $this->assertContains($activity['status'], ['viewed', 'completed']);
+        }
+
+        // verify the most recent activity is the last view (10 minutes ago)
+        $mostRecent = $result['recent_activities'][0];
+        $this->assertEquals($form1->id, $mostRecent['id']);
+        $this->assertEquals('Contact Form', $mostRecent['form_title']);
+        $this->assertEquals('Japan Tokyo', $mostRecent['visitor_region']);
+        $this->assertEquals('viewed', $mostRecent['status']);
+
+        // verify visitor_region format (country + ' ' + city)
+        $this->assertStringContainsString('Japan Tokyo', $result['recent_activities'][0]['visitor_region']);
+        $this->assertStringContainsString('Australia Sydney', $result['recent_activities'][1]['visitor_region']);
+    }
+
+    /**
+     * test recent activities with no data
+     *
+     * @return void
+     */
+    public function testRecentActivitiesWithNoData(): void
+    {
+        // execute statistic with no submissions or views
+        $result = $this->service->statistic('today');
+
+        // assert result has recent_activities
+        $this->assertArrayHasKey('recent_activities', $result);
+
+        // assert recent_activities is empty
+        $this->assertEmpty($result['recent_activities']);
+    }
+
+    /**
+     * test recent activities with partial geographic data
+     *
+     * @return void
+     */
+    public function testRecentActivitiesWithPartialGeographicData(): void
+    {
+        // create test form
+        $form = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'title' => 'Test Form',
+            'created_at' => now(),
+        ]);
+
+        // create submission with only country
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 111111,
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'country' => 'France',
+            'city' => null,
+            'created_at' => now()->subHours(2),
+        ]);
+
+        // create view with only city
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer1',
+            'ipv4' => 222222,
+            'ipv6' => '192.168.2.1',
+            'country' => null,
+            'city' => 'Berlin',
+            'created_at' => now()->subHours(1),
+        ]);
+
+        // create view with no geographic data
+        FormView::create([
+            'form_id' => $form->id,
+            'form_version' => 1,
+            'visitor_id' => 'viewer2',
+            'ipv4' => 333333,
+            'ipv6' => '192.168.2.2',
+            'country' => null,
+            'city' => null,
+            'created_at' => now()->subMinutes(30),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('today');
+
+        // assert result has recent_activities
+        $this->assertArrayHasKey('recent_activities', $result);
+        $this->assertEquals(3, count($result['recent_activities']));
+
+        // verify visitor_region is properly trimmed
+        $this->assertEquals('', $result['recent_activities'][0]['visitor_region']);
+        $this->assertEquals('Berlin', $result['recent_activities'][1]['visitor_region']);
+        $this->assertEquals('France', $result['recent_activities'][2]['visitor_region']);
+    }
 }
 

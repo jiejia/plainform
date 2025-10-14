@@ -49,8 +49,8 @@ export default function Index({ initialData }: { initialData: Statistic }) {
 
                     {/* 热门表单和最近活动 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <ActiveForms />
-                        <RecentActivities />
+                        <ActiveForms data={data.active_forms} />
+                        <RecentActivities data={data.recent_activities} />
                     </div>
 
                     {/* 表单分布和时段统计 */}

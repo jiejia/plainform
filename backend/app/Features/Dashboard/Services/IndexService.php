@@ -53,11 +53,93 @@ class IndexService
         // get submission overview
         $submissionOverview = $this->getSubmissionOverview($periodType, $currentPeriod['start'], $currentPeriod['end']);
 
+        // get active forms
+        $activeForms = $periodType === 'all'
+            ? $this->getActiveForms($currentPeriod['start'], $currentPeriod['end'])
+            : $this->getActiveForms($currentPeriod['start'], $currentPeriod['end'], $previousPeriod['start'], $previousPeriod['end']);
+
+        // get recent activities
+        $recentActivities = $this->getRecentActivities($currentPeriod['start'], $currentPeriod['end']);
+
         return [
             'figures' => $figures,
             'form_trends' => $formTrends,
             'submission_overview' => $submissionOverview,
+            'active_forms' => $activeForms,
+            'recent_activities' => $recentActivities,
         ];
+    }
+
+    /**
+     * getActiveForms
+     *
+     * @param \Carbon\Carbon $currentStart
+     * @param \Carbon\Carbon $currentEnd
+     * @param \Carbon\Carbon|null $previousStart
+     * @param \Carbon\Carbon|null $previousEnd
+     * @return array
+     */
+    private function getActiveForms($currentStart, $currentEnd, $previousStart = null, $previousEnd = null): array
+    {
+        // get all enabled forms
+        $forms = Form::where('enabled', 1)->get(['id', 'title']);
+
+        $formsData = [];
+        foreach ($forms as $form) {
+            // get current period submissions
+            $currentSubmissions = FormSubmission::where('form_id', $form->id)
+                ->whereBetween('created_at', [$currentStart, $currentEnd])
+                ->count();
+
+            // get current period views
+            $currentViews = FormView::where('form_id', $form->id)
+                ->whereBetween('created_at', [$currentStart, $currentEnd])
+                ->count();
+
+            // calculate conversion rate
+            $rate = $currentViews > 0 ? round(($currentSubmissions / $currentViews) * 100, 2) : 0;
+
+            // calculate trend if previous period is provided
+            $trend = 0;
+            if ($previousStart && $previousEnd) {
+                $previousSubmissions = FormSubmission::where('form_id', $form->id)
+                    ->whereBetween('created_at', [$previousStart, $previousEnd])
+                    ->count();
+
+                $trend = $this->calculateGrowthRate($currentSubmissions, $previousSubmissions);
+            }
+
+            $formsData[] = [
+                'form_id' => $form->id,
+                'title' => $form->title,
+                'submissions' => $currentSubmissions,
+                'views' => $currentViews,
+                'rate' => $rate,
+                'trend' => $trend,
+            ];
+        }
+
+        // sort by submissions count in descending order
+        usort($formsData, function ($a, $b) {
+            return $b['submissions'] - $a['submissions'];
+        });
+
+        // get top 5 and add no field
+        $activeForms = [];
+        $topForms = array_slice($formsData, 0, 5);
+        foreach ($topForms as $index => $formData) {
+            $activeForms[] = [
+                'no' => $index + 1,
+                'form_id' => $formData['form_id'],
+                'title' => $formData['title'],
+                'submissions' => $formData['submissions'],
+                'views' => $formData['views'],
+                'rate' => $formData['rate'],
+                'trend' => $formData['trend'],
+            ];
+        }
+
+        return $activeForms;
     }
 
     /**
@@ -438,6 +520,65 @@ class IndexService
             ->toArray();
 
         return array_merge($ipv4s, $ipv6s);
+    }
+
+    /**
+     * getRecentActivities
+     *
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getRecentActivities($startDate, $endDate): array
+    {
+        // get recent submissions
+        $submissions = FormSubmission::with('form:id,title')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get(['id', 'form_id', 'country', 'city', 'created_at'])
+            ->map(function ($submission) {
+                return [
+                    'id' => $submission->form_id,
+                    'form_title' => $submission->form->title ?? '',
+                    'visitor_region' => trim(($submission->country ?? '') . ' ' . ($submission->city ?? '')),
+                    'time' => $submission->created_at->diffForHumans(),
+                    'status' => 'completed',
+                    'created_at' => $submission->created_at,
+                ];
+            })->toArray();
+
+        // get recent views
+        $views = FormView::with('form:id,title')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get(['id', 'form_id', 'country', 'city', 'created_at'])
+            ->map(function ($view) {
+                return [
+                    'id' => $view->form_id,
+                    'form_title' => $view->form->title ?? '',
+                    'visitor_region' => trim(($view->country ?? '') . ' ' . ($view->city ?? '')),
+                    'time' => $view->created_at->diffForHumans(),
+                    'status' => 'viewed',
+                    'created_at' => $view->created_at,
+                ];
+            })->toArray();
+
+        // merge and sort by created_at
+        $activities = array_merge($submissions, $views);
+        usort($activities, function ($a, $b) {
+            return $b['created_at']->timestamp - $a['created_at']->timestamp;
+        });
+
+        // get top 5 and remove created_at field
+        $recentActivities = array_slice($activities, 0, 5);
+        $recentActivities = array_map(function ($activity) {
+            unset($activity['created_at']);
+            return $activity;
+        }, $recentActivities);
+
+        return $recentActivities;
     }
 }
 
