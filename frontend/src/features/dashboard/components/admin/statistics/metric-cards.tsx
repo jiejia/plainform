@@ -26,7 +26,7 @@ export default function MetricCards({ data }: { data: Figures }) {
             bgColor: "bg-green-100",
         },
         {
-            title: "新增流量数",
+            title: "新增浏览数",
             value: data.view_number.value,
             change: data.view_number.growth_rate,
             changeType: data.view_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,

@@ -15,6 +15,7 @@ import {
     ChartOptions,
 } from 'chart.js';
 import Chart from "@/features/core/components/admin/statistic/chart";
+import { FormTrend as FormTrendType } from "@/features/dashboard/types/statistic";
 
 ChartJS.register(
     CategoryScale,
@@ -27,29 +28,14 @@ ChartJS.register(
     Filler
 );
 
-export default function FormTrend() {
-    // 静态数据 - 最近30天的表单创建趋势
-    const data = [
-        { date: '09/10', created: 3, active: 2, submissions: 42 },
-        { date: '09/12', created: 5, active: 4, submissions: 58 },
-        { date: '09/14', created: 2, active: 1, submissions: 45 },
-        { date: '09/16', created: 4, active: 3, submissions: 67 },
-        { date: '09/18', created: 6, active: 5, submissions: 82 },
-        { date: '09/20', created: 3, active: 2, submissions: 54 },
-        { date: '09/22', created: 7, active: 6, submissions: 93 },
-        { date: '09/24', created: 4, active: 3, submissions: 71 },
-        { date: '09/26', created: 5, active: 4, submissions: 88 },
-        { date: '09/28', created: 8, active: 7, submissions: 105 },
-        { date: '09/30', created: 6, active: 5, submissions: 96 },
-        { date: '10/02', created: 4, active: 3, submissions: 78 },
-        { date: '10/04', created: 9, active: 8, submissions: 112 },
-        { date: '10/06', created: 5, active: 4, submissions: 89 },
-        { date: '10/08', created: 7, active: 6, submissions: 98 },
-        { date: '10/09', created: 6, active: 5, submissions: 87 },
-    ];
+interface FormTrendProps {
+    data: FormTrendType[];
+}
+
+export default function FormTrend({ data }: FormTrendProps) {
 
     const chartData = {
-        labels: data.map(item => item.date),
+        labels: data.map(item => item.point),
         datasets: [
             {
                 label: '新建表单',
@@ -77,6 +63,19 @@ export default function FormTrend() {
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
             },
+            // {
+            //     label: '提交量',
+            //     data: data.map(item => item.submissions),
+            //     borderColor: '#f59e0b',
+            //     backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            //     fill: true,
+            //     tension: 0.4,
+            //     pointRadius: 3,
+            //     pointHoverRadius: 5,
+            //     pointBackgroundColor: '#f59e0b',
+            //     pointBorderColor: '#fff',
+            //     pointBorderWidth: 2,
+            // }
         ],
     };
 
@@ -153,7 +152,7 @@ export default function FormTrend() {
     };
 
     return (
-        <Chart title="表单创建趋势">
+        <Chart title="表单趋势">
             <div style={{ height: '300px' }}>
                 <Line data={chartData} options={options} />
             </div>

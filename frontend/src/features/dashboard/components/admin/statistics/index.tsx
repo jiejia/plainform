@@ -43,8 +43,8 @@ export default function Index({ initialData }: { initialData: Statistic }) {
 
                     {/* 表单创建趋势和提交概览 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <FormTrend />
-                        <SubmissionOverview />
+                        <FormTrend data={data.form_trends} />
+                        <SubmissionOverview data={data.submission_overview} />
                     </div>
 
                     {/* 热门表单和最近活动 */}

@@ -25,6 +25,21 @@ export type Figures = {
     };
 };
 
+export type FormTrend = {
+    point: string;
+    created: number;
+    active: number;
+    submissions: number;
+};
+
+export type SubmissionOverview = {
+    point: string;
+    total: number;
+    unique: number;
+};
+
 export type Statistic = {
     figures: Figures;
+    form_trends: FormTrend[];
+    submission_overview: SubmissionOverview[];
 }

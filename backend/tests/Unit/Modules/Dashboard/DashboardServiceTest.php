@@ -116,6 +116,17 @@ class DashboardServiceTest extends TestCase
 
         // assert independent_ip_number (4 unique IPs from both submissions and views)
         $this->assertEquals(4, $figures['independent_ip_number']['value']);
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertCount(6, $result['submission_overview']); // 6 time points for today
+
+        // verify structure of submission_overview
+        foreach ($result['submission_overview'] as $overview) {
+            $this->assertArrayHasKey('point', $overview);
+            $this->assertArrayHasKey('total', $overview);
+            $this->assertArrayHasKey('unique', $overview);
+        }
     }
 
     /**
@@ -178,6 +189,17 @@ class DashboardServiceTest extends TestCase
 
         // assert average_finishing_rate (7 / 14 = 50%)
         $this->assertEquals(50.00, $figures['average_finishing_rate']['value']);
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertCount(7, $result['submission_overview']); // 7 time points for week (Monday to Sunday)
+
+        // verify structure of submission_overview
+        foreach ($result['submission_overview'] as $overview) {
+            $this->assertArrayHasKey('point', $overview);
+            $this->assertArrayHasKey('total', $overview);
+            $this->assertArrayHasKey('unique', $overview);
+        }
     }
 
     /**
@@ -243,6 +265,17 @@ class DashboardServiceTest extends TestCase
 
         // assert average_finishing_rate (10 / 20 = 50%)
         $this->assertEquals(50.00, $figures['average_finishing_rate']['value']);
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertGreaterThan(0, count($result['submission_overview'])); // month has multiple time points
+
+        // verify structure of submission_overview
+        foreach ($result['submission_overview'] as $overview) {
+            $this->assertArrayHasKey('point', $overview);
+            $this->assertArrayHasKey('total', $overview);
+            $this->assertArrayHasKey('unique', $overview);
+        }
     }
 
     /**
@@ -338,6 +371,17 @@ class DashboardServiceTest extends TestCase
         $this->assertEquals(100.00, $figures['active_form_number']['growth_rate']);
         $this->assertEquals(100.00, $figures['independent_ip_number']['growth_rate']);
         $this->assertEquals(100.00, $figures['average_finishing_rate']['growth_rate']);
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertLessThanOrEqual(10, count($result['submission_overview'])); // max 10 time points
+
+        // verify structure of submission_overview
+        foreach ($result['submission_overview'] as $overview) {
+            $this->assertArrayHasKey('point', $overview);
+            $this->assertArrayHasKey('total', $overview);
+            $this->assertArrayHasKey('unique', $overview);
+        }
     }
 
     /**
@@ -364,6 +408,16 @@ class DashboardServiceTest extends TestCase
         $this->assertEquals(0, $figures['active_form_number']['value']);
         $this->assertEquals(0, $figures['independent_ip_number']['value']);
         $this->assertEquals(0, $figures['average_finishing_rate']['value']);
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertCount(6, $result['submission_overview']); // 6 time points for today
+
+        // verify all submission_overview values are 0
+        foreach ($result['submission_overview'] as $overview) {
+            $this->assertEquals(0, $overview['total']);
+            $this->assertEquals(0, $overview['unique']);
+        }
     }
 
     /**
@@ -460,6 +514,10 @@ class DashboardServiceTest extends TestCase
         $this->assertEquals(100.00, $figures['form_number']['growth_rate']);
         $this->assertEquals(100.00, $figures['submission_number']['growth_rate']);
         $this->assertEquals(100.00, $figures['view_number']['growth_rate']);
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertCount(6, $result['submission_overview']); // 6 time points for today
     }
 
     /**
@@ -505,6 +563,10 @@ class DashboardServiceTest extends TestCase
         $this->assertEquals(100.00, $figures['form_number']['growth_rate']);
         $this->assertEquals(100.00, $figures['submission_number']['growth_rate']);
         $this->assertEquals(100.00, $figures['view_number']['growth_rate']);
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertCount(6, $result['submission_overview']); // 6 time points for today
     }
 
     /**
@@ -601,6 +663,293 @@ class DashboardServiceTest extends TestCase
         $this->assertEquals(-50.00, $figures['form_number']['growth_rate']);
         $this->assertEquals(-50.00, $figures['submission_number']['growth_rate']);
         $this->assertEquals(-50.00, $figures['view_number']['growth_rate']);
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertCount(6, $result['submission_overview']); // 6 time points for today
+    }
+
+    /**
+     * test form trends with today period
+     *
+     * @return void
+     */
+    public function testFormTrendsWithTodayPeriod(): void
+    {
+        // create forms at different hours of today
+        $today = now()->startOfDay();
+        
+        // create forms in first time slot (0-4 hours)
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => $today->copy()->addHours(2),
+        ]);
+
+        // create forms in third time slot (8-12 hours)
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => $today->copy()->addHours(10),
+        ]);
+
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => false,
+            'created_at' => $today->copy()->addHours(11),
+        ]);
+
+        // create submissions at different hours
+        FormSubmission::create([
+            'form_id' => 1,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 111111,
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => $today->copy()->addHours(2),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => 1,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 222222,
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => $today->copy()->addHours(10),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('today');
+
+        // assert result has form_trends
+        $this->assertArrayHasKey('form_trends', $result);
+        
+        // assert form_trends has 6 time points (24 hours / 4 = 6)
+        $this->assertCount(6, $result['form_trends']);
+
+        // verify first time point has data
+        $firstPoint = $result['form_trends'][0];
+        $this->assertArrayHasKey('point', $firstPoint);
+        $this->assertArrayHasKey('created', $firstPoint);
+        $this->assertArrayHasKey('active', $firstPoint);
+        $this->assertArrayHasKey('submissions', $firstPoint);
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertCount(6, $result['submission_overview']); // 6 time points for today
+    }
+
+    /**
+     * test form trends with week period
+     *
+     * @return void
+     */
+    public function testFormTrendsWithWeekPeriod(): void
+    {
+        // create forms on different days of the week
+        $weekStart = now()->startOfWeek();
+        
+        // create forms on Monday
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => $weekStart->copy(),
+        ]);
+
+        // create forms on Wednesday
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => $weekStart->copy()->addDays(2),
+        ]);
+
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => false,
+            'created_at' => $weekStart->copy()->addDays(2),
+        ]);
+
+        // create submissions on different days
+        FormSubmission::create([
+            'form_id' => 1,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 111111,
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => $weekStart->copy(),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => 1,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 222222,
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => $weekStart->copy()->addDays(2),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => 1,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 333333,
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => $weekStart->copy()->addDays(2),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('week');
+
+        // assert result has form_trends
+        $this->assertArrayHasKey('form_trends', $result);
+        
+        // assert form_trends has 7 time points (Monday to Sunday)
+        $this->assertCount(7, $result['form_trends']);
+
+        // verify structure of each point
+        foreach ($result['form_trends'] as $point) {
+            $this->assertArrayHasKey('point', $point);
+            $this->assertArrayHasKey('created', $point);
+            $this->assertArrayHasKey('active', $point);
+            $this->assertArrayHasKey('submissions', $point);
+        }
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertCount(7, $result['submission_overview']); // 7 time points for week
+    }
+
+    /**
+     * test form trends with month period
+     *
+     * @return void
+     */
+    public function testFormTrendsWithMonthPeriod(): void
+    {
+        // create forms at different times of the month
+        $monthStart = now()->startOfMonth();
+        
+        // create forms on day 1
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => $monthStart->copy(),
+        ]);
+
+        // create forms on day 5
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => $monthStart->copy()->addDays(4),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('month');
+
+        // assert result has form_trends
+        $this->assertArrayHasKey('form_trends', $result);
+        
+        // assert form_trends has multiple time points (approximately 10 for a 30-day month)
+        $this->assertGreaterThan(0, count($result['form_trends']));
+        
+        // verify structure of each point
+        foreach ($result['form_trends'] as $point) {
+            $this->assertArrayHasKey('point', $point);
+            $this->assertArrayHasKey('created', $point);
+            $this->assertArrayHasKey('active', $point);
+            $this->assertArrayHasKey('submissions', $point);
+        }
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertGreaterThan(0, count($result['submission_overview']));
+    }
+
+    /**
+     * test form trends with all period (less than 10 days)
+     *
+     * @return void
+     */
+    public function testFormTrendsWithAllPeriodLessThan10Days(): void
+    {
+        // create forms across 5 days
+        $baseDate = now()->subDays(4);
+        
+        for ($i = 0; $i < 5; $i++) {
+            Form::factory()->create([
+                'admin_id' => $this->admin->id,
+                'enabled' => true,
+                'created_at' => $baseDate->copy()->addDays($i),
+            ]);
+        }
+
+        // execute statistic
+        $result = $this->service->statistic('all');
+
+        // assert result has form_trends
+        $this->assertArrayHasKey('form_trends', $result);
+        
+        // assert form_trends has at most 10 time points (should be around 5-6 due to date range calculation)
+        $this->assertLessThanOrEqual(10, count($result['form_trends']));
+        $this->assertGreaterThan(0, count($result['form_trends']));
+        
+        // verify structure of each point
+        foreach ($result['form_trends'] as $point) {
+            $this->assertArrayHasKey('point', $point);
+            $this->assertArrayHasKey('created', $point);
+            $this->assertArrayHasKey('active', $point);
+            $this->assertArrayHasKey('submissions', $point);
+        }
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertLessThanOrEqual(10, count($result['submission_overview']));
+        $this->assertGreaterThan(0, count($result['submission_overview']));
+    }
+
+    /**
+     * test form trends with all period (more than 10 days)
+     *
+     * @return void
+     */
+    public function testFormTrendsWithAllPeriodMoreThan10Days(): void
+    {
+        // create forms across 30 days
+        $baseDate = now()->subDays(29);
+        
+        for ($i = 0; $i < 30; $i += 3) {
+            Form::factory()->create([
+                'admin_id' => $this->admin->id,
+                'enabled' => true,
+                'created_at' => $baseDate->copy()->addDays($i),
+            ]);
+        }
+
+        // execute statistic
+        $result = $this->service->statistic('all');
+
+        // assert result has form_trends
+        $this->assertArrayHasKey('form_trends', $result);
+        
+        // assert form_trends has 10 time points (max)
+        $this->assertCount(10, $result['form_trends']);
+        
+        // verify structure of each point
+        foreach ($result['form_trends'] as $point) {
+            $this->assertArrayHasKey('point', $point);
+            $this->assertArrayHasKey('created', $point);
+            $this->assertArrayHasKey('active', $point);
+            $this->assertArrayHasKey('submissions', $point);
+        }
+
+        // assert submission_overview structure
+        $this->assertArrayHasKey('submission_overview', $result);
+        $this->assertCount(10, $result['submission_overview']); // max 10 time points
     }
 }
 
