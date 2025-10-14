@@ -85,15 +85,28 @@ class IndexService
                 break;
 
             case 'all':
-                // for all time, get earliest and latest records
+                // for all time, get earliest and latest records from Form, FormView and FormSubmission
+                $earliestForm = Form::orderBy('created_at', 'asc')->first();
+                $latestForm = Form::orderBy('created_at', 'desc')->first();
                 $earliestView = FormView::orderBy('created_at', 'asc')->first();
                 $latestView = FormView::orderBy('created_at', 'desc')->first();
+                $earliestSubmission = FormSubmission::orderBy('created_at', 'asc')->first();
+                $latestSubmission = FormSubmission::orderBy('created_at', 'desc')->first();
 
-                if ($earliestView && $latestView) {
-                    $currentStart = $earliestView->created_at->copy()->startOfDay();
-                    $currentEnd = $latestView->created_at->copy()->endOfDay();
+                // collect all dates to find the absolute earliest and latest
+                $dates = [];
+                if ($earliestForm) $dates[] = $earliestForm->created_at;
+                if ($latestForm) $dates[] = $latestForm->created_at;
+                if ($earliestView) $dates[] = $earliestView->created_at;
+                if ($latestView) $dates[] = $latestView->created_at;
+                if ($earliestSubmission) $dates[] = $earliestSubmission->created_at;
+                if ($latestSubmission) $dates[] = $latestSubmission->created_at;
+
+                if (!empty($dates)) {
+                    $currentStart = min($dates)->copy()->startOfDay();
+                    $currentEnd = max($dates)->copy()->endOfDay();
                 } else {
-                    // if no views, use current day
+                    // if no records, use current day
                     $currentStart = $now->copy()->startOfDay();
                     $currentEnd = $now->copy()->endOfDay();
                 }
