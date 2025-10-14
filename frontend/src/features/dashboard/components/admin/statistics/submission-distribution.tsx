@@ -2,22 +2,14 @@
 
 import React from "react";
 import Chart from "@/features/core/components/admin/statistic/chart";
+import { SubmissionDistribution as SubmissionDistributionType } from "@/features/dashboard/types/statistic";
 
-export default function SubmissionDistribution() {
-    // 提交时段分布
-    const timeData = [
-        { period: '00-06', count: 234, percentage: 2.7, label: '凌晨' },
-        { period: '06-09', count: 1256, percentage: 14.4, label: '早晨' },
-        { period: '09-12', count: 2134, percentage: 24.4, label: '上午' },
-        { period: '12-15', count: 1876, percentage: 21.5, label: '中午' },
-        { period: '15-18', count: 2345, percentage: 26.8, label: '下午' },
-        { period: '18-24', count: 897, percentage: 10.2, label: '晚上' },
-    ];
+export default function SubmissionDistribution({ data }: { data: SubmissionDistributionType[] }) {
 
     return (
         <Chart title="提交时段分布">
             <div className="space-y-3">
-                {timeData.map((item, index) => (
+                {data.map((item, index) => (
                     <div key={index} className="flex items-center gap-3">
                         <span className="text-sm font-medium text-gray-600 w-16">
                             {item.period}

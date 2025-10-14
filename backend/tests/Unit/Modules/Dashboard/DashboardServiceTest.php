@@ -1148,5 +1148,515 @@ class DashboardServiceTest extends TestCase
         $this->assertEquals('Berlin', $result['recent_activities'][1]['visitor_region']);
         $this->assertEquals('France', $result['recent_activities'][2]['visitor_region']);
     }
+
+    /**
+     * test form distribution
+     *
+     * @return void
+     */
+    public function testFormDistribution(): void
+    {
+        // create test forms with different statuses
+        $form1 = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => now(),
+        ]);
+
+        $form2 = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => now(),
+        ]);
+
+        $form3 = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => false,
+            'created_at' => now(),
+        ]);
+
+        // create submissions for form1 to make it active
+        FormSubmission::create([
+            'form_id' => $form1->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 111111,
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now(),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('today');
+
+        // assert result has form_distribution
+        $this->assertArrayHasKey('form_distribution', $result);
+
+        // get form_distribution
+        $distribution = $result['form_distribution'];
+
+        // verify structure
+        $this->assertArrayHasKey('active', $distribution);
+        $this->assertArrayHasKey('closed', $distribution);
+        $this->assertArrayHasKey('enabled', $distribution);
+
+        // assert values
+        $this->assertEquals(1, $distribution['active']); // form1 is enabled with submissions
+        $this->assertEquals(1, $distribution['closed']); // form3 is disabled
+        $this->assertEquals(2, $distribution['enabled']); // form1 and form2 are enabled
+    }
+
+    /**
+     * test form distribution with no active forms
+     *
+     * @return void
+     */
+    public function testFormDistributionWithNoActiveForms(): void
+    {
+        // create enabled forms without submissions
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => now(),
+        ]);
+
+        Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => false,
+            'created_at' => now(),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('today');
+
+        // get form_distribution
+        $distribution = $result['form_distribution'];
+
+        // assert values
+        $this->assertEquals(0, $distribution['active']); // no forms have submissions
+        $this->assertEquals(1, $distribution['closed']); // 1 disabled form
+        $this->assertEquals(1, $distribution['enabled']); // 1 enabled form
+    }
+
+    /**
+     * test form distribution with all active forms
+     *
+     * @return void
+     */
+    public function testFormDistributionWithAllActiveForms(): void
+    {
+        // create enabled forms with submissions
+        $form1 = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => now(),
+        ]);
+
+        $form2 = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => now(),
+        ]);
+
+        // create submissions for both forms
+        FormSubmission::create([
+            'form_id' => $form1->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 111111,
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now(),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form2->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 222222,
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => now(),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('today');
+
+        // get form_distribution
+        $distribution = $result['form_distribution'];
+
+        // assert values
+        $this->assertEquals(2, $distribution['active']); // both forms have submissions
+        $this->assertEquals(0, $distribution['closed']); // no disabled forms
+        $this->assertEquals(2, $distribution['enabled']); // both forms are enabled
+    }
+
+    /**
+     * test form distribution across different periods
+     *
+     * @return void
+     */
+    public function testFormDistributionAcrossDifferentPeriods(): void
+    {
+        // create forms from yesterday
+        $formOld = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => now()->subDay(),
+        ]);
+
+        // create forms from today
+        $formToday = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => now(),
+        ]);
+
+        // create submission for today's form
+        FormSubmission::create([
+            'form_id' => $formToday->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 111111,
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now(),
+        ]);
+
+        // execute statistic for today
+        $result = $this->service->statistic('today');
+
+        // get form_distribution
+        $distribution = $result['form_distribution'];
+
+        // assert values (only count today's forms)
+        $this->assertEquals(1, $distribution['active']); // only formToday
+        $this->assertEquals(0, $distribution['closed']); // no disabled forms today
+        $this->assertEquals(1, $distribution['enabled']); // only formToday
+    }
+
+    /**
+     * test submission distribution
+     *
+     * @return void
+     */
+    public function testSubmissionDistribution(): void
+    {
+        // create test forms
+        $form = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => now(),
+        ]);
+
+        // create submissions at different hours of the day
+        // 00-06 凌晨 period (2 submissions)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 111111,
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now()->setHour(2)->setMinute(30),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 222222,
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => now()->setHour(5)->setMinute(0),
+        ]);
+
+        // 06-09 早晨 period (1 submission)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 333333,
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => now()->setHour(7)->setMinute(30),
+        ]);
+
+        // 09-12 上午 period (2 submissions)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 444444,
+            'ipv6' => '192.168.1.4',
+            'visitor_id' => 'visitor4',
+            'created_at' => now()->setHour(10)->setMinute(0),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 555555,
+            'ipv6' => '192.168.1.5',
+            'visitor_id' => 'visitor5',
+            'created_at' => now()->setHour(11)->setMinute(30),
+        ]);
+
+        // 12-15 中午 period (2 submissions)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 666666,
+            'ipv6' => '192.168.1.6',
+            'visitor_id' => 'visitor6',
+            'created_at' => now()->setHour(13)->setMinute(0),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 777777,
+            'ipv6' => '192.168.1.7',
+            'visitor_id' => 'visitor7',
+            'created_at' => now()->setHour(14)->setMinute(30),
+        ]);
+
+        // 15-18 下午 period (1 submission)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 888888,
+            'ipv6' => '192.168.1.8',
+            'visitor_id' => 'visitor8',
+            'created_at' => now()->setHour(16)->setMinute(0),
+        ]);
+
+        // 18-24 晚上 period (4 submissions)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 999999,
+            'ipv6' => '192.168.1.9',
+            'visitor_id' => 'visitor9',
+            'created_at' => now()->setHour(19)->setMinute(0),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 1010101,
+            'ipv6' => '192.168.1.10',
+            'visitor_id' => 'visitor10',
+            'created_at' => now()->setHour(20)->setMinute(30),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 1111111,
+            'ipv6' => '192.168.1.11',
+            'visitor_id' => 'visitor11',
+            'created_at' => now()->setHour(22)->setMinute(0),
+        ]);
+
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 1212121,
+            'ipv6' => '192.168.1.12',
+            'visitor_id' => 'visitor12',
+            'created_at' => now()->setHour(23)->setMinute(30),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('today');
+
+        // assert result has submission_distribution
+        $this->assertArrayHasKey('submission_distribution', $result);
+
+        // get submission_distribution
+        $distribution = $result['submission_distribution'];
+
+        // assert distribution has 6 time periods
+        $this->assertCount(6, $distribution);
+
+        // verify structure of each period
+        foreach ($distribution as $period) {
+            $this->assertArrayHasKey('period', $period);
+            $this->assertArrayHasKey('count', $period);
+            $this->assertArrayHasKey('percentage', $period);
+            $this->assertArrayHasKey('label', $period);
+        }
+
+        // verify counts (total = 12)
+        $this->assertEquals(2, $distribution[0]['count']); // 00-06 凌晨
+        $this->assertEquals(1, $distribution[1]['count']); // 06-09 早晨
+        $this->assertEquals(2, $distribution[2]['count']); // 09-12 上午
+        $this->assertEquals(2, $distribution[3]['count']); // 12-15 中午
+        $this->assertEquals(1, $distribution[4]['count']); // 15-18 下午
+        $this->assertEquals(4, $distribution[5]['count']); // 18-24 晚上
+
+        // verify percentages
+        $this->assertEquals(16.67, $distribution[0]['percentage']); // 2/12 = 16.67%
+        $this->assertEquals(8.33, $distribution[1]['percentage']); // 1/12 = 8.33%
+        $this->assertEquals(16.67, $distribution[2]['percentage']); // 2/12 = 16.67%
+        $this->assertEquals(16.67, $distribution[3]['percentage']); // 2/12 = 16.67%
+        $this->assertEquals(8.33, $distribution[4]['percentage']); // 1/12 = 8.33%
+        $this->assertEquals(33.33, $distribution[5]['percentage']); // 4/12 = 33.33%
+
+        // verify labels
+        $this->assertEquals('凌晨', $distribution[0]['label']);
+        $this->assertEquals('早晨', $distribution[1]['label']);
+        $this->assertEquals('上午', $distribution[2]['label']);
+        $this->assertEquals('中午', $distribution[3]['label']);
+        $this->assertEquals('下午', $distribution[4]['label']);
+        $this->assertEquals('晚上', $distribution[5]['label']);
+
+        // verify periods
+        $this->assertEquals('0-6', $distribution[0]['period']);
+        $this->assertEquals('6-9', $distribution[1]['period']);
+        $this->assertEquals('9-12', $distribution[2]['period']);
+        $this->assertEquals('12-15', $distribution[3]['period']);
+        $this->assertEquals('15-18', $distribution[4]['period']);
+        $this->assertEquals('18-24', $distribution[5]['period']);
+    }
+
+    /**
+     * test submission distribution with no data
+     *
+     * @return void
+     */
+    public function testSubmissionDistributionWithNoData(): void
+    {
+        // execute statistic with no submissions
+        $result = $this->service->statistic('today');
+
+        // assert result has submission_distribution
+        $this->assertArrayHasKey('submission_distribution', $result);
+
+        // get submission_distribution
+        $distribution = $result['submission_distribution'];
+
+        // assert distribution has 6 time periods
+        $this->assertCount(6, $distribution);
+
+        // verify all counts are 0
+        foreach ($distribution as $period) {
+            $this->assertEquals(0, $period['count']);
+            $this->assertEquals(0, $period['percentage']);
+        }
+    }
+
+    /**
+     * test submission distribution with edge case hours
+     *
+     * @return void
+     */
+    public function testSubmissionDistributionWithEdgeCaseHours(): void
+    {
+        // create test form
+        $form = Form::factory()->create([
+            'admin_id' => $this->admin->id,
+            'enabled' => true,
+            'created_at' => now(),
+        ]);
+
+        // create submissions at boundary hours
+        // Hour 0 should go to 0-6 period (凌晨)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 111111,
+            'ipv6' => '192.168.1.1',
+            'visitor_id' => 'visitor1',
+            'created_at' => now()->setHour(0)->setMinute(0),
+        ]);
+
+        // Hour 6 should go to 6-9 period (早晨)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 222222,
+            'ipv6' => '192.168.1.2',
+            'visitor_id' => 'visitor2',
+            'created_at' => now()->setHour(6)->setMinute(0),
+        ]);
+
+        // Hour 9 should go to 9-12 period (上午)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 333333,
+            'ipv6' => '192.168.1.3',
+            'visitor_id' => 'visitor3',
+            'created_at' => now()->setHour(9)->setMinute(0),
+        ]);
+
+        // Hour 12 should go to 12-15 period (中午)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 444444,
+            'ipv6' => '192.168.1.4',
+            'visitor_id' => 'visitor4',
+            'created_at' => now()->setHour(12)->setMinute(0),
+        ]);
+
+        // Hour 15 should go to 15-18 period (下午)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 555555,
+            'ipv6' => '192.168.1.5',
+            'visitor_id' => 'visitor5',
+            'created_at' => now()->setHour(15)->setMinute(0),
+        ]);
+
+        // Hour 18 should go to 18-24 period (晚上)
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'version' => 1,
+            'data' => [],
+            'ipv4' => 666666,
+            'ipv6' => '192.168.1.6',
+            'visitor_id' => 'visitor6',
+            'created_at' => now()->setHour(18)->setMinute(0),
+        ]);
+
+        // execute statistic
+        $result = $this->service->statistic('today');
+
+        // get submission_distribution
+        $distribution = $result['submission_distribution'];
+
+        // verify each period has exactly 1 submission
+        $this->assertEquals(1, $distribution[0]['count']); // 00-06 凌晨
+        $this->assertEquals(1, $distribution[1]['count']); // 06-09 早晨
+        $this->assertEquals(1, $distribution[2]['count']); // 09-12 上午
+        $this->assertEquals(1, $distribution[3]['count']); // 12-15 中午
+        $this->assertEquals(1, $distribution[4]['count']); // 15-18 下午
+        $this->assertEquals(1, $distribution[5]['count']); // 18-24 晚上
+
+        // verify percentages (each 16.67%)
+        $this->assertEquals(16.67, $distribution[0]['percentage']);
+        $this->assertEquals(16.67, $distribution[1]['percentage']);
+        $this->assertEquals(16.67, $distribution[2]['percentage']);
+        $this->assertEquals(16.67, $distribution[3]['percentage']);
+        $this->assertEquals(16.67, $distribution[4]['percentage']);
+        $this->assertEquals(16.67, $distribution[5]['percentage']);
+    }
 }
 

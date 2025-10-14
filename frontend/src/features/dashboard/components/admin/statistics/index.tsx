@@ -55,8 +55,8 @@ export default function Index({ initialData }: { initialData: Statistic }) {
 
                     {/* 表单分布和时段统计 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <FormDistribution />
-                        <SubmissionDistribution />
+                        <FormDistribution data={data.form_distribution} />
+                        <SubmissionDistribution data={data.submission_distribution} />
                     </div>
                 </div>
             </Scroll>

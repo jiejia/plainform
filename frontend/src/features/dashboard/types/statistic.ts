@@ -56,10 +56,25 @@ export type RecentActivities = {
     status: string;
 };
 
+export type FormDistribution = {
+    active: number;
+    closed: number;
+    enabled: number;
+};
+
+export type SubmissionDistribution = {
+    period: string;
+    count: number;
+    percentage: number;
+    label: string;
+};
+
 export type Statistic = {
     figures: Figures;
     form_trends: FormTrend[];
     submission_overview: SubmissionOverview[];
     active_forms: ActiveForms[];
     recent_activities: RecentActivities[];
+    form_distribution: FormDistribution;
+    submission_distribution: SubmissionDistribution[];
 }

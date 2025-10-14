@@ -12,17 +12,18 @@ import {
 } from 'chart.js';
 import { Layers, Clock } from "lucide-react";
 import Chart from "@/features/core/components/admin/statistic/chart";
+import { FormDistribution as FormDistributionType } from "@/features/dashboard/types/statistic";
 
 
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function FormDistribution() {
+export default function FormDistribution({ data }: { data: FormDistributionType }) {
     // 表单状态分布
     const statusData = [
-        { name: '活跃中', value: 89, color: '#10b981' },
-        { name: '已关闭', value: 45, color: '#6b7280' },
-        { name: '草稿', value: 22, color: '#f59e0b' },
+        { name: '活跃中', value: data.active, color: '#10b981' },
+        { name: '已关闭', value: data.closed, color: '#6b7280' },
+        { name: '已开启', value: data.enabled, color: '#f59e0b' },
     ];
 
 

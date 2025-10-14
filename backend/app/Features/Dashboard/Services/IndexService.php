@@ -61,12 +61,20 @@ class IndexService
         // get recent activities
         $recentActivities = $this->getRecentActivities($currentPeriod['start'], $currentPeriod['end']);
 
+        // get form distribution
+        $formDistribution = $this->getFormDistribution($currentPeriod['start'], $currentPeriod['end']);
+
+        // get submission distribution
+        $submissionDistribution = $this->getSubmissionDistribution($currentPeriod['start'], $currentPeriod['end']);
+
         return [
             'figures' => $figures,
             'form_trends' => $formTrends,
             'submission_overview' => $submissionOverview,
             'active_forms' => $activeForms,
             'recent_activities' => $recentActivities,
+            'form_distribution' => $formDistribution,
+            'submission_distribution' => $submissionDistribution,
         ];
     }
 
@@ -579,6 +587,100 @@ class IndexService
         }, $recentActivities);
 
         return $recentActivities;
+    }
+
+    /**
+     * getFormDistribution
+     *
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getFormDistribution($startDate, $endDate): array
+    {
+        // get forms created in the period
+        $forms = Form::whereBetween('created_at', [$startDate, $endDate])->get(['id', 'enabled']);
+
+        // count enabled forms (enabled = 1)
+        $enabled = $forms->where('enabled', 1)->count();
+
+        // count closed forms (enabled = 0)
+        $closed = $forms->where('enabled', 0)->count();
+
+        // count active forms (enabled = 1 and has submissions in the period)
+        $formIdsWithSubmissions = FormSubmission::whereBetween('created_at', [$startDate, $endDate])
+            ->distinct()
+            ->pluck('form_id')
+            ->toArray();
+
+        $active = $forms->filter(function ($form) use ($formIdsWithSubmissions) {
+            return $form->enabled == 1 && in_array($form->id, $formIdsWithSubmissions);
+        })->count();
+
+        return [
+            'active' => $active,
+            'closed' => $closed,
+            'enabled' => $enabled,
+        ];
+    }
+
+    /**
+     * getSubmissionDistribution
+     *
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @return array
+     */
+    private function getSubmissionDistribution($startDate, $endDate): array
+    {
+        // define time periods
+        $periods = [
+            ['start' => 0, 'end' => 6, 'label' => '凌晨'],
+            ['start' => 6, 'end' => 9, 'label' => '早晨'],
+            ['start' => 9, 'end' => 12, 'label' => '上午'],
+            ['start' => 12, 'end' => 15, 'label' => '中午'],
+            ['start' => 15, 'end' => 18, 'label' => '下午'],
+            ['start' => 18, 'end' => 24, 'label' => '晚上'],
+        ];
+
+        // get all submissions in the date range
+        $submissions = FormSubmission::whereBetween('created_at', [$startDate, $endDate])
+            ->get(['created_at']);
+
+        // initialize distribution data
+        $distribution = [];
+        foreach ($periods as $period) {
+            $distribution[] = [
+                'period' => $period['start'] . '-' . $period['end'],
+                'count' => 0,
+                'percentage' => 0,
+                'label' => $period['label'],
+            ];
+        }
+
+        // count total submissions
+        $totalSubmissions = $submissions->count();
+
+        if ($totalSubmissions > 0) {
+            // count submissions for each period
+            foreach ($submissions as $submission) {
+                $hour = (int)$submission->created_at->format('H');
+                
+                foreach ($periods as $index => $period) {
+                    if ($hour >= $period['start'] && $hour < $period['end']) {
+                        $distribution[$index]['count']++;
+                        break;
+                    }
+                }
+            }
+
+            // calculate percentage
+            foreach ($distribution as &$item) {
+                $item['percentage'] = round(($item['count'] / $totalSubmissions) * 100, 2);
+            }
+        }
+
+        return $distribution;
     }
 }
 
