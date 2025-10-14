@@ -3,14 +3,14 @@
 import React, { useState } from "react";
 import { Button, ButtonGroup} from "@heroui/react";
 import { ListFilterPlus } from "lucide-react";
+import { SearchParams } from "@/features/dashboard/types/search-params";
 
-export default function Conditions() {
-    const [selectedRange, setSelectedRange] = useState("1");
+export default function Conditions({ searchParams, setSearchParams }: { searchParams: SearchParams, setSearchParams: (params: SearchParams) => void }) {
 
     const ranges = [
-        { key: "1", label: "今天" },
-        { key: "7", label: "7天" },
-        { key: "30", label: "一月" },
+        { key: "today", label: "今天" },
+        { key: "week", label: "7天" },
+        { key: "month", label: "一月" },
         { key: "all", label: "所有" },
     ];
 
@@ -24,9 +24,9 @@ export default function Conditions() {
                     {ranges.map((range) => (
                         <Button
                             key={range.key}
-                            color={selectedRange === range.key ? "primary" : "default"}
-                            variant={selectedRange === range.key ? "solid" : "flat"}
-                            onPress={() => setSelectedRange(range.key)}
+                            color={searchParams.type === range.key ? "primary" : "default"}
+                            variant={searchParams.type === range.key ? "solid" : "flat"}
+                            onPress={() => setSearchParams({ ...searchParams, type: range.key })}
                         >
                             {range.label}
                         </Button>

@@ -25,15 +25,6 @@ export default function FormDistribution() {
         { name: '草稿', value: 22, color: '#f59e0b' },
     ];
 
-    // 提交时段分布
-    const timeData = [
-        { period: '00-06', count: 234, percentage: 2.7, label: '凌晨' },
-        { period: '06-09', count: 1256, percentage: 14.4, label: '早晨' },
-        { period: '09-12', count: 2134, percentage: 24.4, label: '上午' },
-        { period: '12-15', count: 1876, percentage: 21.5, label: '中午' },
-        { period: '15-18', count: 2345, percentage: 26.8, label: '下午' },
-        { period: '18-24', count: 897, percentage: 10.2, label: '晚上' },
-    ];
 
     const totalForms = statusData.reduce((sum, item) => sum + item.value, 0);
 
@@ -78,71 +69,40 @@ export default function FormDistribution() {
     };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Chart title="表单状态分布">
-                <div className="grid grid-cols-2 gap-4 h-full">
-                    <div className="flex items-center justify-center">
-                        <div style={{ width: '100%', height: '200px' }}>
-                            <Doughnut data={chartData} options={options} />
-                        </div>
-                    </div>
-                    <div className="flex flex-col justify-center space-y-3">
-                        {statusData.map((item, index) => (
-                            <div key={index} className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div
-                                        className="w-3 h-3 rounded-full"
-                                        style={{ backgroundColor: item.color }}
-                                    />
-                                    <span className="text-sm text-gray-600">{item.name}</span>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-lg font-bold text-gray-900">{item.value}</p>
-                                    <p className="text-xs text-gray-500">
-                                        {((item.value / totalForms) * 100).toFixed(1)}%
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                        <div className="pt-3 border-t">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-gray-600">总计</span>
-                                <span className="text-lg font-bold text-gray-900">{totalForms}</span>
-                            </div>
-                        </div>
+        <Chart title="表单状态分布">
+            <div className="grid grid-cols-2 gap-4 h-full">
+                <div className="flex items-center justify-center">
+                    <div style={{ width: '100%', height: '200px' }}>
+                        <Doughnut data={chartData} options={options} />
                     </div>
                 </div>
-            </Chart>
-            <Chart title="提交时段分布">
-                <div className="space-y-3">
-                    {timeData.map((item, index) => (
-                        <div key={index} className="flex items-center gap-3">
-                            <span className="text-sm font-medium text-gray-600 w-16">
-                                {item.period}
-                            </span>
-                            <span className="text-xs text-gray-500 w-10">
-                                {item.label}
-                            </span>
-                            <div className="flex-1">
-                                <div className="relative h-8 bg-gray-100 rounded-lg overflow-hidden">
-                                    <div
-                                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg transition-all flex items-center justify-end pr-2"
-                                        style={{ width: `${item.percentage}%` }}
-                                    >
-                                        <span className="text-xs font-medium text-white">
-                                            {item.count}
-                                        </span>
-                                    </div>
-                                </div>
+                <div className="flex flex-col justify-center space-y-3">
+                    {statusData.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <div
+                                    className="w-3 h-3 rounded-full"
+                                    style={{ backgroundColor: item.color }}
+                                />
+                                <span className="text-sm text-gray-600">{item.name}</span>
                             </div>
-                            <span className="text-sm font-medium text-gray-900 w-12 text-right">
-                                {item.percentage}%
-                            </span>
+                            <div className="text-right">
+                                <p className="text-lg font-bold text-gray-900">{item.value}</p>
+                                <p className="text-xs text-gray-500">
+                                    {((item.value / totalForms) * 100).toFixed(1)}%
+                                </p>
+                            </div>
                         </div>
                     ))}
+                    <div className="pt-3 border-t">
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-600">总计</span>
+                            <span className="text-lg font-bold text-gray-900">{totalForms}</span>
+                        </div>
+                    </div>
                 </div>
-            </Chart>
-        </div>
+            </div>
+        </Chart>
     );
 }
 

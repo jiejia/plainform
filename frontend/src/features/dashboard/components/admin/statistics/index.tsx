@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Scroll from "@/features/core/components/shared/scroll";
 import MetricCards from "./metric-cards";
 import FormTrend from "./form-trend";
@@ -10,20 +10,36 @@ import FormDistribution from "./form-distribution";
 import RecentActivities from "./recent-activities";
 import { Card, CardBody } from "@heroui/react";
 import Conditions from "./conditions";
+import SubmissionDistribution from "./submission-distribution";
+import { Statistic } from "@/features/dashboard/types/statistic";
+import { SearchParams } from "@/features/dashboard/types/search-params";
+import { getStatistic } from "@/features/dashboard/actions/dashoboard-actions";
 
 
-export default function Index() {
+export default function Index({ initialData }: { initialData: Statistic }) {
+    const [data, setData] = useState<Statistic>(initialData);
+
+    const [searchParams, setSearchParams] = useState<SearchParams>({
+        type: "today",
+    });
+
+    useEffect(() => {
+        getStatistic(searchParams.type).then((res) => {
+            setData(res.data);
+        });
+    }, [searchParams]);
+
     return (
         <div className="grid grid-rows-[56px_1fr] gap-4 h-full">
             <Card className="h-full">
                 <CardBody className="pt-3">
-                    <Conditions />
+                    <Conditions searchParams={searchParams} setSearchParams={setSearchParams}/>
                 </CardBody>
             </Card>
             <Scroll>
                 <div className="space-y-4">
                     {/* 核心指标卡片 */}
-                    <MetricCards />
+                    <MetricCards data={data.figures} />
 
                     {/* 表单创建趋势和提交概览 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -38,7 +54,10 @@ export default function Index() {
                     </div>
 
                     {/* 表单分布和时段统计 */}
-                    <FormDistribution />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <FormDistribution />
+                        <SubmissionDistribution />
+                    </div>
                 </div>
             </Scroll>
         </div>

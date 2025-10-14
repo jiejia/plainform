@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card, CardBody } from "@heroui/react";
-import { TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 
 export default function Figure(
     { title, value, icon, changeType, change}: 
@@ -22,7 +22,7 @@ export default function Figure(
                                 ? 'text-red-600'
                                 : 'text-gray-500'
                         }`}>
-                        {changeType === 'increase' && <TrendingUp className="w-3 h-3 mr-1" />}
+                        {changeType === 'increase' && <TrendingUp className="w-3 h-3 mr-1" /> } {changeType === 'decrease' && <TrendingDown className="w-3 h-3 mr-1" /> }
                         {change}
                     </p>
                 </div>

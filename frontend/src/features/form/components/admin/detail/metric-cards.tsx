@@ -57,7 +57,7 @@ export default function MetricCards({ data }: { data: Figures }) {
                         value={metric.value.toString()} 
                         icon={<Icon className={`w-6 h-6 ${metric.color}`} />} 
                         changeType={metric.changeType} 
-                        change={metric.change.toString() + "%"} 
+                        change={Math.abs(metric.change).toString() + "%"} 
                     />
                 );
             })}

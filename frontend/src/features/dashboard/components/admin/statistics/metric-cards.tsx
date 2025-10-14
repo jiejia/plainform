@@ -1,68 +1,62 @@
 'use client'
 
 import React from "react";
-import { Card, CardBody } from "@heroui/react";
 import { FileText, TrendingUp, CheckCircle, BarChart3, Users, Activity } from "lucide-react";
 import Figure from "@/features/core/components/admin/statistic/figure";
+import { Figures } from "@/features/dashboard/types/statistic";
 
-export default function MetricCards() {
+export default function MetricCards({ data }: { data: Figures }) {
     const metrics = [
         {
-            title: "总表单数",
-            value: "156",
-            change: "+12",
-            subtext: "本月新增",
-            changeType: "increase" as const,
+            title: "新增表单数",
+            value: data.form_number.value,
+            change: data.form_number.growth_rate,
+            changeType: data.form_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
             icon: FileText,
             color: "text-blue-600",
             bgColor: "bg-blue-100",
         },
         {
-            title: "总提交数",
-            value: "8,742",
-            change: "+324",
-            subtext: "本月新增",
-            changeType: "increase" as const,
+            title: "新增提交数",
+            value: data.submission_number.value,
+            change: data.submission_number.growth_rate,
+            changeType: data.submission_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
             icon: BarChart3,
             color: "text-green-600",
             bgColor: "bg-green-100",
         },
         {
-            title: "今日提交",
-            value: "156",
-            change: "+23.5%",
-            subtext: "较昨日",
-            changeType: "increase" as const,
+            title: "新增流量数",
+            value: data.view_number.value,
+            change: data.view_number.growth_rate,
+            changeType: data.view_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
             icon: TrendingUp,
             color: "text-purple-600",
             bgColor: "bg-purple-100",
         },
         {
             title: "活跃表单",
-            value: "89",
-            change: "57.1%",
-            subtext: "占比",
-            changeType: "neutral" as const,
+            value: data.active_form_number.value,
+            change: data.active_form_number.growth_rate,
+            changeType: data.active_form_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
             icon: Activity,
             color: "text-orange-600",
             bgColor: "bg-orange-100",
         },
         {
             title: "独立访问IP",
-            value: "3,421",
-            change: "+186",
-            subtext: "本周新增",
-            changeType: "increase" as const,
+            value: data.independent_ip_number.value,
+            change: data.independent_ip_number.growth_rate,
+            changeType: data.independent_ip_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
             icon: Users,
             color: "text-pink-600",
             bgColor: "bg-pink-100",
         },
         {
             title: "平均完成率",
-            value: "84.2%",
-            change: "+2.8%",
-            subtext: "较上月",
-            changeType: "increase" as const,
+            value: data.average_finishing_rate.value,
+            change: data.average_finishing_rate.growth_rate,
+            changeType: data.average_finishing_rate.growth_rate >= 0 ? "increase" as const : "decrease" as const,
             icon: CheckCircle,
             color: "text-cyan-600",
             bgColor: "bg-cyan-100",
@@ -77,10 +71,10 @@ export default function MetricCards() {
                     <Figure
                         key={index}
                         title={metric.title}
-                        value={metric.value}
+                        value={metric.value.toString()}
                         icon={<Icon className={`w-5 h-5 ${metric.color}`} />}
                         changeType={metric.changeType}
-                        change={metric.change}
+                        change={Math.abs(metric.change).toString() + "%"}
                     />
                 );
             })}
