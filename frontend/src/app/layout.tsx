@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light">
+    <html lang="en" className="dark text-foreground bg-background">
       <body
         className={`antialiased min-h-screen`}
       >

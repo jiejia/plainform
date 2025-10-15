@@ -1,9 +1,7 @@
 'use client'
 
-import Block from "@/features/core/components/shared/block";
 import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Card, CardHeader, CardBody, CardFooter} from "@heroui/react"
-import { useEffect, useState, useTransition } from 'react'
-import Link from "next/link"
+import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { logout } from "@/features/admin/actions/auth-action";
 import { useAppContext } from "@/features/core/context/AppContext";

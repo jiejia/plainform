@@ -22,33 +22,7 @@ export default function Theme({ options, setOptions }: { options: any, setOption
             key: "dark",
             label: "深色",
             icon: <Moon className="w-4 h-4" />
-        },
-
-        {
-            key: "blue",
-            label: "蓝色",
-            color: "#006FEE"
-        },
-        {
-            key: "purple",
-            label: "紫色",
-            color: "#7C3AED"
-        },
-        {
-            key: "green",
-            label: "绿色",
-            color: "#17C964"
-        },
-        {
-            key: "yellow",
-            label: "黄色",
-            color: "#F5A524"
-        },
-        {
-            key: "red",
-            label: "红色",
-            color: "#F31260"
-        },
+        }
     ];
 
     const handleChange = (keys: SharedSelection) => {
