@@ -12,7 +12,7 @@ import api from "@/features/core/library/api";
  */
 export async function getOptions(group: string = 'general', name: string = '') {
     try {
-        const res:any = await api.get('api/admin/option/get', {
+        const res:any = await api.get('api/option/get', {
             searchParams: {
                 group: group,
                 name: name

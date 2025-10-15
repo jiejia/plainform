@@ -88,7 +88,7 @@ export default function Login() {
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Mail size={16} className="content-center text-default-400" aria-label="Email" />
+                                <Mail size={16} className="content-center" aria-label="Email" />
                             </span>
                         }
                         defaultValue={email}
@@ -112,7 +112,7 @@ export default function Login() {
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Lock size={16} className="content-center text-default-400" aria-label="Password" />
+                                <Lock size={16} className="content-center" aria-label="Password" />
                             </span>
                         }
                         defaultValue={password}

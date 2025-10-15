@@ -3,5 +3,5 @@ use Illuminate\Support\Facades\Route;
 use App\Features\Setting\Controllers\OptionController;
 
 Route::prefix('option')->group(function(){
-    Route::post('set', [OptionController::class, 'set'])->name('admin.option.set');
+    Route::get('get', [OptionController::class, 'get'])->name('option.get');
 });

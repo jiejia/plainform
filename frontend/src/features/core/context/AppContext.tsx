@@ -1,14 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie'
 import { CookieKey } from '@/features/core/constants/cookie-key'
-import { Admin } from '@/features/core/types/app'
+import { Admin, Setting } from '@/features/core/types/app'
 import { usePathname } from 'next/navigation'
+import { getOptions } from '@/features/setting/actions/setting-action'
 
 export const AppContext = createContext({
     admin: {} as Admin,
     setAdmin: (admin: Admin) => {},
-    // setting: {} as any,
-    // setSetting: (setting: any) => {},
+    setting: [] as Setting[],
+    setSetting: (setting: Setting[]) => {},
 });
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
@@ -18,7 +19,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         avatar: null,
         email: '',
     } );
-    
+    const [setting, setSetting] = useState<Setting[]>([]);
     // const [setting, setSetting] = useState<any>({} as any);
 
     const pathname = usePathname();
@@ -43,11 +44,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 setAdmin({ username: '', avatar: null, email: '' });
             }
         }
-        // 说明：依赖 pathname，确保每次路由切换后都会同步一次
+
+        const settingJson = Cookies.get(CookieKey.SETTING);
+        if (settingJson) {
+            const nextSetting = JSON.parse(settingJson) as Setting[];
+            setSetting(nextSetting);
+        } else {
+            setSetting([]);
+        }
     }, [pathname]); 
 
     return (
-        <AppContext.Provider value={{ admin, setAdmin}}>{children}</AppContext.Provider>
+        <AppContext.Provider value={{ admin, setAdmin, setting, setSetting }}>{children}</AppContext.Provider>
     );
 } 
 

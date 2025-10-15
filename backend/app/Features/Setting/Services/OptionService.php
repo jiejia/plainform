@@ -29,7 +29,7 @@ class OptionService
         $options = $query->get()->toArray();
         $data = [];
         foreach ($options as $option) {
-            $data[$option['group']][$option['name']] = $option['data']['value'];
+            $data[$option['group']][$option['name']] = $option['data']['value'] ?? $option['data'];
         }
 
         return $data;
