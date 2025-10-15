@@ -15,13 +15,14 @@ export default function Header({
 }) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-  const { admin } = useAppContext();
+  const { admin, setAdmin } = useAppContext();
   const handleSettingsClick = () => {
     router.push('/dashboard/setting/profile')
   }
 
   const handleLogout = async () => {
     await logout();
+    setAdmin({ username: '', avatar: null, email: '' });
     router.push('/login');
   }
 
