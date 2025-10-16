@@ -5,6 +5,7 @@ import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { logout } from "@/features/admin/actions/auth-action";
 import { useAppContext } from "@/features/core/context/AppContext";
+import ThemeToggle from "@/features/core/components/shared/theme-toggle";
 
 export default function Header({ 
   breadcrumbs = <></>

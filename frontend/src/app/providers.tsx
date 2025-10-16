@@ -13,7 +13,7 @@ export function Providers({children, setting}: { children: React.ReactNode, sett
         <HeroUIProvider locale={setting.general.default_language}>
             <AppProvider initialSetting={setting}>
                 {children}
-                <ToastProvider placement={"top-right"} toastOffset={10} maxVisibleToasts={3}/>
+                <ToastProvider placement={"top-right"} toastOffset={50} maxVisibleToasts={3}/>
             </AppProvider>
         </HeroUIProvider>
     )

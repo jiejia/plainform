@@ -11,6 +11,7 @@ import { clsx } from "clsx";
 import { config } from "@/features/form/types/config";
 import { getOrCreateVisitorId } from "@/features/core/utils/session";
 import { recordFormView } from "@/features/form/actions/user/form-action";
+import ThemeToggle from "@/features/core/components/shared/theme-toggle";
 
 interface FieldItemProps {
     field: Field;
@@ -135,7 +136,7 @@ export default function Detail({ form }: { form: FormType }) {
                 }
             }
         }
-            
+
         console.log("formData", JSON.stringify(formData));
 
         const res = await submit(form.uuid, formData, form.version || 1, getOrCreateVisitorId(), navigator.userAgent);
@@ -188,7 +189,8 @@ export default function Detail({ form }: { form: FormType }) {
 
 
     return (
-        <div className="py-4 px-4 min-h-screen">
+        <div className="py-4 px-4 min-h-screen relative">
+            <ThemeToggle className="absolute top-2 right-2 z-1000" />
             <Card className="h-full mx-auto max-w-5xl mt-2">
                 <CardHeader className="flex flex-col gap-2 pt-8 pb-4">
                     <h2 className="text-2xl font-bold">{form.title}</h2>

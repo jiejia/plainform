@@ -5,7 +5,9 @@ import ThemeToggle from "@/features/core/components/shared/theme-toggle";
 export default function LoginLayout({children,}: { children: React.ReactNode }) {
     return (
         <div className="p-4 relative">
-            <ThemeToggle/>
+            <div className="absolute top-2 right-2">
+                <ThemeToggle/>
+            </div>
             <div className="mt-20 mx-auto max-w-96">
                 <h1 className="text-center">
                     <Shell size={32} className="w-8 h-8 inline text-primary"/>
