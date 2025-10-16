@@ -7,7 +7,7 @@ import { Option } from '@/features/setting/types/appearance-option';
 
 export default async function Setting() {
 
-    const options = await getOptions('appearances');
+    const options = await getOptions(['appearances']);
     return (
         <DashboardLayout breadcrumbs={<><Link href={"/dashboard"}>Dashboard</Link> / <Link href={"/dashboard/setting"}>Setting</Link> / <span>Appearance</span></>} menuItemId={3}>
             <Appearance initialOptions={options.appearances as Option}/>

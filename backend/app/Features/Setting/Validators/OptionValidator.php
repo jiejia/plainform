@@ -8,8 +8,8 @@ class OptionValidator extends AbstractValidator
     protected function rules()
     {
         return [
-            'group' => 'nullable|string|max:255',
-            'name' => 'nullable|string|max:255',
+            'group' => 'nullable|array',
+            'name' => 'nullable|array',
             'update_group' => 'required|string|max:255',
             'update_name' => 'required|string|max:255',
             'update_data' => 'required',

@@ -3,14 +3,14 @@
 import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import Menu from './menu';
-import { getOptions } from '@/features/setting/actions/setting-action';
 import DefaultLanguage from '@/features/setting/components/admin/general/default-language';
 import MaintanceMode from '@/features/setting/components/admin/general/maintance-mode';
 import AppName from '@/features/setting/components/admin/general/app-name';
 import AppDescription from '@/features/setting/components/admin/general/app-description';
 import { Option } from '@/features/setting/types/general-option';
+import { Language } from '@/features/setting/types/language';
 
-export default function General({ initialOptions }: { initialOptions: Option }) {
+export default function General({ initialOptions, languages }: { initialOptions: Option, languages: Language[] }) {
 
     const [options, setOptions] = useState<Option>(initialOptions);
 
@@ -49,7 +49,7 @@ export default function General({ initialOptions }: { initialOptions: Option }) 
                                     <span className="text-default-400 text-xs">设置站点语言</span>
                                 </div>
                                 <div>
-                                    <DefaultLanguage options={options} setOptions={setOptions} />
+                                    <DefaultLanguage options={options} setOptions={setOptions} languages={languages} />
                                 </div>
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">

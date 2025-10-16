@@ -77,7 +77,7 @@ export default function ForgetPassword() {
             <CardBody className="p-5">
                 <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
                     <div>
-                        <p className="text-xs text-center text-slate-400"> You will receive a link to create a new password via email.</p>
+                        <p className="text-xs text-center"> You will receive a link to create a new password via email.</p>
                     </div>
                     <Input
                         type="email"
@@ -96,7 +96,7 @@ export default function ForgetPassword() {
                         endContent={
                             errors.email
                                 ? (
-                                    <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                                    <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
                                         {errors.email}
                                     </span>
                                 )

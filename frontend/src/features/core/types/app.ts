@@ -5,7 +5,10 @@ export type Admin = {
 }
 
 export type Setting = {
-    name: string;
-    data: any;
-    group: string;
+    general: {
+        default_language: string;
+    };
+    appearances: {
+        theme: string;
+    };
 }

@@ -10,10 +10,10 @@ import api from "@/features/core/library/api";
  * @param name 
  * @returns 
  */
-export async function getOptions(group: string = 'general', name: string = '') {
+export async function getOptions(group: string[] = ['general'], name: string[] = []) {
     try {
-        const res:any = await api.get('api/option/get', {
-            searchParams: {
+        const res:any = await api.post('api/option/get', {
+            json: {
                 group: group,
                 name: name
             }

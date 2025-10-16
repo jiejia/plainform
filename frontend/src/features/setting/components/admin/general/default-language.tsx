@@ -2,15 +2,10 @@
 
 import { Select, SelectItem, SharedSelection } from "@heroui/react";
 import { setOptions as setOptionsAction } from '@/features/setting/actions/setting-action';
+import { Option } from '@/features/setting/types/general-option';
+import { Language } from '@/features/setting/types/language';
 
-export default function DefaultLanguage({ options, setOptions }: { options: any, setOptions: any }) {
-
-    const languages = [
-        { key: "zh-CN", label: "简体中文" },
-        { key: "en-US", label: "English" },
-        { key: "ja-JP", label: "日本語" },
-        { key: "ko-KR", label: "한국어" },
-    ];
+export default function DefaultLanguage({ options, setOptions, languages }: { options: Option, setOptions: any, languages: Language[] }) {
 
     const handleLanguageChange = (value: SharedSelection) => {
         setOptions({ ...options, default_language: value.currentKey as string });
@@ -27,7 +22,7 @@ export default function DefaultLanguage({ options, setOptions }: { options: any,
             selectedKeys={[options.default_language]}
             onSelectionChange={handleLanguageChange}
         >
-            {languages.map((language) => (
+            {languages.map((language:any) => (
                 <SelectItem key={language.key}>
                     {language.label}
                 </SelectItem>

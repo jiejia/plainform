@@ -76,7 +76,7 @@ export default function ResetPassword() {
 
                 <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
                     <div>
-                        <p className="text-xs text-center text-slate-400"> Please enter your new password.</p>
+                        <p className="text-xs text-center"> Please enter your new password.</p>
                     </div>
                     <Input
                         type="password"
@@ -94,7 +94,7 @@ export default function ResetPassword() {
                         onFocus={() => setErrors({ ...errors, newPassword: '' })}
                         endContent={
                             errors.newPassword && (
-                                <span className="text-danger-500 text-xs bg-danger-50 px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                                <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
                                     {errors.newPassword}
                                 </span>
                             )
@@ -117,7 +117,7 @@ export default function ResetPassword() {
                         onFocus={() => setErrors({ ...errors, confirmPassword: '' })}
                         endContent={
                             errors.confirmPassword && (
-                                <span className="text-danger-500 text-xs bg-danger-50 px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                                <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
                                     {errors.confirmPassword}
                                 </span>
                             )

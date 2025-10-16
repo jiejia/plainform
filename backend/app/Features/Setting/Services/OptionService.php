@@ -10,19 +10,19 @@ class OptionService
     /**
      * get
      * 
-     * @param string|null $group
-     * @param string|null $name
+     * @param array|null $group
+     * @param array|null $name
      * @return array
      */
-    public function get(?string $group = null, ?string $name = null): array
+    public function get(?array $group = null, ?array $name = null): array
     {
         $query = Option::query()->select('name', 'data', 'group');
         
         if ($group) {
-            $query->where('group', $group);
+            $query->whereIn('group', $group);
         }
         if ($name) {
-            $query->where('name', $name);
+            $query->whereIn('name', $name);
         }
 
         // transform the data to array
@@ -53,7 +53,7 @@ class OptionService
             throw new BusinessException(Code::OPTION_NOT_FOUND->value, Code::OPTION_NOT_FOUND->message());
         }
 
-        return $this->get($group, $name);
+        return $this->get([$group], [$name]);
     }
 
 }

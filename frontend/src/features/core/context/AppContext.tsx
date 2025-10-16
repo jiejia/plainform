@@ -3,28 +3,26 @@ import Cookies from 'js-cookie'
 import { CookieKey } from '@/features/core/constants/cookie-key'
 import { Admin, Setting } from '@/features/core/types/app'
 import { usePathname } from 'next/navigation'
-import { getOptions } from '@/features/setting/actions/setting-action'
 
 export const AppContext = createContext({
     admin: {} as Admin,
     setAdmin: (admin: Admin) => {},
-    setting: [] as Setting[],
-    setSetting: (setting: Setting[]) => {},
+    setting: {} as Setting,
+    setSetting: (setting: Setting) => {},
 });
 
-export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+export const AppProvider = ({ children, initialSetting }: { children: React.ReactNode, initialSetting: Setting }) => {
 
     const [admin, setAdmin] = useState<Admin>({
         username: '',
         avatar: null,
         email: '',
     } );
-    const [setting, setSetting] = useState<Setting[]>([]);
-    // const [setting, setSetting] = useState<any>({} as any);
+    const [setting, setSetting] = useState<Setting>(initialSetting);
 
     const pathname = usePathname();
 
-    useEffect(() => {
+    useEffect(() => {        
         const adminJson = Cookies.get(CookieKey.ADMIN);
         if (adminJson) {
             const nextAdmin = JSON.parse(adminJson) as Admin;
@@ -45,13 +43,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             }
         }
 
-        const settingJson = Cookies.get(CookieKey.SETTING);
-        if (settingJson) {
-            const nextSetting = JSON.parse(settingJson) as Setting[];
-            setSetting(nextSetting);
-        } else {
-            setSetting([]);
-        }
     }, [pathname]); 
 
     return (
