@@ -50,7 +50,6 @@ export default function Theme({ options, setOptions }: { options: any, setOption
                             ) : (
                                 <div
                                     className="w-4 h-4 rounded-full border border-default-300"
-                                    style={{ backgroundColor: theme.color }}
                                 />
                             )}
                             <span>{theme.label}</span>

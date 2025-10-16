@@ -37,7 +37,6 @@ export const AppProvider = ({ children, initialSetting }: { children: React.Reac
                 return prev;
             });
         } else {
-            // cookie 被清了（比如退出登录），重置本地上下文
             if (admin.username || admin.avatar || admin.email) {
                 setAdmin({ username: '', avatar: null, email: '' });
             }

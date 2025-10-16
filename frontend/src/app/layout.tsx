@@ -3,7 +3,9 @@ import { Providers } from "./providers";
 import "./globals.css";
 import { getOptions } from "@/features/setting/actions/setting-action";
 import { Setting } from "@/features/core/types/app";
-import { defaultSetting } from "@/features/core/data/default-setting";
+import Cookies from 'js-cookie'
+import { CookieKey } from "@/features/core/constants/cookie-key";
+import { cookies } from 'next/headers'
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -32,13 +34,25 @@ export default async function RootLayout({
   }
 
   const setting = await getSetting();
-  
+
+  const cookieStore = await cookies();
+
+  let visitorTheme = cookieStore.get(CookieKey.VISITOR_THEME)?.value || '';
+  if (! visitorTheme) {
+    visitorTheme = setting.appearances.theme;
+  }
+
+  let visitorLanguage = cookieStore.get(CookieKey.VISITOR_LANG)?.value || '';
+  if (! visitorLanguage) {
+    visitorLanguage = setting.general.default_language;
+  }
+
   return (
-    <html lang={setting.general.default_language} className={setting.appearances.theme}>
+    <html lang={visitorLanguage} className={visitorTheme}>
       <body
         className={`antialiased min-h-screen`}
       >
-        <Providers setting={setting as Setting}>
+        <Providers setting={setting as Setting} visitorLanguage={visitorLanguage} visitorTheme={visitorTheme}>
           {children}
         </Providers>
       </body>

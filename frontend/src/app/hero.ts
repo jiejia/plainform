@@ -22,7 +22,7 @@ export default heroui({
         light: {
             layout: {},
             colors: {
-                background: "#FFFFFF",
+                background: "#efefef",
                 foreground: "#11181C",
                 primary: {
                     50: "#E6F1FE",
