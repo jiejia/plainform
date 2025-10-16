@@ -3,6 +3,8 @@
 import { Monitor, Sun, Moon } from "lucide-react";
 import { Select, SelectItem, SharedSelection } from "@heroui/react";
 import { setOptions as setOptionsAction } from '@/features/setting/actions/setting-action';
+import { CookieKey } from "@/features/core/constants/cookie-key";
+import Cookies from 'js-cookie'
 
 
 export default function Theme({ options, setOptions }: { options: any, setOptions: any }) {
@@ -22,13 +24,15 @@ export default function Theme({ options, setOptions }: { options: any, setOption
             key: "dark",
             label: "深色",
             icon: <Moon className="w-4 h-4" />
-        }
+        },
+
     ];
 
     const handleChange = (keys: SharedSelection) => {
         const selected = keys.currentKey as string;
         setOptions({ ...options, theme: selected });
         setOptionsAction('appearances', 'theme', selected);
+        Cookies.set(CookieKey.VISITOR_THEME, selected, { expires: 365 });
     }   
 
     return (
@@ -50,6 +54,7 @@ export default function Theme({ options, setOptions }: { options: any, setOption
                             ) : (
                                 <div
                                     className="w-4 h-4 rounded-full border border-default-300"
+                                    style={{ backgroundColor: theme.key === options.theme ? 'var(--theme-color)' : 'transparent' }}
                                 />
                             )}
                             <span>{theme.label}</span>
@@ -68,7 +73,7 @@ export default function Theme({ options, setOptions }: { options: any, setOption
                         ) : (
                             <div
                                 className="w-4 h-4 rounded-full border border-default-300"
-                                style={{ backgroundColor: theme.color }}
+                                style={{ backgroundColor: theme.key === options.theme ? 'var(--theme-color)' : 'transparent' }}
                             />
                         )
                     }
