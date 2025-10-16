@@ -7,8 +7,7 @@ import { AppProvider } from "@/features/core/context/AppContext";
 import { Setting } from "@/features/core/types/app";
 
 export function Providers({children, setting}: { children: React.ReactNode, setting: Setting }) {
-    
-    
+
     return (
         <HeroUIProvider locale={setting.general.default_language}>
             <AppProvider initialSetting={setting}>

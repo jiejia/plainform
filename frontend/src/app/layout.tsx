@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import { Providers } from "./providers";
 import "./globals.css";
 import { getOptions } from "@/features/setting/actions/setting-action";
+import { Providers } from "./providers";
 import { Setting } from "@/features/core/types/app";
-import { CookieKey } from "@/features/core/constants/cookie-key";
-import { cookies } from 'next/headers'
-import { CookieInitializer } from "./cookie-initializer";
+import ThemeSync from "@/features/core/components/shared/theme-sync";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -35,17 +33,36 @@ export default async function RootLayout({
 
   const setting = await getSetting();
 
-  const cookieStore = await cookies();
-
-  const visitorTheme = cookieStore.get(CookieKey.VISITOR_THEME)?.value || setting.appearances.theme;
-  const visitorLanguage = cookieStore.get(CookieKey.VISITOR_LANG)?.value || setting.general.default_language;
-
   return (
-    <html lang={visitorLanguage} className={visitorTheme}>
+    <html lang={setting.general.default_language} suppressHydrationWarning>
+      <head>
+      <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('plainform_theme') || '${setting.appearances.theme}';
+                  const root = document.documentElement;
+                  
+                  if (theme === 'system') {
+                    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    root.classList.add(systemTheme);
+                  } else {
+                    root.classList.add(theme);
+                  }
+                } catch (e) {
+                  // If localStorage is not available, use default theme
+                  document.documentElement.classList.add('${setting.appearances.theme}');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`antialiased min-h-screen`}
       >
-        <CookieInitializer setting={setting as Setting} />
+        <ThemeSync />
         <Providers setting={setting as Setting}>
           {children}
         </Providers>

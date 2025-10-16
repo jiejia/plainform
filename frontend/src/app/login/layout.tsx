@@ -2,11 +2,11 @@ import Copyright from "@/features/core/components/admin/copyright";
 import { Shell } from "lucide-react";
 import ThemeToggle from "@/features/core/components/shared/theme-toggle";
 
-export default function LoginLayout({children,}: { children: React.ReactNode }) {
+export default function LoginLayout({children}: { children: React.ReactNode }) {
     return (
         <div className="p-4 relative">
             <div className="absolute top-2 right-2">
-                <ThemeToggle/>
+                <ThemeToggle className="z-1000"/>
             </div>
             <div className="mt-20 mx-auto max-w-96">
                 <h1 className="text-center">
