@@ -24,7 +24,12 @@
         "resetting": "Resetting...",
         "reset": "Reset",
         "reset_success": "Reset Success",
-        "reset_failed": "Reset Failed"
+        "reset_failed": "Reset Failed",
+        "email_required": "Email is required",
+        "email_not_valid": "Email is not valid",
+        "password_required": "Password is required",
+        "password_min": "Password must be at least 6 characters",
+        "password_max": "Password must be less than 100 characters"
     },
     "setting": {
         "select_language": "Select Language",

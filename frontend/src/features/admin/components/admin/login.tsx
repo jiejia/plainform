@@ -42,8 +42,8 @@ export default function Login() {
         if (!result.success) {
             const { fieldErrors } = result.error.flatten();
             setErrors({
-                email: fieldErrors.email?.[0] ?? '',
-                password: fieldErrors.password?.[0] ?? '',
+                email: t(fieldErrors.email?.[0] ?? '') || '',
+                password: t(fieldErrors.password?.[0] ?? '') || '',
             });
 
             setIsPending(false);
