@@ -3,7 +3,8 @@ import "./globals.css";
 import { getOptions } from "@/features/setting/actions/setting-action";
 import { Providers } from "./providers";
 import { Setting } from "@/features/core/types/app";
-import ThemeSync from "@/features/core/components/shared/theme-sync";
+import { ThemeProvider } from 'next-themes'
+
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -34,38 +35,20 @@ export default async function RootLayout({
   const setting = await getSetting();
 
   return (
-    <html lang={setting.general.default_language} suppressHydrationWarning>
-      <head>
-      <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const theme = localStorage.getItem('plainform_theme') || '${setting.appearances.theme}';
-                  const root = document.documentElement;
-                  
-                  if (theme === 'system') {
-                    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                    root.classList.add(systemTheme);
-                  } else {
-                    root.classList.add(theme);
-                  }
-                } catch (e) {
-                  // If localStorage is not available, use default theme
-                  document.documentElement.classList.add('${setting.appearances.theme}');
-                }
-              })();
-            `,
-          }}
-        />
-      </head>
+    <html suppressHydrationWarning>
       <body
         className={`antialiased min-h-screen`}
       >
-        <ThemeSync />
-        <Providers setting={setting as Setting}>
-          {children}
-        </Providers>
+        <ThemeProvider 
+          attribute="class" 
+          defaultTheme={setting.appearances.theme as string} 
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers setting={setting as Setting}>
+            {children}
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
