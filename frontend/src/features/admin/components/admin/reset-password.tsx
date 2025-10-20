@@ -9,6 +9,7 @@ import { resetPasswordByEmail } from "@/features/admin/actions/auth-action";
 import { resetPasswordValidator } from "@/features/admin/validators/reset-password-validator";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useTranslations } from 'next-intl';
 
 type resetPasswordError = {
     newPassword: string;
@@ -16,6 +17,7 @@ type resetPasswordError = {
 }
 
 export default function ResetPassword() {
+    const t = useTranslations('auth');
 
     const router = useRouter();
 
@@ -69,23 +71,23 @@ export default function ResetPassword() {
     return (
         <Card className="w-full mt-5">
             <CardHeader className="text-center">
-                <h2 className="text-center text-lg font-normal block w-full">Reset Password</h2>
+                <h2 className="text-center text-lg font-normal block w-full">{t('reset_password')}</h2>
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
 
                 <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
                     <div>
-                        <p className="text-xs text-center"> Please enter your new password.</p>
+                        <p className="text-xs text-center">{t('reset_password_description')}</p>
                     </div>
                     <Input
                         type="password"
                         label=""
-                        placeholder="New Password"
+                        placeholder={t('new_password')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Lock size={16} className="content-center text-default-400" aria-label="New Password" />
+                                <Lock size={16} className="content-center text-default-400" aria-label={t('new_password')} />
                             </span>
                         }
                         value={newPassword}
@@ -104,11 +106,11 @@ export default function ResetPassword() {
                     <Input
                         type="password"
                         label=""
-                        placeholder="Confirm New Password"
+                        placeholder={t('confirm_new_password')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Lock size={16} className="content-center text-default-400" aria-label="Confirm New Password" />
+                                <Lock size={16} className="content-center text-default-400" aria-label={t('confirm_new_password')} />
                             </span>
                         }
                         value={confirmPassword}
@@ -123,14 +125,14 @@ export default function ResetPassword() {
                             )
                         }
                     />
-                    <p className="text-center text-xs"><span>Reset Problem?</span> <Link href="/forget-password" className="content-center justify-self-end text-xs">Resend</Link></p>
+                    <p className="text-center text-xs"><span>{t('reset_problem')}</span> <Link href="/forget-password" className="content-center justify-self-end text-xs">{t('resend')}</Link></p>
                     <Button
                         type="submit"
                         color="primary"
                         isLoading={isPending}
                         onPress={handleSubmit}
                     >
-                        {isPending ? 'Resetting...' : 'Reset'}
+                        {isPending ? t('resetting') : t('reset')}
                     </Button>
                 </form>
             </CardBody>

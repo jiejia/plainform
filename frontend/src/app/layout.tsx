@@ -4,6 +4,8 @@ import { getOptions } from "@/features/setting/actions/setting-action";
 import { Providers } from "./providers";
 import { Setting } from "@/features/core/types/app";
 import { ThemeProvider } from 'next-themes'
+import { getMessages } from 'next-intl/server';
+import { NextIntlClientProvider } from "next-intl";
 
 
 // const geistSans = Geist({
@@ -33,22 +35,25 @@ export default async function RootLayout({
   }
 
   const setting = await getSetting();
+  const messages = await getMessages();
 
   return (
     <html suppressHydrationWarning>
       <body
         className={`antialiased min-h-screen`}
       >
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme={setting.appearances.theme as string} 
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Providers setting={setting as Setting}>
-            {children}
-          </Providers>
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme={setting.appearances.theme as string}
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Providers setting={setting as Setting}>
+              {children}
+            </Providers>
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

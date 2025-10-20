@@ -7,12 +7,15 @@ import { useState, useEffect } from "react";
 import { forgetPasswordValidator } from "@/features/admin/validators/forget-password-validator";
 import { msg } from "@/features/core/utils/ui";
 import { forgetPassword } from "@/features/admin/actions/auth-action";
+import { useTranslations } from 'next-intl';
+
 
 type forgetPasswordError = {
     email: string;
 }
 
 export default function ForgetPassword() {
+    const t = useTranslations('auth');
 
     const [email, setEmail] = useState('');
     const [isPending, setIsPending] = useState(false);
@@ -71,22 +74,22 @@ export default function ForgetPassword() {
     return (
         <Card className="w-full mt-5">
             <CardHeader className="text-center">
-                <h2 className="text-center text-lg font-normal block w-full">Forget Password</h2>
+                <h2 className="text-center text-lg font-normal block w-full">{t('forget_password')}</h2>
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
                 <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
                     <div>
-                        <p className="text-xs text-center"> You will receive a link to create a new password via email.</p>
+                        <p className="text-xs text-center">{t('forget_password_description')}</p>
                     </div>
                     <Input
                         type="email"
                         label=""
-                        placeholder="Email"
+                        placeholder={t('email')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Mail size={16} className="content-center text-default-400" aria-label="Email" />
+                                <Mail size={16} className="content-center text-default-400" aria-label={t('email')} />
                             </span>
                         }
                         value={email}
@@ -103,7 +106,7 @@ export default function ForgetPassword() {
                                 : null
                         }
                     />
-                    <p className="text-center text-xs"><span>Remember Password?</span> <Link href="/login" className="content-center justify-self-end text-xs">Login</Link></p>
+                    <p className="text-center text-xs"><span>{t('remember_password')}</span> <Link href="/login" className="content-center justify-self-end text-xs">{t('login')}</Link></p>
                     <Button
                         type="submit"
                         color="primary"
@@ -111,7 +114,7 @@ export default function ForgetPassword() {
                         isDisabled={countdown > 0}
                         onPress={handleSubmit}
                     >
-                        {isPending ? 'Sending...' : countdown > 0 ? `Resend (${countdown}s)` : 'Send'}
+                        {isPending ? t('sending') : countdown > 0 ? `${t('resend')} (${countdown}s)` : t('send')}
                     </Button>
                 </form>
             </CardBody>

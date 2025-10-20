@@ -1,0 +1,41 @@
+{
+    "auth": {
+        "login": "Login",
+        "login_failed": "Login Failed",
+        "email": "Email",
+        "password": "Password",
+        "remember_me": "Remember Me",
+        "forget_password": "Forget Password",
+        "logging_in": "Logging In",
+        "forget_password_description": "You will receive a link to create a new password via email.",
+        "remember_password": "Remember Password?",
+        "resend": "Resend",
+        "send": "Send",
+        "sending": "Sending...",
+        "forget_password_sent": "Forget Password Sent",
+        "forget_password_sent_description": "Please check your email for the link to create a new password.",
+        "forget_password_sent_success": "Forget Password Sent Success",
+        "forget_password_sent_failed": "Forget Password Sent Failed",
+        "reset_password": "Reset Password",
+        "reset_password_description": "You will receive a link to create a new password via email.",
+        "new_password": "New Password",
+        "confirm_new_password": "Confirm New Password",
+        "reset_problem": "Reset Problem?",
+        "resetting": "Resetting...",
+        "reset": "Reset",
+        "reset_success": "Reset Success",
+        "reset_failed": "Reset Failed"
+    },
+    "setting": {
+        "select_language": "Select Language",
+        "app_name": "App Name",
+        "app_name_description": "Set the app name",
+        "app_description": "App Description",
+        "app_description_description": "Set the app description",
+        "language": "Language",
+        "language_description": "Set the site language",
+        "maintenance_mode": "Maintenance Mode",
+        "maintenance_mode_description": "Set the maintenance mode",
+        "general": "General"
+    }
+}

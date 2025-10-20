@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { msg } from "@/features/core/utils/ui";
 import { login } from "@/features/admin/actions/auth-action";
 import { loginValidator } from "@/features/admin/validators/login-validator";
+import { useTranslations } from 'next-intl';
+
 
 type loginError = {
     email: string;
@@ -15,6 +17,8 @@ type loginError = {
 }
 
 export default function Login() {
+    const t = useTranslations('auth');
+
 
     const router = useRouter();
     const [isPending, setIsPending] = useState(false);
@@ -26,7 +30,7 @@ export default function Login() {
     });
 
     async function handleSubmit(e?: PressEvent | React.FormEvent) {
-        // 阻止表单默认提交行为
+        // prevent the form's default submission behavior
         if (e && 'preventDefault' in e) {
             e.preventDefault();
         }
@@ -67,7 +71,7 @@ export default function Login() {
                 className="w-full"
                 onPress={handleSubmit}
             >
-                {isPending ? '登录中...' : '登录'}
+                {isPending ? t('logging_in') : t('login')}
             </Button>
         );
     }
@@ -75,7 +79,7 @@ export default function Login() {
     return (
         <Card className="w-full mt-5">
             <CardHeader className="text-center">
-                <h2 className="text-center text-lg font-normal block w-full">Login</h2>
+                <h2 className="text-center text-lg font-normal block w-full">{t('login')}</h2>
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
@@ -84,11 +88,11 @@ export default function Login() {
                         type="email"
                         name="email"
                         label=""
-                        placeholder="邮箱"
+                        placeholder={t('email')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Mail size={16} className="content-center" aria-label="Email" />
+                                <Mail size={16} className="content-center" aria-label={t('email')} />
                             </span>
                         }
                         defaultValue={email}
@@ -108,11 +112,11 @@ export default function Login() {
                         type="password"
                         name="password"
                         label=""
-                        placeholder="密码"
+                        placeholder={t('password')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Lock size={16} className="content-center" aria-label="Password" />
+                                <Lock size={16} className="content-center" aria-label={t('password')} />
                             </span>
                         }
                         defaultValue={password}
@@ -129,10 +133,10 @@ export default function Login() {
                     />
                     <div className="text-xs grid grid-flow-col">
                         <Checkbox defaultSelected size="sm">
-                            <span className="text-xs">记住我</span>
+                            <span className="text-xs">{t('remember_me')}</span>
                         </Checkbox>
                         <Link href="/forget-password" className="content-center justify-self-end text-xs">
-                            忘记密码？
+                            {t('forget_password')}
                         </Link>
                     </div>
                     <SubmitButton />

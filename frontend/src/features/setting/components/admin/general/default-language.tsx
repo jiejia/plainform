@@ -6,19 +6,21 @@ import { Option } from '@/features/setting/types/general-option';
 import { Language } from '@/features/setting/types/language';
 import Cookies from 'js-cookie'
 import { CookieKey } from '@/features/core/constants/cookie-key';
+import { useTranslations } from 'next-intl';
 
 export default function DefaultLanguage({ options, setOptions, languages }: { options: Option, setOptions: any, languages: Language[] }) {
+    const t = useTranslations('setting');
 
     const handleLanguageChange = (value: SharedSelection) => {
         setOptions({ ...options, default_language: value.currentKey as string });
         setOptionsAction('general', 'default_language', value.currentKey as string);
-        Cookies.set(CookieKey.VISITOR_LANG, value.currentKey as string, { expires: 365 });
+        Cookies.set(CookieKey.LANGUAGE, value.currentKey as string, { expires: 365 });
     };
 
     return <>
         <Select
             className="w-40"
-            placeholder="请选择语言"
+            placeholder={t('select_language')}
             id="language"
             name="language"
             size="sm"
