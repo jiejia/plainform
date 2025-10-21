@@ -3,6 +3,7 @@
 import { Field } from "@/features/form/types/field";
 import { Input } from "@heroui/react";
 import { FieldError } from "@/features/form/types/save/field-error";
+import { useTranslations } from "next-intl";
 
 
 export default function Title({
@@ -18,6 +19,8 @@ export default function Title({
     errors: FieldError,
     setFieldErrors: (errors: FieldError) => void
 }) {
+
+    const t = useTranslations('form');
 
     const handleTitleChange = (e: any) => {
 
@@ -39,8 +42,8 @@ export default function Title({
             {
                 currentField.config.title !== undefined && (
                     <Input
-                        label="Title"
-                        placeholder="Please enter"
+                        label={t('field_title')}
+                        placeholder={t('please_enter')}
                         type="text"
                         size="sm"
                         value={currentField.title}
@@ -54,7 +57,7 @@ export default function Title({
                         endContent={
                             errors.title && (
                                 <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {errors.title}
+                                    {t(errors.title as any)}
                                 </span>
                             )
                         }

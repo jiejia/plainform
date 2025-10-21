@@ -16,6 +16,7 @@ import {
 } from 'chart.js';
 import Chart from "@/features/core/components/admin/statistic/chart";
 import { SubmissionOverview as SubmissionOverviewType } from "@/features/dashboard/types/statistic";
+import { useTranslations } from 'next-intl';
 
 ChartJS.register(
     CategoryScale,
@@ -33,12 +34,13 @@ interface SubmissionOverviewProps {
 }
 
 export default function SubmissionOverview({ data }: SubmissionOverviewProps) {
+    const t = useTranslations('dashboard');
 
     const chartData = {
         labels: data.map(item => item.point),
         datasets: [
             {
-                label: '提交量',
+                label: t('submissions'),
                 data: data.map(item => item.total),
                 borderColor: '#6366f1',
                 backgroundColor: 'rgba(99, 102, 241, 0.1)',
@@ -51,7 +53,7 @@ export default function SubmissionOverview({ data }: SubmissionOverviewProps) {
                 pointBorderWidth: 2,
             },
             {
-                label: '独立IP',
+                label: t('unique_ip'),
                 data: data.map(item => item.unique),
                 borderColor: '#f59e0b',
                 backgroundColor: 'rgba(245, 158, 11, 0.1)',
@@ -141,7 +143,7 @@ export default function SubmissionOverview({ data }: SubmissionOverviewProps) {
     };
 
     return (
-        <Chart title="提交概览">
+        <Chart title={t('submission_overview')}>
             <div style={{ height: '300px' }}>
                 <Line data={chartData} options={options} />
             </div>

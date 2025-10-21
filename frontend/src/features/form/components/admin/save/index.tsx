@@ -24,9 +24,11 @@ import { saveFormValidator } from "@/features/form/validators/save-form-validato
 import { saveFormFieldValidator } from "@/features/form/validators/save-form-field-validator";
 import { FormError } from "@/features/form/types/save/form-error";
 import { FieldError } from "@/features/form/types/save/field-error";
+import { useTranslations } from "next-intl";
 
 export default function Save({ initialControls, initialFields, initialForm }: { initialControls: Control[], initialFields: Field[], initialForm: Form }) {
 
+    const t = useTranslations('form');
     const router = useRouter();
 
     const [fields, setFields] = useState<Field[]>(initialFields);
@@ -114,16 +116,16 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
         // if success, redirect to form list
         if (res.code === 0) {
             if (form.id) {
-                msg('update form success', '', 'success');
+                msg(t('update_form_success'), '', 'success');
             } else {
-                msg('create form success', '', 'success');
+                msg(t('create_form_success'), '', 'success');
             }   
             router.push(`/dashboard/form`);  
         } else {
             if (form.id) {
-                msg('update form failed', res.msg, 'warning');
+                msg(t('update_form_failed'), res.msg, 'warning');
             } else {
-                msg('create form failed', res.msg, 'warning');
+                msg(t('create_form_failed'), res.msg, 'warning');
             }
         }
 
@@ -204,7 +206,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                         active: false,
                         title: initialControls[currentActiveItem.id].config.title,
                         description: initialControls[currentActiveItem.id].config.description,
-                        required: initialControls[currentActiveItem.id].config.required,
+                        required: initialControls[currentActiveItem.id].config.required ?? false,
                         regex: initialControls[currentActiveItem.id].config.regex.value,
                         config: initialControls[currentActiveItem.id].config,
                         sort: 0,
@@ -291,7 +293,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                     <CardHeader>
                         <h2 className="flex items-center space-x-2">
                             <ListPlus size={16} />
-                            <span>控件</span>
+                            <span>{t('controls')}</span>
                         </h2>
                     </CardHeader>
                     <Divider />
@@ -305,7 +307,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                     <CardHeader>
                         <h2 className="flex items-center space-x-2">
                             <StickyNote size={16} />
-                            <span>字段</span>
+                            <span>{t('fields')}</span>
                         </h2>
                     </CardHeader>
                     <Divider />
@@ -324,7 +326,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                             <Tab key="controls"
                                 title={<div className="flex items-center space-x-1">
                                     <ListPlus size={16} />
-                                    <span>控件</span>
+                                    <span>{t('controls')}</span>
                                 </div>}
                                 className="xl:hidden block h-full"
                             >
@@ -335,7 +337,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                             <Tab key="form-property"
                                 title={<div className="flex items-center space-x-1">
                                     <Settings size={16} />
-                                    <span>表单</span>
+                                    <span>{t('form_settings')}</span>
                                 </div>}
                                 className="h-full">
                                 <Scroll>
@@ -345,7 +347,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                             <Tab key="field-property"
                                 title={<div className="flex items-center space-x-1">
                                     <Settings2 size={16} />
-                                    <span>字段</span>
+                                    <span>{t('field_settings')}</span>
                                 </div>}
                                 className="h-full"
                             >
@@ -361,10 +363,10 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                 >
                     <CardBody className="flex flex-row justify-center gap-2">
                         <Button className="w-auto" color="primary" radius="sm" size="sm" variant="flat">
-                            Reset
+                            {t('reset')}
                         </Button>
                         <Button className="w-auto" color="primary" size="sm" variant="shadow" radius="sm" onPress={handleSubmit} isLoading={isPending} disabled={isPending} >
-                            {isPending ? 'Submitting...' : 'Submit'}
+                            {isPending ? t('submitting') : t('submit')}
                         </Button>
                     </CardBody>
                 </Card>

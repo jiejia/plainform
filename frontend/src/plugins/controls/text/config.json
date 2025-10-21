@@ -38,8 +38,8 @@
         }
       ]
     },
-    "title": "请输入标题",
-    "description": "请输入描述",
+    "title": "enter_title",
+    "description": "enter_description",
     "length": [
       0,
       255

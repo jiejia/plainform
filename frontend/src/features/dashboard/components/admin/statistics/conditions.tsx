@@ -4,14 +4,16 @@ import React, { useState } from "react";
 import { Button, ButtonGroup} from "@heroui/react";
 import { ListFilterPlus } from "lucide-react";
 import { SearchParams } from "@/features/dashboard/types/search-params";
+import { useTranslations } from 'next-intl';
 
 export default function Conditions({ searchParams, setSearchParams }: { searchParams: SearchParams, setSearchParams: (params: SearchParams) => void }) {
+    const t = useTranslations('dashboard');
 
     const ranges = [
-        { key: "today", label: "今天" },
-        { key: "week", label: "7天" },
-        { key: "month", label: "一月" },
-        { key: "all", label: "所有" },
+        { key: "today", label: t('today') },
+        { key: "week", label: t('week') },
+        { key: "month", label: t('month') },
+        { key: "all", label: t('all') },
     ];
 
     return (

@@ -3,8 +3,8 @@
   "name": "Checkbox",
   "group": "general",
   "config": {
-    "title": "请输入标题",
-    "description": "请输入描述",
+    "title": "enter_title",
+    "description": "enter_description",
     "regex": {
       "hidden": true,
       "value": "",
@@ -14,7 +14,7 @@
     "options": {
       "default_options": [
         {
-          "val": "option1",
+          "val": "option_value",
           "selected": true
         }
       ],

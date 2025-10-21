@@ -31,6 +31,7 @@ import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Form as FormInList } from "@/features/form/types/list/form";
 import { Dispatch, SetStateAction } from "react";
 import { msg } from "@/features/core/utils/ui";
+import { useTranslations } from 'next-intl';
 
 export default function Actions({params, setParams, tableSelectedKeys, currentPageIds, data, setData}: {
     params: SearchParams, 
@@ -40,16 +41,17 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
     data: PaginationParams<FormInList>, 
     setData: Dispatch<SetStateAction<PaginationParams<FormInList>>>
 }) {
+    const t = useTranslations('form');
 
     const sortOptions = [
-        { key: "id_desc", orderBy: "id", orderType: "desc", text: "按ID/创建时间倒序" },
-        { key: "id_asc", orderBy: "id", orderType: "asc", text: "按ID/创建时间顺序" },
-        { key: "title_desc", orderBy: "title", orderType: "desc", text: "按名称倒序" },
-        { key: "title_asc", orderBy: "title", orderType: "asc", text: "按名称顺序" },
-        { key: "submissions_desc", orderBy: "submissions_count", orderType: "desc", text: "按提交数倒序" },
-        { key: "submissions_asc", orderBy: "submissions_count", orderType: "asc", text: "按提交数顺序" },
-        // { key: "enabled_desc", orderBy: "enabled", orderType: "desc", text: "按状态倒序" },
-        // { key: "enabled_asc", orderBy: "enabled", orderType: "asc", text: "按状态顺序" },
+        { key: "id_desc", orderBy: "id", orderType: "desc", text: t('sort_id_desc') },
+        { key: "id_asc", orderBy: "id", orderType: "asc", text: t('sort_id_asc') },
+        { key: "title_desc", orderBy: "title", orderType: "desc", text: t('sort_title_desc') },
+        { key: "title_asc", orderBy: "title", orderType: "asc", text: t('sort_title_asc') },
+        { key: "submissions_desc", orderBy: "submissions_count", orderType: "desc", text: t('sort_submissions_desc') },
+        { key: "submissions_asc", orderBy: "submissions_count", orderType: "asc", text: t('sort_submissions_asc') },
+        // { key: "enabled_desc", orderBy: "enabled", orderType: "desc", text: t('sort_enabled_desc') },
+        // { key: "enabled_asc", orderBy: "enabled", orderType: "asc", text: t('sort_enabled_asc') },
     ];
 
     const [selectedKeys, setSelectedKeys] = React.useState<SharedSelection>(new Set(["id_desc"]));
@@ -83,7 +85,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
         // get ids
         const ids = getIds();
         if (ids.length === 0) {
-            msg("关闭失败", "请至少选择一个表单", 'warning');
+            msg(t('disable_failed'), t('at_least_select_one'), 'warning');
             return;
         }
         
@@ -114,7 +116,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
         // get ids
         const ids = getIds();
         if (ids.length === 0) {
-            msg("启用失败", "请至少选择一个表单", 'warning');
+            msg(t('enable_failed'), t('at_least_select_one'), 'warning');
             return;
         }
         
@@ -137,12 +139,12 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
         // get ids
         const ids = getIds();
         if (ids.length === 0) {
-            msg("删除失败", "请至少选择一个表单", 'warning');
+            msg(t('delete_failed'), t('at_least_select_one'), 'warning');
             return;
         }
 
         // confirm
-        const isConfirmed = await confirm('确定删除吗？');
+        const isConfirmed = await confirm(t('confirm_delete'));
         if (!isConfirmed) {
             return;
         }
@@ -156,7 +158,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                 data: prev.data.filter(item => !ids.includes(item.id)),
             }));
         } else {
-            msg("删除失败", res.msg, 'warning');
+            msg(t('delete_failed'), res.msg, 'warning');
         }
     }   
     
@@ -169,7 +171,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                             label=""
                             type="text"
                             size="sm"
-                            placeholder="搜索表单..."
+                            placeholder={t('search_form')}
                             startContent={<Search size="16" />}
                             value={params.keyword}
                             onChange={handleKeywordsChange}
@@ -181,7 +183,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                         isIconOnly
                         size="sm"
                         variant="flat"
-                        title="refresh"
+                        title={t('refresh')}
                         onPress={handleRefresh}
                     >
                         <RefreshCw size="16" />
@@ -218,10 +220,10 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Static Actions">
-                            <DropdownItem key="pause" startContent={<Pause size="16" />} onPress={handleBatchUpdateEnabledDisable}>批量关闭</DropdownItem>
-                            <DropdownItem key="reactive" startContent={<Play size="16" />} onPress={handleBatchUpdateEnabledActive}>批量启用</DropdownItem>
+                            <DropdownItem key="pause" startContent={<Pause size="16" />} onPress={handleBatchUpdateEnabledDisable}>{t('batch_disable')}</DropdownItem>
+                            <DropdownItem key="reactive" startContent={<Play size="16" />} onPress={handleBatchUpdateEnabledActive}>{t('batch_enable')}</DropdownItem>
                             <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />} onPress={handleBatchDelete}>
-                                批量删除
+                                {t('batch_delete')}
                             </DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
@@ -233,7 +235,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                         as={Link}
                         href="/dashboard/form/create"
                     >
-                        Create
+                        {t('create')}
                     </Button>
                 </div>
             </div>

@@ -7,9 +7,11 @@ import { DndSortableItem } from "@/features/core/components/shared/dnd-sortable-
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import clsx from "clsx";
 import { FieldError } from "@/features/form/types/save/field-error";
+import { useTranslations } from 'next-intl';
 
 export default function Fields({ fields, setFields, setTabSelectedKey, setFieldErrors }: { fields: Field[], setFields: (fields: Field[]) => void, setTabSelectedKey: (key: string | number) => void, setFieldErrors: (errors: FieldError) => void }) {
 
+    const t = useTranslations('form');
     const handleFieldClick = (
         e: React.MouseEvent<HTMLElement>,
         index: number
@@ -46,7 +48,7 @@ export default function Fields({ fields, setFields, setTabSelectedKey, setFieldE
                             title={field.title}
                         >
                             <span className="text-sm font-medium text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap">{field.title}</span>
-                            <span className="text-xs text-gray-500 px-2 py-1 rounded-full">{field.control_name}</span>
+                            <span className="text-xs text-gray-500 px-2 py-1 rounded-full">{t(field.control_type)}</span>
                         </DndSortableItem>
                     ))}
                 </ul>

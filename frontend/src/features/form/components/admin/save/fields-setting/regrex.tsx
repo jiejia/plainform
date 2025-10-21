@@ -4,7 +4,7 @@ import { Input } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 import { FieldError } from "@/features/form/types/save/field-error";
 import { Select, SelectItem } from "@heroui/react";
-
+import { useTranslations } from 'next-intl';
 export default function Regrex({
     fields,
     setFields,
@@ -19,6 +19,7 @@ export default function Regrex({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
+    const t = useTranslations('form');
     const handleRegrexChange = (e: any) => {
         const regex = e.target.value;
         setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, regex: regex, config: { ...field.config, regex: { ...field.config.regex, value: regex } } } : field));
@@ -36,8 +37,8 @@ export default function Regrex({
                 currentField.config.regex.hidden === false && (
                     <>
                         <Input
-                            label="Regrex"
-                            placeholder="Please enter"
+                            label={t('field_regex')}
+                            placeholder={t('please_enter')}
                             type="text"
                             size="sm"
                             value={currentField.config.regex.value}
@@ -51,7 +52,7 @@ export default function Regrex({
                             endContent={
                                 errors.regex && (
                                     <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                        {errors.regex}
+                                        {t(errors.regex)}
                                     </span>
                                 )
                             }
@@ -61,11 +62,11 @@ export default function Regrex({
                                 <Select
                                     className="max-w-xs"
                                     items={[
-                                        { name: "自定义正则", value: "" },
+                                        { name: t('custom_regex'), value: "" },
                                         ...currentField.config.regex.avaliable_rules
                                     ]}                                    labelPlacement="outside"
                                     size="sm"
-                                    placeholder="Available Regex"
+                                    placeholder={t('available_regex')}
                                     onChange={handleRulesChange}
                                 >
 

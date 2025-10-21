@@ -3,7 +3,7 @@
 import { Slider } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 import { FieldError } from "@/features/form/types/save/field-error";
-
+import { useTranslations } from 'next-intl';
 export default function Length({
     fields,
     setFields,
@@ -18,6 +18,7 @@ export default function Length({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
+    const t = useTranslations('form');
     const handleLengthChange = (value: number | number[]) => {
         const uuid = currentField.uuid;
         const [min, max] = Array.isArray(value) ? value : [value, value];
@@ -44,7 +45,7 @@ export default function Length({
                             labelWrapper: "w-full",
                             label: "text-xs font-semibold"
                         }}
-                        label="Length Range"
+                        label={t('length_range')}
                         maxValue={1000}
                         minValue={0}
                         step={1}

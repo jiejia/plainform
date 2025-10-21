@@ -3,7 +3,7 @@
 import { Input } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 import { FieldError } from "@/features/form/types/save/field-error";
-
+import { useTranslations } from 'next-intl';
 export default function Description({
     fields,
     setFields,
@@ -18,6 +18,7 @@ export default function Description({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
+    const t = useTranslations('form');
     const handleDescriptionChange = (e: any) => {
 
         const description = e.target.value;
@@ -30,8 +31,8 @@ export default function Description({
             {
                 currentField.config.description !== undefined && (
                     <Input
-                        label="Description"
-                        placeholder="Please enter"
+                        label={t('field_description')}
+                        placeholder={t('please_enter')}
                         type="text"
                         size="sm"
                         value={currentField.description}
@@ -45,7 +46,7 @@ export default function Description({
                         endContent={
                             errors.description && (
                                 <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {errors.description}
+                                    {t(errors.description)}
                                 </span>
                             )
                         }

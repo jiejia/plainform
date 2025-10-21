@@ -3,7 +3,7 @@
 import { cn, form, Switch } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 import { FieldError } from "@/features/form/types/save/field-error";
-
+import { useTranslations } from 'next-intl';
 export default function Required({
     fields,
     setFields,
@@ -18,6 +18,7 @@ export default function Required({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
+    const t = useTranslations('form');
     const handleRequiredChange = (e: any) => {
         const required = e.target.checked;
         setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, required: required, config: { ...field.config, required: required } } : field));
@@ -27,7 +28,7 @@ export default function Required({
             {
                 currentField.config.required !== undefined && (
                     <div className="grid grid-cols-1 gap-1">
-                        <span className="text-xs font-semibold">Required</span>
+                        <span className="text-xs font-semibold">{t('required')}</span>
                         <Switch
                             classNames={{
                                 base: cn(
@@ -50,7 +51,7 @@ export default function Required({
                             isSelected={currentField.required as boolean}
                         >
                             <div className="flex flex-col gap-1">
-                                <p className="text-tiny text-default-400 ms-0">whether the field is required</p>
+                                <p className="text-tiny text-default-400 ms-0">{t('whether_the_field_is_required')}</p>
                             </div>
                         </Switch>
                     </div>

@@ -15,6 +15,7 @@ import { Search, ListFilterPlus, Hash, Activity } from "lucide-react";
 import { SearchParams } from "@/features/form/types/list/search-params";
 import { useState } from "react";
 import { initialSearchParams } from "@/features/form/data/initial-search-params";
+import { useTranslations } from 'next-intl';
 
 type AdvancedSearchProps = {
     keyword: string;
@@ -27,6 +28,7 @@ type AdvancedSearchProps = {
 
 export default function AdvancedSearch({ params, setParams }: { params: SearchParams, setParams: (params: SearchParams) => void }) {
     const [pending, setPending] = useState(false);
+    const t = useTranslations('form');
 
     const [innerParams, setInnerParams] = useState<AdvancedSearchProps>({
         keyword: params.keyword,
@@ -83,7 +85,7 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
     }
 
     return (
-        <FormModal title="高级搜索"
+        <FormModal title={t('advanced_search')}
             footer={(onClose) => (
                 <>
                     <Button
@@ -92,7 +94,7 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
                         variant="flat"
                         onPress={() => { handleReset(); }}
                     >
-                        重置
+                        {t('reset')}
                     </Button>
                     <Button
                         size="sm"
@@ -102,7 +104,7 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
                         isLoading={pending}
                         isDisabled={pending}
                     >
-                        {pending ? '搜索中...' : '搜索'}
+                        {pending ? t('searching') : t('search')}
                     </Button>
                 </>
 
@@ -112,7 +114,7 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
                     isIconOnly
                     size="sm"
                     variant="flat"
-                    title="advanced search"
+                    title={t('advanced_search')}
                 >
                     <ListFilterPlus size="16" />
                 </Button>
@@ -120,8 +122,8 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
             <div className="flex flex-col gap-4">
                 <div>
                     <Input
-                        label="表单名称"
-                        placeholder="输入表单名称关键词..."
+                        label={t('form_name')}
+                        placeholder={t('enter_form_name_keyword')}
                         startContent={<Search size="16" className="text-default-400" />}
                         labelPlacement="outside"
                         value={innerParams.keyword}
@@ -131,7 +133,7 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
 
                 {/* 创建时间范围搜索 */}
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-foreground">创建时间</label>
+                    <label className="text-sm font-medium text-foreground">{t('create_time')}</label>
                     <div className="grid w-full">
                         <DateRangePicker
                             labelPlacement="outside"
@@ -160,7 +162,7 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-foreground">提交数量</label>
+                    <label className="text-sm font-medium text-foreground">{t('submission_count')}</label>
                     <div className="grid grid-cols-2 gap-2">
                         <Input
                             type="number"
@@ -185,9 +187,9 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
 
                 {/* 状态搜索 */}
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-foreground">状态</label>
+                    <label className="text-sm font-medium text-foreground">{t('status')}</label>
                     <Select
-                        placeholder="选择状态"
+                        placeholder={t('select_status')}
                         startContent={<Activity size="16" className="text-default-400" />}
                         labelPlacement="outside"
                         selectionMode="single"
@@ -196,13 +198,13 @@ export default function AdvancedSearch({ params, setParams }: { params: SearchPa
                         defaultSelectedKeys={new Set(['all'])}
                     >
                         <SelectItem key="all">
-                            全部
+                            {t('all')}
                         </SelectItem>
                         <SelectItem key="1">
-                            启用
+                            {t('enabled')}
                         </SelectItem>
                         <SelectItem key="0">
-                            禁用
+                            {t('disabled')}
                         </SelectItem>
                     </Select>
                 </div>

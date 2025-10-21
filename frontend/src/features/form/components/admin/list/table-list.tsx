@@ -27,6 +27,7 @@ import { batchDelete, batchUpdateEnabled } from "@/features/form/actions/admin/f
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Dispatch, SetStateAction } from "react";
 import { msg } from "@/features/core/utils/ui";
+import { useTranslations } from 'next-intl';
 
 
 export default function TableList({ loading, data, setData, selectedKeys, setSelectedKeys }: {
@@ -37,19 +38,20 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
     setSelectedKeys: Dispatch<SetStateAction<Selection>>
 }) {
     const [mounted, setMounted] = useState(false);
+    const t = useTranslations('form');
 
     const columns = [{
-        key: "id", label: "ID",
+        key: "id", label: t('id'),
     }, {
-        key: "title", label: "名称",
+        key: "title", label: t('title'),
     }, {
-        key: "created_at", label: "创建时间",
+        key: "created_at", label: t('created_at'),
     }, {
-        key: "submissions_count", label: "提交数"
+        key: "submissions_count", label: t('submissions_count')
     }, {
-        key: "enabled", label: "启用状态",
+        key: "enabled", label: t('enabled_status'),
     }, {
-        key: "actions", label: "操作"
+        key: "actions", label: t('actions')
     }];
 
 
@@ -58,14 +60,14 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
     }, []);
 
     if (!mounted) {
-        return <div className="flex justify-center items-center h-full">Loading...</div>;
+        return <div className="flex justify-center items-center h-full">{t('loading')}</div>;
     }
 
     if (loading) {
         return <div className="flex justify-center items-center h-full"></div>;
     } else {
         if (data.data.length === 0) {
-            return <div className="flex justify-center items-center h-full">暂无数据</div>;
+            return <div className="flex justify-center items-center h-full">{t('no_data')}</div>;
         }
     }
 
@@ -84,9 +86,9 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
 
     const handleDelete = async (id: number) => {
         // confirm
-        const isConfirmed = await confirm('确定删除吗？');
+        const isConfirmed = await confirm(t('confirm_delete'));
         if (!isConfirmed) {
-            msg("删除失败", "请至少选择一个表单", 'warning');
+            msg(t('delete_failed'), t('at_least_select_one'), 'warning');
             return;
         }
 
@@ -99,12 +101,12 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
                 data: prev.data.filter(item => item.id !== id),
             }));
         } else {
-            msg("删除失败", res.msg, 'warning');
+            msg(t('delete_failed'), res.msg, 'warning');
         }
     }
 
     if (data.data.length === 0) {
-        return <div className="flex justify-center items-center h-full">暂无数据</div>;
+        return <div className="flex justify-center items-center h-full">{t('no_data')}</div>;
     }
 
     return (
@@ -141,14 +143,14 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
                                                 startContent={<Pencil size="16" />}
                                                 href={`/dashboard/form/${item.id}/edit`}
                                             >
-                                                编辑
+                                                {t('edit')}
                                             </DropdownItem>
                                             <DropdownItem
                                                 key="view"
                                                 startContent={<Eye size="16" />}
                                                 href={`/dashboard/form/${item.id}`}
                                             >
-                                                查看
+                                                {t('view')}
                                             </DropdownItem>
                                             <DropdownItem
                                                 key="delete"
@@ -157,7 +159,7 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
                                                 startContent={<Trash2 size="16" />}
                                                 onPress={() => handleDelete(item.id)}
                                             >
-                                                删除
+                                                {t('delete')}
                                             </DropdownItem>
                                         </DropdownMenu>
                                     </Dropdown>

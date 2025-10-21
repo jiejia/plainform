@@ -13,17 +13,20 @@ import {
 import { Layers, Clock } from "lucide-react";
 import Chart from "@/features/core/components/admin/statistic/chart";
 import { FormDistribution as FormDistributionType } from "@/features/dashboard/types/statistic";
+import { useTranslations } from 'next-intl';
 
 
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function FormDistribution({ data }: { data: FormDistributionType }) {
+    const t = useTranslations('dashboard');
+    
     // 表单状态分布
     const statusData = [
-        { name: '活跃中', value: data.active, color: '#10b981' },
-        { name: '已关闭', value: data.closed, color: '#6b7280' },
-        { name: '已开启', value: data.enabled, color: '#f59e0b' },
+        { name: t('status_active'), value: data.active, color: '#10b981' },
+        { name: t('status_closed'), value: data.closed, color: '#6b7280' },
+        { name: t('status_enabled'), value: data.enabled, color: '#f59e0b' },
     ];
 
 
@@ -70,7 +73,7 @@ export default function FormDistribution({ data }: { data: FormDistributionType 
     };
 
     return (
-        <Chart title="表单状态分布">
+        <Chart title={t('form_status_distribution')}>
             <div className="grid grid-cols-2 gap-4 h-full">
                 <div className="flex items-center justify-center">
                     <div style={{ width: '100%', height: '200px' }}>
@@ -97,7 +100,7 @@ export default function FormDistribution({ data }: { data: FormDistributionType 
                     ))}
                     <div className="pt-3 border-t">
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-gray-600">总计</span>
+                            <span className="text-sm font-medium text-gray-600">{t('total')}</span>
                             <span className="text-lg font-bold text-gray-900">{totalForms}</span>
                         </div>
                     </div>

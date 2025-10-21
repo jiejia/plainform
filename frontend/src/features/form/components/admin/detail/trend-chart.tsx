@@ -16,6 +16,7 @@ import {
     ChartOptions,
 } from 'chart.js';
 import { Trend } from "@/features/form/types/statistic";
+import { useTranslations } from "next-intl";
 
 ChartJS.register(
     CategoryScale,
@@ -30,11 +31,13 @@ ChartJS.register(
 
 export default function TrendChart( { data }: { data: Trend[] } ) {
 
+    const t = useTranslations('form');
+
     const chartData = {
         labels: data.map(item => item.point),
         datasets: [
             {
-                label: '浏览量',
+                label: t('views_label'),
                 data: data.map(item => item.views_count),
                 borderColor: '#0070f3',
                 backgroundColor: 'rgba(0, 112, 243, 0.1)',
@@ -47,7 +50,7 @@ export default function TrendChart( { data }: { data: Trend[] } ) {
                 pointBorderWidth: 2,
             },
             {
-                label: '提交量',
+                label: t('submissions_label'),
                 data: data.map(item => item.submissions_count),
                 borderColor: '#10b981',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -135,7 +138,7 @@ export default function TrendChart( { data }: { data: Trend[] } ) {
     };
 
     return (
-        <Chart title="趋势图">
+        <Chart title={t('trend_chart')}>
             <div style={{ height: '300px' }}>
                 <Line data={chartData} options={options} />
             </div>

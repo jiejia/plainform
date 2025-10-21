@@ -2,9 +2,9 @@
     "type": "datetime",
     "name": "Datetime",
     "config": {
-      "title": "请输入标题",
+      "title": "enter_title",
       "required": false,
-      "description": "请输入描述",
+      "description": "enter_description",
       "regex": {
         "hidden": true,
         "value": "",

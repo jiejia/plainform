@@ -4,6 +4,7 @@ import React from "react";
 import { Eye } from "lucide-react";
 import Chart from "@/features/core/components/admin/statistic/chart";
 import { ActiveForms as ActiveFormsType } from "@/features/dashboard/types/statistic";
+import { useTranslations } from 'next-intl';
 
 interface ActiveFormsProps {
     data: ActiveFormsType[];
@@ -11,9 +12,10 @@ interface ActiveFormsProps {
 
 export default function ActiveForms({ data }: ActiveFormsProps) {
     const forms = data || [];
+    const t = useTranslations('dashboard');
 
     return (
-        <Chart title="热门表单 Top 5">
+        <Chart title={t('hot_forms_top5')}>
                 <div className="space-y-2">
                     {forms.map((form, index) => (
                         <div 
@@ -35,10 +37,10 @@ export default function ActiveForms({ data }: ActiveFormsProps) {
                                     <div className="flex items-center gap-3 mt-0.5">
                                         <span className="text-xs text-gray-500 flex items-center gap-1">
                                             <Eye className="w-3 h-3" />
-                                            {form.views} 浏览
+                                            {form.views} {t('views')}
                                         </span>
                                         <span className="text-xs text-gray-400">
-                                            转化率 {form.rate}%
+                                            {t('conversion_rate')} {form.rate}%
                                         </span>
                                     </div>
                                 </div>

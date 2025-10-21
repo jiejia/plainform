@@ -36,6 +36,7 @@ import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Select, SelectItem } from "@heroui/react";
 import { msg } from "@/features/core/utils/ui";
 import { batchDelete, exportExcel } from "@/features/form/actions/admin/submission-action";
+import { useTranslations } from "next-intl";
 
 export default function Actions({ formId, params, setParams, tableSelectedKeys, currentPageIds, data, setData, versions, initialSearchParams }: {
     formId: number,
@@ -49,30 +50,32 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
     initialSearchParams: SearchParams
 }) {
 
+    const t = useTranslations('form');
+
     // 定义搜索字段配置
     const searchFields: SearchField[] = [
         { key: 'id', label: 'ID', type: 'number' },
-        { key: 'name', label: '名称', type: 'string' },
-        { key: 'created_at', label: '创建时间', type: 'dateRange' },
-        { key: 'submission_count', label: '提交数', type: 'number' },
+        { key: 'name', label: t('name'), type: 'string' },
+        { key: 'created_at', label: t('created_at'), type: 'dateRange' },
+        { key: 'submission_count', label: t('submission_count'), type: 'number' },
         {
             key: 'status',
-            label: '状态',
+            label: t('status'),
             type: 'select',
             options: [
-                { key: 'active', label: '激活' },
-                { key: 'inactive', label: '暂停' },
-                { key: 'draft', label: '草稿' }
+                { key: 'active', label: t('enabled') },
+                { key: 'inactive', label: t('disabled') },
+                { key: 'draft', label: t('disabled') }
             ]
         }
     ];
 
 
     const sortOptions = [
-        { key: "id_desc", orderBy: "id", orderType: "desc", text: "按ID/创建时间倒序" },
-        { key: "id_asc", orderBy: "id", orderType: "asc", text: "按ID/创建时间顺序" },
-        { key: "ipv4_desc", orderBy: "ipv4", orderType: "desc", text: "按IP倒序" },
-        { key: "ipv4_asc", orderBy: "ipv4", orderType: "asc", text: "按IP顺序" },
+        { key: "id_desc", orderBy: "id", orderType: "desc", text: t('sort_id_desc') },
+        { key: "id_asc", orderBy: "id", orderType: "asc", text: t('sort_id_asc') },
+        { key: "ipv4_desc", orderBy: "ipv4", orderType: "desc", text: t('sort_by_ip_desc') },
+        { key: "ipv4_asc", orderBy: "ipv4", orderType: "asc", text: t('sort_by_ip_asc') },
     ];
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -114,21 +117,21 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
 
         console.log('ids', ids);
         if (ids.length === 0) {
-            msg("删除失败", "请至少选择一个表单", 'warning');
+            msg(t('delete_failed_message'), t('at_least_select_one_message'), 'warning');
             return;
         }
         // confirm
-        const isConfirmed = await confirm('确定删除吗？');
+        const isConfirmed = await confirm(t('confirm_delete_message'));
         if (!isConfirmed) {
             return; 
         }
         // update remote data
         const res = await batchDelete(formId, ids);
         if (res.code === 0) {
-            msg("删除成功", "删除成功", 'success');
+            msg(t('delete_success_message'), t('delete_success_message'), 'success');
             window.location.reload();
         } else {
-            msg("删除失败", res.msg, 'warning');
+            msg(t('delete_failed_message'), res.msg, 'warning');
         }
     }
 
@@ -153,7 +156,7 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
             
             // msg("导出成功", "Excel文件已开始下载", 'success');
         } else {
-            msg("导出失败", res.msg, 'warning');
+            msg(t('export_failed_message'), res.msg, 'warning');
         }
     }
 
@@ -172,13 +175,13 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                         label=""
                         type="text"
                         size="sm"
-                        placeholder="搜索..."
+                        placeholder={t('search_placeholder')}
                         startContent={<Search size="16" />}
                     />
                     <Select
                         className=""
                         size="sm"
-                        placeholder="选择版本"
+                        placeholder={t('select_version')}
                         selectedKeys={params.version ? [params.version.toString()] : versions.length > 0 ? [versions[versions.length - 1].toString()] : []}
                         onSelectionChange={(keys) => {
                             const first = Array.from(keys)[0] as string | undefined;
@@ -189,7 +192,7 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                         }}
                     >
                         {versions.map((version) => (
-                            <SelectItem key={version.toString()} textValue={"版本" +  version.toString()}>版本{version}</SelectItem>
+                            <SelectItem key={version.toString()} textValue={t('version_prefix') +  version.toString()}>{t('version_prefix')}{version}</SelectItem>
                         ))}
                     </Select>
                 </form>
@@ -204,12 +207,12 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                 >
                     <RefreshCw size="16" />
                 </Button>
-                <FormModal title="高级搜索" footer={null} button={
+                <FormModal title={t('advanced_search')} footer={null} button={
                     <Button
                         isIconOnly
                         size="sm"
                         variant="flat"
-                        title="advanced search"
+                        title={t('advanced_search')}
                         onPress={onOpen}
                     >
                         <ListFilterPlus size="16" />
@@ -253,10 +256,10 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions">
                         <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />} onPress={handleBatchDelete}>
-                            批量删除
+                            {t('batch_delete_action')}
                         </DropdownItem>
                         <DropdownItem key="export" className="text-primary" color="primary" startContent={<Download size="16" />} onPress={handleExportExcel}>
-                            导出Excel
+                            {t('export_excel')}
                         </DropdownItem>
                     </DropdownMenu>
                 </Dropdown>

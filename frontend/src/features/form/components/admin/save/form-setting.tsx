@@ -4,8 +4,11 @@ import { Input, Textarea, Select, SelectItem, Switch, cn } from "@heroui/react";
 import React from "react";
 import { Form } from "@/features/form/types/form";
 import { FormError } from "@/features/form/types/save/form-error";
+import { useTranslations } from "next-intl";
 
 export default function FormSetting({ form, setForm, errors ,setErrors}: { form: Form, setForm: (form: Form) => void, errors: FormError, setErrors: (errors: FormError) => void }) {
+
+    const t = useTranslations('form');
 
     const handleTitleChange = (e: any) => {
         setForm({ ...form, title: e.target.value });
@@ -26,8 +29,8 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
     return (
         <div className="h-full grid grid-cols-1 gap-4 content-start">
             <Input
-                label="Title"
-                placeholder="Please enter"
+                label={t('field_title')}
+                placeholder={t('please_enter')}
                 type="text"
                 size="sm"
                 value={form.title}
@@ -41,7 +44,7 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                 endContent={
                     errors.title && (
                         <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {errors.title}
+                            {t(errors.title as any)}
                         </span>
                     )
                 }
@@ -50,7 +53,7 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                 validationBehavior="aria"
             />
             <Textarea
-                label="Description"
+                label={t('description')}
                 placeholder=""
                 size="sm"
                 value={form.description}
@@ -64,15 +67,15 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                 endContent={
                     errors.description && (
                         <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {errors.description}
+                            {t(errors.description as any)}
                         </span>
                     )
                 }
                 maxLength={1000}
             />
             <Select
-                label="Sequential numbering style"
-                placeholder="Please select"
+                label={t('numbering_style')}
+                placeholder={t('please_select')}
                 className="max-w-full"
                 size="sm"
                 selectedKeys={[form.numbering_style.toString()]}
@@ -84,14 +87,14 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                 }}
             >
                 <SelectItem key={0}>
-                    None
+                    {t('numbering_none')}
                 </SelectItem>
                 <SelectItem key={1}>
-                    Arabic numerals
+                    {t('numbering_arabic')}
                 </SelectItem>
             </Select>
             <div className="grid grid-cols-1 gap-1">
-                <span className="text-xs font-semibold">Enabled</span>
+                <span className="text-xs font-semibold">{t('enabled_label')}</span>
                 <Switch
                     classNames={{
                         base: cn(
@@ -114,7 +117,7 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                     isSelected={form.enabled as boolean}
                 >
                     <div className="flex flex-col gap-1">
-                        <p className="text-tiny text-default-400 ms-0">whether the form is enabled</p>
+                        <p className="text-tiny text-default-400 ms-0">{t('enabled_description')}</p>
                     </div>
                 </Switch>
             </div>

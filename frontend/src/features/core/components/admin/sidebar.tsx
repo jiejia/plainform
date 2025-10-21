@@ -9,27 +9,29 @@ import clsx from "clsx";
 import { LayoutDashboard, FileText, Settings, Sun, Moon, Monitor } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Shell } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 
 export default function Sidebar({menuItemId}: { menuItemId: number }) {
     const router = useRouter();
+    const t = useTranslations('core');
 
     const menuItems = [
         {
             id: 1,
-            name: "Dashboard",
+            name: t('menu_dashboard'),
             href: "/dashboard",
             icon: <LayoutDashboard size={15} />
         },
         {
             id: 2,
-            name: "Form",
+            name: t('menu_form'),
             href: "/dashboard/form",
             icon: <FileText size={15} />
         },
         {
             id: 3,
-            name: "Setting",
+            name: t('menu_setting'),
             href: "/dashboard/setting",
             icon: <Settings size={15} />
         },

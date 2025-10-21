@@ -4,15 +4,20 @@ import React from "react";
 import { Button, ButtonGroup, Select, SelectItem } from "@heroui/react";
 import { ListFilterPlus } from "lucide-react";
 import { SearchParams } from "@/features/form/types/detail/search-params";
+import { useTranslations } from "next-intl";
 
 
 export default function Conditions({ searchParams, setSearchParams, versions }: { searchParams: SearchParams, setSearchParams: (searchParams: SearchParams) => void, versions: number[] }) {
 
+    const t = useTranslations();
+    const tDashboard = useTranslations('dashboard');
+    const tForm = useTranslations('form');
+
     const ranges = [
-        { key: "today", label: "今天" },
-        { key: "week", label: "7天" },
-        { key: "month", label: "一月" },
-        { key: "all", label: "所有" },
+        { key: "today", label: tDashboard('today') },
+        { key: "week", label: tDashboard('week') },
+        { key: "month", label: tDashboard('month') },
+        { key: "all", label: tDashboard('all') },
     ];
 
     return (
@@ -26,12 +31,12 @@ export default function Conditions({ searchParams, setSearchParams, versions }: 
                         isRequired
                         className="w-24"
                         defaultSelectedKeys={[searchParams.version?.toString() || '']}
-                        placeholder="选择版本"
+                        placeholder={tForm('select_version')}
                         size="sm"
                         onSelectionChange={(e) => setSearchParams({ ...searchParams, version: parseInt(e.currentKey || '') })}
                     >
                         {versions.map((version) => (
-                            <SelectItem key={version.toString()} textValue={"版本" + version.toString()}>版本{version}</SelectItem>
+                            <SelectItem key={version.toString()} textValue={tForm('version_prefix') + version.toString()}>{tForm('version_prefix')}{version}</SelectItem>
                         ))}
                     </Select>
                 )}

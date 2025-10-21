@@ -3,6 +3,7 @@
 import { Select, SelectItem } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 import { FieldError } from "@/features/form/types/save/field-error";
+import { useTranslations } from 'next-intl';
 
 export default function DatetimeFormat({
     fields,
@@ -18,6 +19,7 @@ export default function DatetimeFormat({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
+    const t = useTranslations('form');
     const handleDatetimeFormatChange = (e: any) => {
         const datetimeFormat = e.target.value;
         
@@ -64,8 +66,8 @@ export default function DatetimeFormat({
             {
                 currentField.config.datetime_format !== undefined && (
                     <Select 
-                        label="精确到" 
-                        placeholder="Please select" 
+                        label={t('datetime_format')} 
+                        placeholder={t('please_select')} 
                         className="max-w-full" 
                         selectedKeys={[(currentField.config.datetime_format as string)]} 
                         onChange={handleDatetimeFormatChange} 
@@ -75,10 +77,10 @@ export default function DatetimeFormat({
                         }}
                     >
                         {/* Full Date & Time Formats */}
-                        <SelectItem key={"day"}>{"日"}</SelectItem>
-                        <SelectItem key={"hour"}>{"小时"}</SelectItem>
-                        <SelectItem key={"minute"}>{"分钟"}</SelectItem>
-                        <SelectItem key={"second"}>{"秒"}</SelectItem>
+                        <SelectItem key={"day"}>{t('day')}</SelectItem>
+                        <SelectItem key={"hour"}>{t('hour')}</SelectItem>
+                        <SelectItem key={"minute"}>{t('minute')}</SelectItem>
+                        <SelectItem key={"second"}>{t('second')}</SelectItem>
                     </Select>
                 )
             }

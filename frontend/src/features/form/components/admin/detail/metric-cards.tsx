@@ -5,11 +5,14 @@ import { Card, CardBody } from "@heroui/react";
 import { FileText, TrendingUp, CheckCircle, Users } from "lucide-react";
 import Figure from "@/features/core/components/admin/statistic/figure";
 import { Figures, Statistic } from "@/features/form/types/statistic";
+import { useTranslations } from "next-intl";
 
 export default function MetricCards({ data }: { data: Figures }) {
+    const t = useTranslations('form');
+    
     const metrics = [
         {
-            title: "总提交数",
+            title: t('total_submissions'),
             value: data.total_submission_number.value,
             change: data.total_submission_number.growth_rate,
             changeType: data.total_submission_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
@@ -18,7 +21,7 @@ export default function MetricCards({ data }: { data: Figures }) {
             bgColor: "bg-blue-100",
         },
         {
-            title: "日均提交数",
+            title: t('avg_submissions'),
             value: data.average_submission_number.value,
             change: data.average_submission_number.growth_rate,
             changeType: data.average_submission_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
@@ -27,7 +30,7 @@ export default function MetricCards({ data }: { data: Figures }) {
             bgColor: "bg-green-100",
         },
         {
-            title: "平均完成率",
+            title: t('avg_completion_rate'),
             value: data.average_finishing_rate.value + "%",
             change: data.average_finishing_rate.growth_rate,
             changeType: data.average_finishing_rate.growth_rate >= 0 ? "increase" as const : "decrease" as const,
@@ -36,7 +39,7 @@ export default function MetricCards({ data }: { data: Figures }) {
             bgColor: "bg-purple-100",
         },
         {
-            title: "独立访问IP",
+            title: t('independent_ip_label'),
             value: data.independent_ip_number.value,
             change: data.independent_ip_number.growth_rate,
             changeType: data.independent_ip_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,

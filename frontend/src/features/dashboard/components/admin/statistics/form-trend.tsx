@@ -16,6 +16,7 @@ import {
 } from 'chart.js';
 import Chart from "@/features/core/components/admin/statistic/chart";
 import { FormTrend as FormTrendType } from "@/features/dashboard/types/statistic";
+import { useTranslations } from 'next-intl';
 
 ChartJS.register(
     CategoryScale,
@@ -33,12 +34,13 @@ interface FormTrendProps {
 }
 
 export default function FormTrend({ data }: FormTrendProps) {
+    const t = useTranslations('dashboard');
 
     const chartData = {
         labels: data.map(item => item.point),
         datasets: [
             {
-                label: '新建表单',
+                label: t('new_form'),
                 data: data.map(item => item.created),
                 borderColor: '#0070f3',
                 backgroundColor: 'rgba(0, 112, 243, 0.1)',
@@ -51,7 +53,7 @@ export default function FormTrend({ data }: FormTrendProps) {
                 pointBorderWidth: 2,
             },
             {
-                label: '活跃表单',
+                label: t('active_form'),
                 data: data.map(item => item.active),
                 borderColor: '#10b981',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -152,7 +154,7 @@ export default function FormTrend({ data }: FormTrendProps) {
     };
 
     return (
-        <Chart title="表单趋势">
+        <Chart title={t('form_trend')}>
             <div style={{ height: '300px' }}>
                 <Line data={chartData} options={options} />
             </div>

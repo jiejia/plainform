@@ -3,11 +3,13 @@
 import React from "react";
 import Chart from "@/features/core/components/admin/statistic/chart";
 import { SubmissionDistribution as SubmissionDistributionType } from "@/features/dashboard/types/statistic";
+import { useTranslations } from 'next-intl';
 
 export default function SubmissionDistribution({ data }: { data: SubmissionDistributionType[] }) {
+    const t = useTranslations('dashboard');
 
     return (
-        <Chart title="提交时段分布">
+        <Chart title={t('submission_time_distribution')}>
             <div className="space-y-3">
                 {data.map((item, index) => (
                     <div key={index} className="flex items-center gap-3">

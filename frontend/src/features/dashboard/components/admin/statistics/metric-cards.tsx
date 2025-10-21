@@ -4,11 +4,14 @@ import React from "react";
 import { FileText, TrendingUp, CheckCircle, BarChart3, Users, Activity } from "lucide-react";
 import Figure from "@/features/core/components/admin/statistic/figure";
 import { Figures } from "@/features/dashboard/types/statistic";
+import { useTranslations } from 'next-intl';
 
 export default function MetricCards({ data }: { data: Figures }) {
+    const t = useTranslations('dashboard');
+    
     const metrics = [
         {
-            title: "新增表单数",
+            title: t('new_forms'),
             value: data.form_number.value,
             change: data.form_number.growth_rate,
             changeType: data.form_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
@@ -17,7 +20,7 @@ export default function MetricCards({ data }: { data: Figures }) {
             bgColor: "bg-blue-100",
         },
         {
-            title: "新增提交数",
+            title: t('new_submissions'),
             value: data.submission_number.value,
             change: data.submission_number.growth_rate,
             changeType: data.submission_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
@@ -26,7 +29,7 @@ export default function MetricCards({ data }: { data: Figures }) {
             bgColor: "bg-green-100",
         },
         {
-            title: "新增浏览数",
+            title: t('new_views'),
             value: data.view_number.value,
             change: data.view_number.growth_rate,
             changeType: data.view_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
@@ -35,7 +38,7 @@ export default function MetricCards({ data }: { data: Figures }) {
             bgColor: "bg-purple-100",
         },
         {
-            title: "活跃表单",
+            title: t('active_forms'),
             value: data.active_form_number.value,
             change: data.active_form_number.growth_rate,
             changeType: data.active_form_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
@@ -44,7 +47,7 @@ export default function MetricCards({ data }: { data: Figures }) {
             bgColor: "bg-orange-100",
         },
         {
-            title: "独立访问IP",
+            title: t('independent_ip'),
             value: data.independent_ip_number.value,
             change: data.independent_ip_number.growth_rate,
             changeType: data.independent_ip_number.growth_rate >= 0 ? "increase" as const : "decrease" as const,
@@ -53,7 +56,7 @@ export default function MetricCards({ data }: { data: Figures }) {
             bgColor: "bg-pink-100",
         },
         {
-            title: "平均完成率",
+            title: t('average_completion_rate'),
             value: data.average_finishing_rate.value,
             change: data.average_finishing_rate.growth_rate,
             changeType: data.average_finishing_rate.growth_rate >= 0 ? "increase" as const : "decrease" as const,

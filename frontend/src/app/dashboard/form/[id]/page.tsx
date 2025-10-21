@@ -5,12 +5,14 @@ import Index from "@/features/form/components/admin/detail";
 import { get } from '@/features/form/actions/admin/form-action';
 import { statistics, getVersions } from "@/features/form/actions/admin/form-action";
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 interface DetailProps {
     params: Promise<{ id: string }>;
 }
 
 export default async function Detail({ params }: DetailProps) {
+    const t = await getTranslations();
 
     // get form
     const { id } = await params;
@@ -34,7 +36,7 @@ export default async function Detail({ params }: DetailProps) {
     }
 
     return (
-        <DashboardLayout breadcrumbs={<><Link href={"/dashboard"}>Dashboard</Link> / <Link href={"/dashboard/form"}>Form</Link> / <span>Detail</span></>} menuItemId={2}>
+        <DashboardLayout breadcrumbs={<><Link href={"/dashboard"}>{t('core.menu_dashboard')}</Link> / <Link href={"/dashboard/form"}>{t('core.menu_form')}</Link> / <span>{t('form.view')}</span></>} menuItemId={2}>
             <Index initialData={data.data} formId={id as unknown as number} versions={versions.data} />
         </DashboardLayout>
     );

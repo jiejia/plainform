@@ -9,8 +9,10 @@ import {
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Form as FormInList } from "@/features/form/types/list/form";
 import { SearchParams } from "@/features/form/types/list/search-params";
+import { useTranslations } from 'next-intl';
 
 export default function Pagenate({data, params, setParams}: {data: PaginationParams<FormInList>, params: SearchParams, setParams: (params: SearchParams) => void}) {
+    const t = useTranslations('form');
 
     /**
      * handle page change
@@ -34,7 +36,7 @@ export default function Pagenate({data, params, setParams}: {data: PaginationPar
     return (
         <>
             <div className="hidden sm:block justify-items-center content-center">
-                Total {data.total}
+                {t('total')} {data.total}
             </div>
             <div className="justify-items-center content-center">
                 <Pagination

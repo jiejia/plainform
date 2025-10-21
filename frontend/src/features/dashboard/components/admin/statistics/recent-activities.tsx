@@ -4,18 +4,21 @@ import React from "react";
 import { Clock, FileText, CheckCircle2, Eye } from "lucide-react";
 import Chart from "@/features/core/components/admin/statistic/chart";
 import { RecentActivities as RecentActivitiesType } from "@/features/dashboard/types/statistic";
+import { useTranslations } from 'next-intl';
 
 interface RecentActivitiesProps {
     data: RecentActivitiesType[];
 }
 
 export default function RecentActivities({ data }: RecentActivitiesProps) {
+    const t = useTranslations('dashboard');
+    
     return (
-        <Chart title="最近活动 Top 5">
+        <Chart title={t('recent_activities_top5')}>
             <div className="space-y-2">
                 {data.length === 0 ? (
                     <div className="text-center py-8 text-gray-400">
-                        <p className="text-sm">暂无活动记录</p>
+                        <p className="text-sm">{t('no_activities')}</p>
                     </div>
                 ) : (
                     data.map((activity, index) => (
@@ -37,7 +40,7 @@ export default function RecentActivities({ data }: RecentActivitiesProps) {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-gray-900 truncate">
-                                        {activity.visitor_region || '未知地区'} 的用户{activity.status === 'completed' ? '提交了' : '浏览了'}
+                                        {activity.visitor_region || t('unknown_region')} {activity.status === 'completed' ? t('user_submitted') : t('user_viewed')}
                                     </p>
                                     <div className="flex items-center gap-2 mt-0.5">
                                         <FileText className="w-3 h-3 text-gray-400" />

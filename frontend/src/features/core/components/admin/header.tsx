@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { logout } from "@/features/admin/actions/auth-action";
 import { useAppContext } from "@/features/core/context/AppContext";
 import ThemeToggle from "@/features/core/components/shared/theme-toggle";
+import { useTranslations } from 'next-intl';
 
 export default function Header({ 
   breadcrumbs = <></>
@@ -15,6 +16,8 @@ export default function Header({
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const { admin, setAdmin } = useAppContext();
+  const t = useTranslations('core');
+  
   const handleSettingsClick = () => {
     router.push('/dashboard/setting/profile')
   }
@@ -46,11 +49,11 @@ export default function Header({
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Profile Actions" variant="flat">
                             <DropdownItem key="profile" className="h-14 gap-2">
-                                <p className="font-semibold">已登录为</p>
+                                <p className="font-semibold">{t('logged_in_as')}</p>
                                 <p className="font-semibold">{admin.username || ''}</p>
                             </DropdownItem>
                             <DropdownItem key="settings" onPress={handleSettingsClick}>
-                                设置
+                                {t('settings')}
                             </DropdownItem>
                             <DropdownItem
                                 key="logout"
@@ -58,7 +61,7 @@ export default function Header({
                                 isDisabled={isPending}
                                 onPress={handleLogout}
                             >
-                                {isPending ? '退出中...' : '登出'}
+                                {isPending ? t('logging_out') : t('logout')}
                             </DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
