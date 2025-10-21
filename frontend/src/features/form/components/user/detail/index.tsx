@@ -12,6 +12,7 @@ import { config } from "@/features/form/types/config";
 import { getOrCreateVisitorId } from "@/features/core/utils/session";
 import { recordFormView } from "@/features/form/actions/user/form-action";
 import ThemeToggle from "@/features/core/components/shared/theme-toggle";
+import { useTranslations } from 'next-intl';
 
 interface FieldItemProps {
     field: Field;
@@ -29,6 +30,8 @@ function FieldItem({ field, value, onChange }: FieldItemProps & { value: unknown
         : null;
 }
 export default function Detail({ form }: { form: FormType }) {
+
+    const t = useTranslations('form');
 
     const [formData, setFormData] = useState<Array<{
         uuid: string;
@@ -87,7 +90,7 @@ export default function Detail({ form }: { form: FormType }) {
             if (field.required) {
                 if (!formData.find(item => item.uuid === field.uuid)?.value) {
                     // set error
-                    const newErrors = { ...errors, [field.uuid]: "This field is required" };
+                    const newErrors = { ...errors, [field.uuid]: t('this_field_is_required') };
                     setErrors(newErrors);
                     console.log("newErrors", newErrors);
 
@@ -109,7 +112,7 @@ export default function Detail({ form }: { form: FormType }) {
                     const regex = new RegExp(field.regex);
                     if (!regex.test(formData.find(item => item.uuid === field.uuid)?.value as string)) {
 
-                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : "This field is invalid" }));
+                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : t('this_field_is_invalid') }));
 
                         // scroll to field
                         document.getElementById(field.uuid)?.scrollIntoView({ behavior: 'smooth' });
@@ -123,7 +126,7 @@ export default function Detail({ form }: { form: FormType }) {
                     const regex = new RegExp(field.regex);
                     if (!regex.test(formData.find(item => item.uuid === field.uuid)?.value as string)) {
 
-                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : "This field is invalid" }));
+                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : t('this_field_is_invalid') }));
                     }
 
                     // scroll to field
@@ -141,11 +144,11 @@ export default function Detail({ form }: { form: FormType }) {
 
         const res = await submit(form.uuid, formData, form.version || 1, getOrCreateVisitorId(), navigator.userAgent);
         if (res.code === 0) {
-            msg("Success", "Submit successfully", "success");
+            msg(t('success'), t('submit_successfully'), "success");
             initializeFormData();
             initializeErrors();
         } else {
-            msg("Error", res.msg, "warning");
+            msg(t('error'), res.msg, "warning");
         }
 
         setIsPending(false);
@@ -230,9 +233,9 @@ export default function Detail({ form }: { form: FormType }) {
                             size="sm"
                             variant="flat"
                             radius="sm"
-                            onPress={() => confirm("Are you sure you want to reset the form?") && initializeFormData() && initializeErrors()}
+                            onPress={() => confirm(t('are_you_sure_you_want_to_reset_the_form')) && initializeFormData() && initializeErrors()}
                         >
-                            Reset
+                            {t('reset')}
                         </Button>
                         <Button
                             className=""
@@ -244,7 +247,7 @@ export default function Detail({ form }: { form: FormType }) {
                             disabled={isPending}
                             onPress={handleSubmit}
                         >
-                            {isPending ? 'Submitting...' : 'Submit'}
+                            {isPending ? t('submitting') : t('submit')}
                         </Button>
                     </div>
                 </CardBody>

@@ -4,13 +4,15 @@ import React from "react";
 import { Card, CardBody, CardHeader, Progress } from "@heroui/react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Eye, Activity } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function FieldAnalytics() {
+    const t = useTranslations('form');
     // 单选字段数据 - 饼图
     const genderData = [
-        { name: '男', value: 556, percentage: 45 },
-        { name: '女', value: 642, percentage: 52 },
-        { name: '其他', value: 36, percentage: 3 },
+        { name: t('male'), value: 556, percentage: 45 },
+        { name: t('female'), value: 642, percentage: 52 },
+        { name: t('other'), value: 36, percentage: 3 },
     ];
 
     // 年龄分布 - 柱状图

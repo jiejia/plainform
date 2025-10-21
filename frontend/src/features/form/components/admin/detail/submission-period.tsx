@@ -13,6 +13,7 @@ import {
     ChartOptions,
 } from 'chart.js';
 import { SubmissionPeriod as SubmissionPeriodType } from '@/features/form/types/statistic';
+import { useTranslations } from "next-intl";
 
 ChartJS.register(
     CategoryScale,
@@ -25,11 +26,13 @@ ChartJS.register(
 
 export default function SubmissionPeriod({ data }: { data: SubmissionPeriodType[] }) {
 
+    const t = useTranslations('form');
+
     const chartData = {
         labels: data.map(item => item.period),
         datasets: [
             {
-                label: '提交次数',
+                label: t('submissions_count_label'),
                 data: data.map(item => item.count),
                 backgroundColor: '#059669',
                 borderRadius: 4,
@@ -59,7 +62,7 @@ export default function SubmissionPeriod({ data }: { data: SubmissionPeriodType[
                         return data[index].label;
                     },
                     label: function (context) {
-                        return context.parsed.y + ' 次';
+                        return context.parsed.y + ' ' + t('times_suffix');
                     },
                 },
             },
@@ -95,7 +98,7 @@ export default function SubmissionPeriod({ data }: { data: SubmissionPeriodType[
     };
 
     return (
-        <Chart title="提交时段分析">
+        <Chart title={t('submission_period_analysis')}>
             <div className="w-full" style={{ height: '280px' }}>
                 <Bar data={chartData} options={options} />
             </div>
