@@ -7,11 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import { uploadAvatar } from "@/features/setting/utils/setting-util";
 import { msg } from "@/features/core/utils/ui";
 import { updateAvatar } from "@/features/setting/actions/setting-action";
+import { useTranslations } from 'next-intl';
 
 
 export default function EditAvatar({ admin }: { admin: Admin }) {
     const [isPending, setIsPending] = useState(false);
-
+    const t = useTranslations('setting');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedImage, setSelectedImage] = useState<string>(admin.avatar as string);
 
@@ -35,7 +36,7 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
             if (res.code === 0) {
                 setSelectedImage(res.data.avatar_url);
             } else {
-                msg("上传失败", res.msg, 'warning');
+                msg(t('upload_failed', { res: res.msg }), res.msg, 'warning');
             }
         }
     };
@@ -45,17 +46,17 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
         
         const res = await updateAvatar(selectedImage);
         if (res === true) {
-            msg("更新成功", res.msg, 'success');
+            msg(t('update_success', { res: res.msg }), res.msg, 'success');
             window.location.reload();
         } else {
-            msg("更新失败", res.msg, 'warning');
+            msg(t('update_failed', { res: res.msg }), res.msg, 'warning');
         }
 
         setIsPending(false);
     }
 
     return (
-        <FormModal title="编辑头像" button={
+        <FormModal title={t('edit_avatar')} button={
             <Button isIconOnly radius="full" variant="light">
                 <Avatar
                     className="transition-transform"
@@ -75,7 +76,7 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
                     isLoading={isPending}
                     onPress={handleSave}
                 >
-                    {isPending ? "更新中..." : "保存"}
+                    {isPending ? t('updating') : t('save')}
                 </Button>
             }
         >
@@ -88,7 +89,7 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
                     isBordered
                     onClick={handleAvatarClick}
                 />
-                <p className="text-sm text-gray-500">点击头像选择新图片</p>
+                <p className="text-sm text-gray-500">{t('click_avatar_to_select_new_image')}</p>
                 <input
                     ref={fileInputRef}
                     type="file"

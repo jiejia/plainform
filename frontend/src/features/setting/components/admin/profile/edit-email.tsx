@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { updateEmailValidator, sendEmailResetCodeValidator } from "@/features/setting/validators/update-email";
 import { msg } from "@/features/core/utils/ui";
 import { updateEmail, sendEmailResetCode } from "@/features/admin/actions/auth-action";
-
+import { useTranslations } from 'next-intl';
 type errors = {
     email: string;
     code: string;
@@ -15,6 +15,7 @@ type errors = {
 
 
 export default function EditEmail() {
+    const t = useTranslations('setting');
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
 
@@ -33,7 +34,8 @@ export default function EditEmail() {
         let interval: NodeJS.Timeout;
         if (countdown > 0) {
             interval = setInterval(() => {
-                setCountdown(prev => prev - 1);
+
+
             }, 1000);
         }
         return () => {
@@ -55,7 +57,7 @@ export default function EditEmail() {
         if (!result.success) {
             const { fieldErrors } = result.error.flatten();
             setErrors({
-                email: fieldErrors.email?.[0] ?? '',
+                email: t(fieldErrors.email?.[0] ?? ''),
                 code: '',
             });
 
@@ -65,12 +67,12 @@ export default function EditEmail() {
 
         const res = await sendEmailResetCode(email);
         if (res === true) {
-            msg('发送验证码成功', '发送验证码成功', 'success');
+            msg(t('send_email_reset_code_success'), t('send_email_reset_code_success'), 'success');
 
             setCountdown(60); // Start 60 seconds countdown
 
         } else {
-            msg('发送验证码失败', res, 'warning');
+            msg(t('send_email_reset_code_failed', { res: res }), res, 'warning');
         }
 
         setIsCodePending(false);
@@ -100,7 +102,7 @@ export default function EditEmail() {
         // reset password
         const res = await updateEmail(email, code);
         if (res === true) {
-            msg('修改邮箱成功', '修改邮箱成功', 'success');
+            msg(t('update_email_success'), t('update_email_success'), 'success');
 
             // clear form
             setEmail('');
@@ -110,20 +112,20 @@ export default function EditEmail() {
             return
 
         } else {
-            msg('修改邮箱失败', res, 'warning');
+            msg(t('update_email_failed', { res: res }), res, 'warning');
         }
 
         setIsPending(false);
     }
 
     return (
-        <FormModal title="修改邮箱" button={
+        <FormModal title={t('update_email')} button={
             <Button
                 startContent={<SquarePen size={16} />}
                 size="sm"
                 color="primary"
                 variant="flat"
-            >修改</Button>
+            >{t('update')}</Button>
         }
             footer={
                 <>
@@ -135,14 +137,14 @@ export default function EditEmail() {
                         isLoading={isPending}
                         disabled={isPending}
                         onPress={handleSubmit}
-                    >{isPending ? '提交中...' : '提交'}</Button>
+                    >{isPending ? t('submitting') : t('submit')}</Button>
                 </>
             }
         >
             <div className="grid grid-cols-[3fr_1fr] gap-2">
                 <Input
                     type="email"
-                    placeholder="请输入邮箱"
+                    placeholder={t('enter_email')}
                     label=""
                     labelPlacement="inside"
                     startContent={
@@ -157,7 +159,7 @@ export default function EditEmail() {
                     endContent={
                         errors.email && (
                             <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                {errors.email}
+                                {t(errors.email)}
                             </span>
                         )
                     }
@@ -170,12 +172,12 @@ export default function EditEmail() {
                     onPress={() => handleSendEmailResetCode()}
                     isLoading={isCodePending}
                     disabled={isCodePending || countdown > 0}
-                >{isCodePending ? '发送中...' : countdown > 0 ? `重新发送(${countdown}s)` : '发送验证码'}</Button>
+                >{isCodePending ? t('sending') : countdown > 0 ? `${t('resend')} (${countdown}s)` : t('send_email_reset_code')}</Button>
             </div>
 
             <Input
                 type="text"
-                placeholder="请输入验证码"
+                placeholder={t('enter_code')}
                 label=""
                 labelPlacement="inside"
                 startContent={
@@ -190,7 +192,7 @@ export default function EditEmail() {
                 endContent={
                     errors.code && (
                         <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {errors.code}
+                            {t(errors.code)}
                         </span>
                     )
                 }

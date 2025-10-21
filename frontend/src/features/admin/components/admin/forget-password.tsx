@@ -62,10 +62,10 @@ export default function ForgetPassword() {
         // forget password
         const res = await forgetPassword(email);
         if (res === true) {
-            msg('send success', 'Please check your email', 'success');
+            msg(t('forget_password_sent_success'), t('forget_password_sent_success'), 'success');
             setCountdown(60); // Start 60 seconds countdown
         } else {
-            msg('send failed', res, 'warning');
+            msg(t('forget_password_sent_failed', { res: res }), res, 'warning');
         }
 
         setIsPending(false);
@@ -100,7 +100,7 @@ export default function ForgetPassword() {
                             errors.email
                                 ? (
                                     <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                        {errors.email}
+                                        {t(errors.email)}
                                     </span>
                                 )
                                 : null

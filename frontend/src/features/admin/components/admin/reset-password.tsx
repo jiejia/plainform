@@ -59,10 +59,10 @@ export default function ResetPassword() {
         // reset password
         const res = await resetPasswordByEmail(email, newPassword, confirmPassword, resetPasswordToken);
         if (res === true) {
-            msg('reset success', 'Please login', 'success');
+            msg(t('reset_success'), t('reset_success'), 'success');
             router.push('/login');
         } else {
-            msg('reset failed', res, 'warning');
+            msg(t('reset_failed', { res: res }), res, 'warning');
         }
 
         setIsPending(false);
@@ -97,7 +97,7 @@ export default function ResetPassword() {
                         endContent={
                             errors.newPassword && (
                                 <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {errors.newPassword}
+                                    {t(errors.newPassword)}
                                 </span>
                             )
                         }
@@ -120,7 +120,7 @@ export default function ResetPassword() {
                         endContent={
                             errors.confirmPassword && (
                                 <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {errors.confirmPassword}
+                                    {t(errors.confirmPassword)}
                                 </span>
                             )
                         }

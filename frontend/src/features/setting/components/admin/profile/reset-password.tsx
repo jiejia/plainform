@@ -7,6 +7,7 @@ import { useState } from "react";
 import { resetPasswordValidator } from "@/features/setting/validators/reset-password-validator";
 import { msg } from "@/features/core/utils/ui";
 import { resetPassword } from "@/features/admin/actions/auth-action";
+import { useTranslations } from 'next-intl';
 
 type errors = {
     oldPassword: string;
@@ -15,6 +16,7 @@ type errors = {
 }
 
 export default function ResetPassword() {
+    const t = useTranslations('setting');
     const [oldPassword, setOldPassword] = useState('');
     const [Password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -52,7 +54,7 @@ export default function ResetPassword() {
         // reset password
         const res = await resetPassword(oldPassword, Password, confirmPassword);
         if (res === true) {
-            msg('修改密码成功', '修改密码成功', 'success');
+            msg(t('update_password_success'), t('update_password_success'), 'success');
 
             // clear form
             setOldPassword('');
@@ -63,20 +65,20 @@ export default function ResetPassword() {
             return
 
         } else {
-            msg('修改密码失败', res, 'warning');
+            msg(t('update_password_failed', { res: res }), res, 'warning');
         }
 
         setIsPending(false);
     }
 
     return (
-        <FormModal title="修改密码" button={
+        <FormModal title={t('update_password')} button={
             <Button
                 startContent={<SquarePen size={16} />}
                 size="sm"
                 color="primary"
                 variant="flat"
-            >修改</Button>
+            >{t('update')}</Button>
         }
             footer={
                 <>
@@ -88,13 +90,13 @@ export default function ResetPassword() {
                         isLoading={isPending}
                         disabled={isPending}
                         onPress={handleSubmit}
-                    >{isPending ? '提交中...' : '提交'}</Button>
+                    >{isPending ? t('submitting') : t('submit')}</Button>
                 </>
             }
         >
             <Input
                 type="password"
-                placeholder="请输入旧密码"
+                placeholder={t('enter_old_password')}
                 label=""
                 labelPlacement="inside"
                 startContent={
@@ -109,14 +111,14 @@ export default function ResetPassword() {
                 endContent={
                     errors.oldPassword && (
                         <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {errors.oldPassword}
+                            {t(errors.oldPassword)}
                         </span>
                     )
                 }
             />
             <Input
                 type="password"
-                placeholder="请输入新密码"
+                placeholder={t('enter_new_password')}
                 label=""
                 labelPlacement="inside"
                 startContent={
@@ -131,14 +133,14 @@ export default function ResetPassword() {
                 endContent={
                     errors.Password && (
                         <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {errors.Password}
+                            {t(errors.Password)}
                         </span>
                     )
                 }
             />
             <Input
                 type="password"
-                placeholder="请输入确认密码"
+                placeholder={t('enter_confirm_password')}
                 label=""
                 labelPlacement="inside"
                 startContent={
@@ -153,7 +155,7 @@ export default function ResetPassword() {
                 endContent={
                     errors.confirmPassword && (
                         <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {errors.confirmPassword}
+                            {t(errors.confirmPassword)}
                         </span>
                     )
                 }

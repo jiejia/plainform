@@ -7,13 +7,14 @@ import { SquarePen } from "lucide-react";
 import { setOptions as setOptionsAction } from '@/features/setting/actions/setting-action';
 import { msg } from "@/features/core/utils/ui";
 import { appDescriptionValidator } from "@/features/setting/validators/general-validator";
+import { useTranslations } from 'next-intl';
 
 type appDescriptionError = {
     app_description: string;
 }
 
 export default function AppDescription({ options, setOptions }: { options: any, setOptions: any }) {
-
+    const t = useTranslations('setting');
     const [isPending, setIsPending] = useState(false);
 
     const [errors, setErrors] = useState<appDescriptionError>({
@@ -41,9 +42,9 @@ export default function AppDescription({ options, setOptions }: { options: any, 
 
         const res = await setOptionsAction('general', 'app_description', value);
         if (res === true) {
-            msg('应用描述保存成功', '应用描述保存成功', 'success');
+            msg(t('app_description_save_success'), t('app_description_save_success'), 'success');
         } else {
-            msg('应用描述保存失败', res, 'warning');
+            msg(t('app_description_save_failed', { res }), res, 'warning');
         }
         setIsPending(false);
     };
@@ -53,12 +54,12 @@ export default function AppDescription({ options, setOptions }: { options: any, 
     };
 
     return (
-        <FormModal title="编辑应用描述" button={
+        <FormModal title={t('edit_app_description')} button={
             <Button
                 startContent={<SquarePen size={16} />}
                 size="sm"
                 color="default" variant="flat"
-            >编辑</Button>
+            >{t('edit')}</Button>
         }
             footer={
                 <Button
@@ -69,16 +70,16 @@ export default function AppDescription({ options, setOptions }: { options: any, 
                     isLoading={isPending}
                     disabled={isPending}
                     onPress={() => handleUpdateAppDescriptionChange(options.app_description)}
-                >{isPending ? '保存中...' : '保存'}</Button>
+                >{isPending ? t('saving') : t('save')}</Button>
             }>
             <Input
                 type="text"
-                placeholder="请输入应用描述"
+                placeholder={t('enter_app_description')}
                 value={options.app_description} onValueChange={handleAppDescriptionChange}
                 onFocus={() => setErrors({ ...errors, app_description: '' })} endContent={
                     errors.app_description && (
                         <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {errors.app_description}
+                            {t(errors.app_description)}
                         </span>
                     )
                 } />

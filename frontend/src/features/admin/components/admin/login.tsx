@@ -42,8 +42,8 @@ export default function Login() {
         if (!result.success) {
             const { fieldErrors } = result.error.flatten();
             setErrors({
-                email: t(fieldErrors.email?.[0] ?? '') || '',
-                password: t(fieldErrors.password?.[0] ?? '') || '',
+                email: fieldErrors.email?.[0] ?? '',
+                password: fieldErrors.password?.[0] ?? '',
             });
 
             setIsPending(false);
@@ -102,7 +102,7 @@ export default function Login() {
                         endContent={
                             errors.email && (
                                 <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {errors.email}
+                                    {t(errors.email)}
                                 </span>
                             )
                         }
@@ -126,7 +126,7 @@ export default function Login() {
                         endContent={
                             errors.password && (
                                 <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {errors.password}
+                                    {t(errors.password)}
                                 </span>
                             )
                         }

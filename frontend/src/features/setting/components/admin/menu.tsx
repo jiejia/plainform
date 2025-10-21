@@ -1,47 +1,12 @@
-import Block from '@/features/core/components/shared/block';
-import { Button ,Card, CardBody, CardHeader, CardFooter} from "@heroui/react";
-import { Settings, User, Palette, Puzzle, Bell, Server } from "lucide-react";
-import { useRouter } from "next/navigation";
+'use client'
 
-// 菜单项常量数组
-const MENU_ITEMS = [
-    {
-        id: 'general',
-        label: 'General',
-        icon: Settings,
-        url: '/dashboard/setting',
-    },
-    {
-        id: 'profile',
-        label: 'Profile',
-        icon: User,
-        url: '/dashboard/setting/profile',
-    },
-    {
-        id: 'appearance',
-        label: 'Appearance',
-        icon: Palette,
-        url: '/dashboard/setting/appearance',
-    },
-    // {
-    //     id: 'mcp',
-    //     label: 'MCP',
-    //     icon: Server,
-    //     url: '/dashboard/setting/mcp',
-    // },
-    // {
-    //     id: 'integration',
-    //     label: 'Integration',
-    //     icon: Puzzle,
-    //     url: '/dashboard/setting/integration',
-    // },
-    // {
-    //     id: 'notification',
-    //     label: 'Notification',
-    //     icon: Bell,
-    //     url: '/dashboard/setting/notification',
-    // },
-];
+import { Button, Card, CardBody } from "@heroui/react";
+import { Settings, User, Palette } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from 'next-intl';
+
+
+
 
 interface MenuProps {
     activeItem?: string;
@@ -50,13 +15,56 @@ interface MenuProps {
 
 export default function Menu({ activeItem = 'general', onItemClick }: MenuProps) {
     const router = useRouter();
-    
+
     const handleItemClick = (itemId: string, url: string) => {
         // 先执行自定义回调
         onItemClick?.(itemId);
         // 然后进行路由跳转
         router.push(url);
     };
+    const t = useTranslations('setting');
+
+    // 菜单项常量数组
+    const MENU_ITEMS = [
+        {
+            id: 'general',
+            label: t('general'),
+            icon: Settings,
+            url: '/dashboard/setting',
+        },
+        {
+            id: 'profile',
+            label: t('profile'),
+            icon: User,
+            url: '/dashboard/setting/profile',
+        },
+        {
+            id: 'appearance',
+            label: t('appearance'),
+            icon: Palette,
+            url: '/dashboard/setting/appearance',
+        },
+        // {
+        //     id: 'mcp',
+        //     label: 'MCP',
+        //     icon: Server,
+        //     url: '/dashboard/setting/mcp',
+        // },
+        // {
+        //     id: 'integration',
+        //     label: 'Integration',
+        //     icon: Puzzle,
+        //     url: '/dashboard/setting/integration',
+        // },
+        // {
+        //     id: 'notification',
+        //     label: 'Notification',
+        //     icon: Bell,
+        //     url: '/dashboard/setting/notification',
+        // },
+    ];
+
+
 
     return (
         <Card>
@@ -72,9 +80,8 @@ export default function Menu({ activeItem = 'general', onItemClick }: MenuProps)
                                     fullWidth
                                     variant={isActive ? "flat" : "light"}
                                     color={isActive ? "primary" : "default"}
-                                    className={`justify-center sm:justify-start px-0 sm:px-3 min-w-0 ${
-                                        isActive ? "bg-primary-50 text-primary" : ""
-                                    }`}
+                                    className={`justify-center sm:justify-start px-0 sm:px-3 min-w-0 ${isActive ? "bg-primary-50 text-primary" : ""
+                                        }`}
                                     startContent={<span className="hidden sm:inline"><Icon size={16} /></span>}
                                     onClick={() => handleItemClick(item.id, item.url)}
                                 >

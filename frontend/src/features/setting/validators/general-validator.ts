@@ -1,9 +1,9 @@
 import * as z from "zod"; 
 
 const schema = z.object({
-    app_name: z.string().nonempty("应用名称不能为空").max(100, "应用名称不能超过100个字符"),
-    app_description: z.string().nonempty("应用描述不能为空").max(255, "应用描述不能超过255个字符"),
-    default_language: z.string().nonempty("语言不能为空"),
+    app_name: z.string().nonempty("app_name_required").max(100, "app_name_max"),
+    app_description: z.string().nonempty("app_description_required").max(255, "app_description_max"),
+    default_language: z.string().nonempty("default_language_required"),
     maintenance_mode: z.boolean(),
 });
 

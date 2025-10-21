@@ -5,24 +5,25 @@ import { Select, SelectItem, SharedSelection } from "@heroui/react";
 import { setOptions as setOptionsAction } from '@/features/setting/actions/setting-action';
 import { CookieKey } from "@/features/core/constants/cookie-key";
 import Cookies from 'js-cookie'
+import { useTranslations } from 'next-intl';
 
 
 export default function Theme({ options, setOptions }: { options: any, setOptions: any }) {
-
+    const t = useTranslations('setting');
     const themes = [
         {
             key: "system",
-            label: "系统",
+            label: t('system'),
             icon: <Monitor className="w-4 h-4" />
         },
         {
             key: "light",
-            label: "浅色",
+            label: t('light'),
             icon: <Sun className="w-4 h-4" />
         },
         {
             key: "dark",
-            label: "深色",
+            label: t('dark'),
             icon: <Moon className="w-4 h-4" />
         },
 
@@ -32,12 +33,11 @@ export default function Theme({ options, setOptions }: { options: any, setOption
         const selected = keys.currentKey as string;
         setOptions({ ...options, theme: selected });
         setOptionsAction('appearances', 'theme', selected);
-        Cookies.set(CookieKey.VISITOR_THEME, selected, { expires: 365 });
     }   
 
     return (
         <Select
-            placeholder="选择主题"
+            placeholder={t('select_theme')}
             selectedKeys={[options.theme]}
             onSelectionChange={handleChange}
             className="w-48"

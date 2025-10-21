@@ -1,12 +1,12 @@
 import * as z from "zod"; 
 
 const schema = z.object({ 
-    oldPassword: z.string().nonempty("旧密码不能为空").min(6, "旧密码不能少于6位").max(100, "旧密码不能超过100位"),
-    Password: z.string().nonempty("新密码不能为空").min(6, "新密码不能少于6位").max(100, "新密码不能超过100位"),
-    confirmPassword: z.string().nonempty("确认密码不能为空")
+    oldPassword: z.string().nonempty("old_password_required").min(6, "old_password_min").max(100, "old_password_max"),
+    Password: z.string().nonempty("new_password_required").min(6, "new_password_min").max(100, "new_password_max"),
+    confirmPassword: z.string().nonempty("confirm_password_required")
 }).refine((data) => data.Password === data.confirmPassword, {
-    message: "两次输入的密码不一致",
-    path: ["confirmPassword"],
+    message: "confirm_password_not_match",
+    path: ["confirm_password_not_match"],
 });
 
 export const resetPasswordValidator = schema.safeParse;

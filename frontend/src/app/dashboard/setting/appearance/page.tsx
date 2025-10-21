@@ -4,12 +4,14 @@ import Link from "next/link";
 import Appearance from "@/features/setting/components/admin/appearance";
 import { getOptions } from "@/features/setting/actions/setting-action";
 import { Option } from '@/features/setting/types/appearance-option';
+import { getTranslations } from 'next-intl/server';
 
 export default async function Setting() {
 
     const options = await getOptions(['appearances']);
+    const t = await getTranslations('setting');
     return (
-        <DashboardLayout breadcrumbs={<><Link href={"/dashboard"}>Dashboard</Link> / <Link href={"/dashboard/setting"}>Setting</Link> / <span>Appearance</span></>} menuItemId={3}>
+        <DashboardLayout breadcrumbs={<><Link href={"/dashboard"}>{t('dashboard')}</Link> / <Link href={"/dashboard/setting"}>{t('setting')}</Link> / <span>{t('appearance')}</span></>} menuItemId={3}>
             <Appearance initialOptions={options.appearances as Option}/>
         </DashboardLayout>
     );
