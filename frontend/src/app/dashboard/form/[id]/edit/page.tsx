@@ -9,6 +9,7 @@ import { Form } from '@/features/form/types/form';
 import { get } from '@/features/form/actions/admin/form-action';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
+import { Result } from '@/features/core/types/result';
 
 interface EditProps {
     params: Promise<{ id: string }>;
@@ -19,7 +20,11 @@ export default async function Edit({ params }: EditProps) {
     const t = await getTranslations();
     
     // get controls
-    const initialControls: Control[] = await getControls();
+    const initialControlsRes = await getControls();
+    if (initialControlsRes.code !== 0) {
+        const initialControls: Control[] = [];
+    }
+    const initialControls = initialControlsRes.data as Control[];
 
     // get form
     const { id } = await params;

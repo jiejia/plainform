@@ -1,12 +1,10 @@
 'use client'
 
-import Block from "@/features/core/components/shared/block";
 import Link from "next/link";
-import Image from "next/image";
-import {Select, SelectItem, Button, Card, CardHeader, CardBody, CardFooter} from "@heroui/react";
+import {Button, Card, CardHeader, CardBody, CardFooter} from "@heroui/react";
 import Copyright from "@/features/core/components/admin/copyright";
 import clsx from "clsx";
-import { LayoutDashboard, FileText, Settings, Sun, Moon, Monitor } from "lucide-react";
+import { LayoutDashboard, FileText, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Shell } from "lucide-react";
 import { useTranslations } from 'next-intl';
@@ -14,24 +12,24 @@ import { useTranslations } from 'next-intl';
 
 export default function Sidebar({menuItemId}: { menuItemId: number }) {
     const router = useRouter();
-    const t = useTranslations('core');
+    const t = useTranslations();
 
     const menuItems = [
         {
             id: 1,
-            name: t('menu_dashboard'),
+            name: t('core.menu_dashboard'),
             href: "/dashboard",
             icon: <LayoutDashboard size={15} />
         },
         {
             id: 2,
-            name: t('menu_form'),
+            name: t('core.menu_form'),
             href: "/dashboard/form",
             icon: <FileText size={15} />
         },
         {
             id: 3,
-            name: t('menu_setting'),
+            name: t('core.menu_setting'),
             href: "/dashboard/setting",
             icon: <Settings size={15} />
         },

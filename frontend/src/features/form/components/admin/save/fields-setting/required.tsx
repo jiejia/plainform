@@ -18,7 +18,7 @@ export default function Required({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const handleRequiredChange = (e: any) => {
         const required = e.target.checked;
         setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, required: required, config: { ...field.config, required: required } } : field));
@@ -28,7 +28,7 @@ export default function Required({
             {
                 currentField.config.required !== undefined && (
                     <div className="grid grid-cols-1 gap-1">
-                        <span className="text-xs font-semibold">{t('required')}</span>
+                        <span className="text-xs font-semibold">{t('form.required')}</span>
                         <Switch
                             classNames={{
                                 base: cn(
@@ -51,7 +51,7 @@ export default function Required({
                             isSelected={currentField.required as boolean}
                         >
                             <div className="flex flex-col gap-1">
-                                <p className="text-tiny text-default-400 ms-0">{t('whether_the_field_is_required')}</p>
+                                <p className="text-tiny text-default-400 ms-0">{t('form.whether_the_field_is_required')}</p>
                             </div>
                         </Switch>
                     </div>

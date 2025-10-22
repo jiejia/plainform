@@ -18,7 +18,7 @@ export default function Description({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const handleDescriptionChange = (e: any) => {
 
         const description = e.target.value;
@@ -31,8 +31,8 @@ export default function Description({
             {
                 currentField.config.description !== undefined && (
                     <Input
-                        label={t('field_description')}
-                        placeholder={t('please_enter')}
+                        label={t('form.field_description')}
+                        placeholder={t('form.please_enter')}
                         type="text"
                         size="sm"
                         value={currentField.description}

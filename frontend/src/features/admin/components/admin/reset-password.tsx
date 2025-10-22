@@ -17,7 +17,7 @@ type resetPasswordError = {
 }
 
 export default function ResetPassword() {
-    const t = useTranslations('admin');
+    const t = useTranslations();
 
     const router = useRouter();
 
@@ -58,11 +58,11 @@ export default function ResetPassword() {
 
         // reset password
         const res = await resetPasswordByEmail(email, newPassword, confirmPassword, resetPasswordToken);
-        if (res === true) {
-            msg(t('reset_success'), t('reset_success'), 'success');
+        if (res.code === 0) {
+            msg(t('admin.reset_success'), t('admin.reset_success'), 'success');
             router.push('/login');
         } else {
-            msg(t('reset_failed'), t(res), 'warning');
+            msg(t('admin.reset_failed'), t(res.msg), 'warning');
         }
 
         setIsPending(false);
@@ -71,23 +71,23 @@ export default function ResetPassword() {
     return (
         <Card className="w-full mt-5">
             <CardHeader className="text-center">
-                <h2 className="text-center text-lg font-normal block w-full">{t('reset_password')}</h2>
+                <h2 className="text-center text-lg font-normal block w-full">{t('admin.reset_password')}</h2>
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
 
                 <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
                     <div>
-                        <p className="text-xs text-center">{t('reset_password_description')}</p>
+                        <p className="text-xs text-center">{t('admin.reset_password_description')}</p>
                     </div>
                     <Input
                         type="password"
                         label=""
-                        placeholder={t('new_password')}
+                        placeholder={t('admin.new_password')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Lock size={16} className="content-center text-default-400" aria-label={t('new_password')} />
+                                <Lock size={16} className="content-center text-default-400" aria-label={t('admin.new_password')} />
                             </span>
                         }
                         value={newPassword}
@@ -106,11 +106,11 @@ export default function ResetPassword() {
                     <Input
                         type="password"
                         label=""
-                        placeholder={t('confirm_new_password')}
+                        placeholder={t('admin.confirm_new_password')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Lock size={16} className="content-center text-default-400" aria-label={t('confirm_new_password')} />
+                                <Lock size={16} className="content-center text-default-400" aria-label={t('admin.confirm_new_password')} />
                             </span>
                         }
                         value={confirmPassword}
@@ -125,14 +125,14 @@ export default function ResetPassword() {
                             )
                         }
                     />
-                    <p className="text-center text-xs"><span>{t('reset_problem')}</span> <Link href="/forget-password" className="content-center justify-self-end text-xs">{t('resend')}</Link></p>
+                    <p className="text-center text-xs"><span>{t('admin.reset_problem')}</span> <Link href="/forget-password" className="content-center justify-self-end text-xs">{t('admin.resend')}</Link></p>
                     <Button
                         type="submit"
                         color="primary"
                         isLoading={isPending}
                         onPress={handleSubmit}
                     >
-                        {isPending ? t('resetting') : t('reset')}
+                        {isPending ? t('admin.resetting') : t('admin.reset')}
                     </Button>
                 </form>
             </CardBody>

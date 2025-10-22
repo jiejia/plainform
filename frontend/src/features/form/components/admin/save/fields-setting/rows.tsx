@@ -19,7 +19,7 @@ export default function Rows({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const handleRowsChange = (value: number | number[]) => {
         const uuid = currentField.uuid;
         const numValue = Array.isArray(value) ? value[0] : value;
@@ -38,7 +38,7 @@ export default function Rows({
         <>
             {currentField.config.rows !== undefined ? (
                 <Slider
-                    label={t('rows')}
+                    label={t('form.rows')}
                     step={1}
                     maxValue={255}
                     minValue={0}

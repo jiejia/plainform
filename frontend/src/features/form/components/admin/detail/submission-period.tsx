@@ -26,13 +26,13 @@ ChartJS.register(
 
 export default function SubmissionPeriod({ data }: { data: SubmissionPeriodType[] }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
 
     const chartData = {
         labels: data.map(item => item.period),
         datasets: [
             {
-                label: t('submissions_count_label'),
+                label: t('form.submissions_count_label'),
                 data: data.map(item => item.count),
                 backgroundColor: '#059669',
                 borderRadius: 4,
@@ -62,7 +62,7 @@ export default function SubmissionPeriod({ data }: { data: SubmissionPeriodType[
                         return data[index].label;
                     },
                     label: function (context) {
-                        return context.parsed.y + ' ' + t('times_suffix');
+                        return context.parsed.y + ' ' + t('form.times_suffix');
                     },
                 },
             },
@@ -98,7 +98,7 @@ export default function SubmissionPeriod({ data }: { data: SubmissionPeriodType[
     };
 
     return (
-        <Chart title={t('submission_period_analysis')}>
+        <Chart title={t('form.submission_period_analysis')}>
             <div className="w-full" style={{ height: '280px' }}>
                 <Bar data={chartData} options={options} />
             </div>

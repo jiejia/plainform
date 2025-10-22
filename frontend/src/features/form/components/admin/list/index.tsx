@@ -5,10 +5,7 @@ import Scroll from "@/features/core/components/shared/scroll";
 import {
     Card,
     CardBody,
-    Select,
-    SelectItem,
     Selection,
-    SharedSelection,
 } from "@heroui/react";
 
 import Actions from "./actions";
@@ -17,7 +14,6 @@ import Pagenate from "./pagenate";
 import { useState, useEffect } from "react";
 import { SearchParams } from "@/features/form/types/list/search-params";
 import { list } from "@/features/form/actions/admin/form-action";
-import { msg } from "@/features/core/utils/ui";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Form as FormInList } from "@/features/form/types/list/form";
 import { initialSearchParams } from "@/features/form/data/initial-search-params";
@@ -34,14 +30,11 @@ export default function Index() {
     const [loading, setLoading] = useState(true);
 
     const fetchList = async () => {
-        try {
-            const res = await list(params);
-            setData(res.data as PaginationParams<FormInList>);   
-        } catch (error: any) {
-            console.log(error)
-        } finally {
-            setLoading(false);
+        const res = await list(params);
+        if (res.code === 0) {
+            setData(res.data as PaginationParams<FormInList>);
         }
+        setLoading(false);
     }
 
     useEffect(() => {   

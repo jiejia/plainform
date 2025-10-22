@@ -49,18 +49,18 @@ export default function TableList({ loading, formId, data, setData, setParams, s
     initialSearchParams: SearchParams
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
 
     const columns = [{
         key: "id", label: "ID",
     }, {
-        key: "created_at", label: t('created_at'),
+        key: "created_at", label: t('form.created_at'),
     }, {
-        key: "ipv4", label: t('ip')
+        key: "ipv4", label: t('form.ip')
     }, {
-        key: "version", label: t('form_version')
+        key: "version", label: t('form.form_version')
     }, {
-        key: "actions", label: t('actions')
+        key: "actions", label: t('form.actions')
     }];
 
     const [mounted, setMounted] = useState(false);
@@ -77,13 +77,13 @@ export default function TableList({ loading, formId, data, setData, setParams, s
     }
 
     const handleDelete = async (id: number) => {
-        if (confirm(t('confirm_delete_message'))) {
+        if (confirm(t('form.confirm_delete_message'))) {
             const res = await batchDelete(formId, [id]);
             if (res.code === 0) {
-                msg(t('delete_success_message'), t('delete_success_message'), 'success');
+                msg(t('form.delete_success_message'), t('form.delete_success_message'), 'success');
                 window.location.reload();
             } else {
-                msg(t('delete_failed_message'), res.msg, 'warning');
+                msg(t('form.delete_failed_message'), t(res.msg), 'warning');
             }
         } else {
             return;
@@ -100,7 +100,7 @@ export default function TableList({ loading, formId, data, setData, setParams, s
         return <div className="flex justify-center items-center h-full"></div>;
     } else {
         if (data.data.length === 0) {
-            return <div className="flex justify-center items-center h-full">{t('no_data')}</div>;
+            return <div className="flex justify-center items-center h-full">{t('form.no_data')}</div>;
         }
     }
 
@@ -139,7 +139,7 @@ export default function TableList({ loading, formId, data, setData, setParams, s
                                                 startContent={<Eye size="16" />}
                                                 onPress={() => handleView(item)}
                                             >
-                                                {t('view_action')}
+                                                {t('form.view_action')}
                                             </DropdownItem>
                                             <DropdownItem
                                                 key="delete"
@@ -148,7 +148,7 @@ export default function TableList({ loading, formId, data, setData, setParams, s
                                                 startContent={<Trash2 size="16" />}
                                                 onPress={() => handleDelete(item.id)}
                                             >
-                                                {t('delete')}
+                                                {t('form.delete')}
                                             </DropdownItem>
                                         </DropdownMenu>
                                     </Dropdown>
@@ -165,7 +165,7 @@ export default function TableList({ loading, formId, data, setData, setParams, s
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">{t('submission_details')}</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">{t('form.submission_details')}</ModalHeader>
               <ModalBody>
               {currentItem && (() => {
                                 // 格式化字段值的函数
@@ -181,7 +181,7 @@ export default function TableList({ loading, formId, data, setData, setParams, s
                                     
                                     // 处理布尔类型 - 转换为是/否
                                     if (typeof value === 'boolean') {
-                                        return value ? t('yes') : t('no');
+                                        return value ? t('form.yes') : t('form.no');
                                     }
                                     
                                     // 处理其他对象类型
@@ -215,16 +215,16 @@ export default function TableList({ loading, formId, data, setData, setParams, s
                                                     <p className="mt-1 text-sm text-gray-900">{currentItem.id}</p>
                                                 </div>
                                                 <div>
-                                                    <label className="text-sm font-medium text-gray-500">{t('form_version')}</label>
+                                                    <label className="text-sm font-medium text-gray-500">{t('form.form_version')}</label>
                                                     <p className="mt-1 text-sm text-gray-900">{currentItem.version}</p>
                                                 </div>
                                                 <div>
-                                                    <label className="text-sm font-medium text-gray-500">{t('ip_address')}</label>
+                                                    <label className="text-sm font-medium text-gray-500">{t('form.ip_address')}</label>
                                                     <p className="mt-1 text-sm text-gray-900">{currentItem.ipv4}</p>
                                                 </div>
                                                 <div>
-                                                    <label className="text-sm font-medium text-gray-500">{t('created_at')}</label>
-                                                    <p className="mt-1 text-sm text-gray-900">{currentItem.created_at || t('unknown')}</p>
+                                                    <label className="text-sm font-medium text-gray-500">{t('form.created_at')}</label>
+                                                    <p className="mt-1 text-sm text-gray-900">{currentItem.created_at || t('form.unknown')}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -234,8 +234,8 @@ export default function TableList({ loading, formId, data, setData, setParams, s
                                             <div>
                                                 <Table removeWrapper>
                                                     <TableHeader>
-                                                        <TableColumn>{t('field_name')}</TableColumn>
-                                                        <TableColumn>{t('field_value')}</TableColumn>
+                                                        <TableColumn>{t('form.field_name')}</TableColumn>
+                                                        <TableColumn>{t('form.field_value')}</TableColumn>
                                                     </TableHeader>
                                                     <TableBody items={formDataRows}>
                                                         {(row) => (
@@ -250,7 +250,7 @@ export default function TableList({ loading, formId, data, setData, setParams, s
                                         ) : (
                                             <div>
                                                 <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                                    <p className="text-sm text-gray-500">{t('no_form_data')}</p>
+                                                    <p className="text-sm text-gray-500">{t('form.no_form_data')}</p>
                                                 </div>
                                             </div>
                                         )}
@@ -260,7 +260,7 @@ export default function TableList({ loading, formId, data, setData, setParams, s
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  {t('close')}
+                  {t('form.close')}
                 </Button>
               </ModalFooter>
             </>

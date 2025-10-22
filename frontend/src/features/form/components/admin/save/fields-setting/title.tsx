@@ -20,7 +20,7 @@ export default function Title({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
 
     const handleTitleChange = (e: any) => {
 
@@ -42,8 +42,8 @@ export default function Title({
             {
                 currentField.config.title !== undefined && (
                     <Input
-                        label={t('field_title')}
-                        placeholder={t('please_enter')}
+                        label={t('form.field_title')}
+                        placeholder={t('form.please_enter')}
                         type="text"
                         size="sm"
                         value={currentField.title}

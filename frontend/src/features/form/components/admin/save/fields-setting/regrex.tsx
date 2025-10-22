@@ -19,7 +19,7 @@ export default function Regrex({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const handleRegrexChange = (e: any) => {
         const regex = e.target.value;
         setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, regex: regex, config: { ...field.config, regex: { ...field.config.regex, value: regex } } } : field));
@@ -37,8 +37,8 @@ export default function Regrex({
                 currentField.config.regex.hidden === false && (
                     <>
                         <Input
-                            label={t('field_regex')}
-                            placeholder={t('please_enter')}
+                            label={t('form.field_regex')}
+                            placeholder={t('form.please_enter')}
                             type="text"
                             size="sm"
                             value={currentField.config.regex.value}
@@ -62,11 +62,11 @@ export default function Regrex({
                                 <Select
                                     className="max-w-xs"
                                     items={[
-                                        { name: t('custom_regex'), value: "" },
+                                        { name: t('form.custom_regex'), value: "" },
                                         ...currentField.config.regex.avaliable_rules
                                     ]}                                    labelPlacement="outside"
                                     size="sm"
-                                    placeholder={t('available_regex')}
+                                    placeholder={t('form.available_regex')}
                                     onChange={handleRulesChange}
                                 >
 

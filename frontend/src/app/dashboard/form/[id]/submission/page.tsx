@@ -24,6 +24,10 @@ export default async function Submission({ params }: SubmissionProps) {
 
     // get versions
     const versionsRes = await getVersions(id as unknown as number) || []; 
+    if (versionsRes.code !== 0) {   
+        notFound();
+    }
+    const versions = versionsRes.data as number[];
 
     return (
         <DashboardLayout breadcrumbs={<><Link href={"/dashboard"}>{t('core.menu_dashboard')}</Link> / <Link href={"/dashboard/form"}>{t('core.menu_form')}</Link> / <Link href={"/dashboard/form/" + id}>{res.data.title}</Link> / <span>{t('form.submissions_count')}</span></>} menuItemId={2}>

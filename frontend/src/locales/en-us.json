@@ -72,7 +72,13 @@
         "enter_reset_password": "Enter Reset Password",
         "enter_reset_password_description": "Enter Reset Password Description",
         "enter_reset_password_problem": "Enter Reset Password Problem",
-        "email_not_valid": "Email is not valid"
+        "email_not_valid": "Email is not valid",
+        "new_password_required": "New password is required",
+        "new_password_min": "New password must be at least 6 characters",
+        "new_password_max": "New password must be less than 100 characters",
+        "confirm_password_required": "Confirm password is required",
+        "confirm_password_min": "Confirm password must be at least 6 characters",
+        "confirm_password_max": "Confirm password must be less than 100 characters"
     },
     "setting": {
         "group_string": "Group must be a string",
@@ -529,6 +535,8 @@
         "datetime_format_options_min": "Datetime Format Options must be at least 0",
         "datetime_format_options_step": "Datetime Format Options must be at least 1",
         "this_field_is_required": "This field is required",
-        "this_field_is_invalid": "This field is invalid"
+        "this_field_is_invalid": "This field is invalid",
+        "controlled_table_example_with_dynamic_content": "Controlled table example with dynamic content",
+        "row_actions": "Row actions"
     }
 }

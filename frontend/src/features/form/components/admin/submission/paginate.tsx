@@ -9,12 +9,14 @@ import {
 import { SearchParams } from "@/features/form/types/submission/search-params";
 import { PaginationParams } from "@/features/core/types/pagination-params";
 import { Submission } from "@/features/form/types/submission/submission";
+import { useTranslations } from "next-intl";
 
 export default function Paginate({data, params, setParams}: {
     data: PaginationParams<Submission>, 
     params: SearchParams, 
     setParams: (params: SearchParams) => void
 }) {
+    const t = useTranslations();
     // console.log('data', data);
 
     const handleLimitChange = (limit: number | null) => {
@@ -30,7 +32,7 @@ export default function Paginate({data, params, setParams}: {
 
     return <>
         <div className="hidden sm:block justify-items-center content-center">
-            Total {data.total}
+            {t('form.total')} {data.total}
         </div>
         <div className="justify-items-center content-center">
             <Pagination

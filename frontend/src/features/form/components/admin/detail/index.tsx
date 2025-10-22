@@ -25,7 +25,6 @@ export default function Index({ initialData, formId, versions }: { initialData: 
     useEffect(() => {
         getStatistics(formId, searchParams.version, searchParams.type).then((res) => {
             if (res.code === 0) {
-                console.log("res.data", res.data);
                 setData(res.data);
             }
         });

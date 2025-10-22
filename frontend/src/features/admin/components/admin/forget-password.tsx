@@ -15,7 +15,7 @@ type forgetPasswordError = {
 }
 
 export default function ForgetPassword() {
-    const t = useTranslations('admin');
+    const t = useTranslations();
 
     const [email, setEmail] = useState('');
     const [isPending, setIsPending] = useState(false);
@@ -61,11 +61,11 @@ export default function ForgetPassword() {
 
         // forget password
         const res = await forgetPassword(email);
-        if (res === true) {
-            msg(t('forget_password_sent_success'), t('forget_password_sent_success'), 'success');
+        if (res.code === 0) {
+            msg(t('admin.forget_password_sent_success'), t('admin.forget_password_sent_success'), 'success');
             setCountdown(60); // Start 60 seconds countdown
         } else {
-            msg(t('forget_password_sent_failed'), t(res), 'warning');
+            msg(t('admin.forget_password_sent_failed'), t(res.msg), 'warning');
         }
 
         setIsPending(false);
@@ -74,22 +74,22 @@ export default function ForgetPassword() {
     return (
         <Card className="w-full mt-5">
             <CardHeader className="text-center">
-                <h2 className="text-center text-lg font-normal block w-full">{t('forget_password')}</h2>
+                <h2 className="text-center text-lg font-normal block w-full">{t('admin.forget_password')}</h2>
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
                 <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
                     <div>
-                        <p className="text-xs text-center">{t('forget_password_description')}</p>
+                        <p className="text-xs text-center">{t('admin.forget_password_description')}</p>
                     </div>
                     <Input
                         type="email"
                         label=""
-                        placeholder={t('email')}
+                        placeholder={t('admin.email')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Mail size={16} className="content-center text-default-400" aria-label={t('email')} />
+                                <Mail size={16} className="content-center text-default-400" aria-label={t('admin.email')} />
                             </span>
                         }
                         value={email}
@@ -106,7 +106,7 @@ export default function ForgetPassword() {
                                 : null
                         }
                     />
-                    <p className="text-center text-xs"><span>{t('remember_password')}</span> <Link href="/login" className="content-center justify-self-end text-xs">{t('login')}</Link></p>
+                    <p className="text-center text-xs"><span>{t('admin.remember_password')}</span> <Link href="/login" className="content-center justify-self-end text-xs">{t('admin.login')}</Link></p>
                     <Button
                         type="submit"
                         color="primary"
@@ -114,7 +114,7 @@ export default function ForgetPassword() {
                         isDisabled={countdown > 0}
                         onPress={handleSubmit}
                     >
-                        {isPending ? t('sending') : countdown > 0 ? `${t('resend')} (${countdown}s)` : t('send')}
+                        {isPending ? t('admin.sending') : countdown > 0 ? `${t('admin.resend')} (${countdown}s)` : t('admin.send')}
                     </Button>
                 </form>
             </CardBody>

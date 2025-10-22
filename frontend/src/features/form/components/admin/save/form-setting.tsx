@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 
 export default function FormSetting({ form, setForm, errors ,setErrors}: { form: Form, setForm: (form: Form) => void, errors: FormError, setErrors: (errors: FormError) => void }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
 
     const handleTitleChange = (e: any) => {
         setForm({ ...form, title: e.target.value });
@@ -29,8 +29,8 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
     return (
         <div className="h-full grid grid-cols-1 gap-4 content-start">
             <Input
-                label={t('field_title')}
-                placeholder={t('please_enter')}
+                label={t('form.title')}
+                placeholder={t('form.please_enter')}
                 type="text"
                 size="sm"
                 value={form.title}
@@ -53,7 +53,7 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                 validationBehavior="aria"
             />
             <Textarea
-                label={t('description')}
+                label={t('form.description')}
                 placeholder=""
                 size="sm"
                 value={form.description}
@@ -74,8 +74,8 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                 maxLength={1000}
             />
             <Select
-                label={t('numbering_style')}
-                placeholder={t('please_select')}
+                label={t('form.numbering_style')}
+                placeholder={t('form.please_select')}
                 className="max-w-full"
                 size="sm"
                 selectedKeys={[form.numbering_style.toString()]}
@@ -87,14 +87,14 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                 }}
             >
                 <SelectItem key={0}>
-                    {t('numbering_none')}
+                    {t('form.numbering_none')}
                 </SelectItem>
                 <SelectItem key={1}>
-                    {t('numbering_arabic')}
+                    {t('form.numbering_arabic')}
                 </SelectItem>
             </Select>
             <div className="grid grid-cols-1 gap-1">
-                <span className="text-xs font-semibold">{t('enabled_label')}</span>
+                <span className="text-xs font-semibold">{t('form.enabled_label')}</span>
                 <Switch
                     classNames={{
                         base: cn(
@@ -117,7 +117,7 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                     isSelected={form.enabled as boolean}
                 >
                     <div className="flex flex-col gap-1">
-                        <p className="text-tiny text-default-400 ms-0">{t('enabled_description')}</p>
+                        <p className="text-tiny text-default-400 ms-0">{t('form.enabled_description')}</p>
                     </div>
                 </Switch>
             </div>

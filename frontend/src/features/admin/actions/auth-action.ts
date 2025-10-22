@@ -38,6 +38,7 @@ export async function login(email: string, password: string) {
 
         return res;
     } catch (err: any) {
+        console.log("auth-action login error: ", err);
         return {
             code: 9999,
             msg: 'core.server_error'
@@ -57,7 +58,10 @@ export async function logout() {
     cookieStore.delete(CookieKey.ADMIN_TOKEN);
     cookieStore.delete(CookieKey.ADMIN);
 
-    return true;
+    return {
+        code: 0,
+        msg: 'core.success'
+    };
 }
 
 /**
@@ -74,13 +78,13 @@ export async function forgetPassword(email: string) {
             }
         }).json();
 
-        if (res.code === 0) {
-            return true;
-        } else {
-            return res.msg;
-        }
+        return res;
     } catch (err: any) {
-        return err.message;
+        console.log("auth-action forgetPassword error: ", err);
+        return {
+            code: 9999,
+            msg: 'core.server_error'
+        }
     }
 }
 
@@ -104,13 +108,13 @@ export async function resetPasswordByEmail(email: string, newPassword: string, c
             }
         }).json();  
 
-        if (res.code === 0) {
-            return true;
-        } else {
-            return res.msg;
-        }
+        return res;
     } catch (err: any) {
-        return err.message;
+        console.log("auth-action resetPasswordByEmail error: ", err);
+        return {
+            code: 9999,
+            msg: 'core.server_error'
+        }
     }
 }
 
@@ -132,13 +136,13 @@ export async function resetPassword(oldPassword: string, newPassword: string, co
             }
         }).json();
 
-        if (res.code === 0) {
-            return true;
-        } else {
-            return res.msg;
-        }
+        return res;
     } catch (err: any) {
-        return err.message;
+        console.log("auth-action resetPassword error: ", err);
+        return {
+            code: 9999,
+            msg: 'core.server_error'
+        }
     }
 }
 
@@ -158,13 +162,13 @@ export async function updateEmail(email: string, code: string) {
             }
         }).json();
 
-        if (res.code === 0) {
-            return true;
-        } else {
-            return res.msg;
-        }
+        return res;
     } catch (err: any) {
-        return err.message;
+        console.log("auth-action updateEmail error: ", err);
+        return {
+            code: 9999,
+            msg: 'core.server_error'
+        }
     }
 }
 
@@ -182,12 +186,12 @@ export async function sendEmailResetCode(email: string) {
             }
         }).json();
 
-        if (res.code === 0) {
-            return true;
-        } else {
-            return res.msg;
-        }
+        return res;
     } catch (err: any) {
-        return err.message;
+        console.log("auth-action sendEmailResetCode error: ", err);
+        return {
+            code: 9999,
+            msg: 'core.server_error'
+        }
     }
 }

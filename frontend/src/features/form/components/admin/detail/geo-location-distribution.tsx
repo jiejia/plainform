@@ -24,13 +24,13 @@ ChartJS.register(
 );
 
 export default function GeoLocationDistribution( { data }: { data: GeoLocationDistributionType[] } ) {
-    const t = useTranslations('form');
+    const t = useTranslations();
     
     // IP地理位置分布
     const locationData = data;
 
     return (
-            <Chart title={t('geo_distribution_top7')}>
+            <Chart title={t('form.geo_distribution_top7')}>
                 <div className="space-y-3">
                     {locationData.map((location, index) => (
                         <div key={index} className="flex items-center justify-between">

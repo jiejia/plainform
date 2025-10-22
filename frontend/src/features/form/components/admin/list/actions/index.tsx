@@ -41,17 +41,17 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
     data: PaginationParams<FormInList>, 
     setData: Dispatch<SetStateAction<PaginationParams<FormInList>>>
 }) {
-    const t = useTranslations('form');
+    const t = useTranslations();
 
     const sortOptions = [
-        { key: "id_desc", orderBy: "id", orderType: "desc", text: t('sort_id_desc') },
-        { key: "id_asc", orderBy: "id", orderType: "asc", text: t('sort_id_asc') },
-        { key: "title_desc", orderBy: "title", orderType: "desc", text: t('sort_title_desc') },
-        { key: "title_asc", orderBy: "title", orderType: "asc", text: t('sort_title_asc') },
-        { key: "submissions_desc", orderBy: "submissions_count", orderType: "desc", text: t('sort_submissions_desc') },
-        { key: "submissions_asc", orderBy: "submissions_count", orderType: "asc", text: t('sort_submissions_asc') },
+        { key: "id_desc", orderBy: "id", orderType: "desc", text: t('form.sort_id_desc') },
+        { key: "id_asc", orderBy: "id", orderType: "asc", text: t('form.sort_id_asc') },
+        { key: "title_desc", orderBy: "title", orderType: "desc", text: t('form.sort_title_desc') },
+        { key: "title_asc", orderBy: "title", orderType: "asc", text: t('form.sort_title_asc') },
+        { key: "submissions_desc", orderBy: "submissions_count", orderType: "desc", text: t('form.sort_submissions_desc') },
+        { key: "submissions_asc", orderBy: "submissions_count", orderType: "asc", text: t('form.sort_submissions_asc') },
         // { key: "enabled_desc", orderBy: "enabled", orderType: "desc", text: t('sort_enabled_desc') },
-        // { key: "enabled_asc", orderBy: "enabled", orderType: "asc", text: t('sort_enabled_asc') },
+        // { key: "enabled_asc", orderBy: "enabled", orderType: "asc", text: t('form.sort_enabled_asc') },
     ];
 
     const [selectedKeys, setSelectedKeys] = React.useState<SharedSelection>(new Set(["id_desc"]));
@@ -85,7 +85,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
         // get ids
         const ids = getIds();
         if (ids.length === 0) {
-            msg(t('disable_failed'), t('at_least_select_one'), 'warning');
+            msg(t('form.disable_failed'), t('core.at_least_select_one'), 'warning');
             return;
         }
         
@@ -116,7 +116,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
         // get ids
         const ids = getIds();
         if (ids.length === 0) {
-            msg(t('enable_failed'), t('at_least_select_one'), 'warning');
+            msg(t('form.enable_failed'), t('core.at_least_select_one'), 'warning');
             return;
         }
         
@@ -139,12 +139,12 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
         // get ids
         const ids = getIds();
         if (ids.length === 0) {
-            msg(t('delete_failed'), t('at_least_select_one'), 'warning');
+            msg(t('form.delete_failed'), t('core.at_least_select_one'), 'warning');
             return;
         }
 
         // confirm
-        const isConfirmed = await confirm(t('confirm_delete'));
+        const isConfirmed = await confirm(t('form.confirm_delete'));
         if (!isConfirmed) {
             return;
         }
@@ -158,7 +158,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                 data: prev.data.filter(item => !ids.includes(item.id)),
             }));
         } else {
-            msg(t('delete_failed'), res.msg, 'warning');
+            msg(t('form.delete_failed'), t(res.msg), 'warning');
         }
     }   
     
@@ -171,7 +171,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                             label=""
                             type="text"
                             size="sm"
-                            placeholder={t('search_form')}
+                            placeholder={t('form.search_form')}
                             startContent={<Search size="16" />}
                             value={params.keyword}
                             onChange={handleKeywordsChange}
@@ -183,7 +183,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                         isIconOnly
                         size="sm"
                         variant="flat"
-                        title={t('refresh')}
+                        title={t('form.refresh')}
                         onPress={handleRefresh}
                     >
                         <RefreshCw size="16" />
@@ -220,10 +220,10 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Static Actions">
-                            <DropdownItem key="pause" startContent={<Pause size="16" />} onPress={handleBatchUpdateEnabledDisable}>{t('batch_disable')}</DropdownItem>
-                            <DropdownItem key="reactive" startContent={<Play size="16" />} onPress={handleBatchUpdateEnabledActive}>{t('batch_enable')}</DropdownItem>
+                            <DropdownItem key="pause" startContent={<Pause size="16" />} onPress={handleBatchUpdateEnabledDisable}>{t('form.batch_disable')}</DropdownItem>
+                            <DropdownItem key="reactive" startContent={<Play size="16" />} onPress={handleBatchUpdateEnabledActive}>{t('form.batch_enable')}</DropdownItem>
                             <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />} onPress={handleBatchDelete}>
-                                {t('batch_delete')}
+                                {t('form.batch_delete')}
                             </DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
@@ -235,7 +235,7 @@ export default function Actions({params, setParams, tableSelectedKeys, currentPa
                         as={Link}
                         href="/dashboard/form/create"
                     >
-                        {t('create')}
+                        {t('form.create')}
                     </Button>
                 </div>
             </div>

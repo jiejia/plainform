@@ -3,7 +3,7 @@
 import Scroll from "@/features/core/components/shared/scroll";
 import React, { useState, useEffect } from "react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Tab, Tabs } from "@heroui/react";
-import { ListPlus, Settings, Settings2, StickyNote, Trash2 } from "lucide-react"
+import { ListPlus, Settings, Settings2, StickyNote} from "lucide-react"
 import Controls from "./controls";
 import Fields from "./fields";
 import FormSetting from "./form-setting"
@@ -28,7 +28,7 @@ import { useTranslations } from "next-intl";
 
 export default function Save({ initialControls, initialFields, initialForm }: { initialControls: Control[], initialFields: Field[], initialForm: Form }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const router = useRouter();
 
     const [fields, setFields] = useState<Field[]>(initialFields);
@@ -116,16 +116,16 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
         // if success, redirect to form list
         if (res.code === 0) {
             if (form.id) {
-                msg(t('update_form_success'), '', 'success');
+                msg(t('form.update_form_success'), '', 'success');
             } else {
-                msg(t('create_form_success'), '', 'success');
+                msg(t('form.create_form_success'), '', 'success');
             }   
             router.push(`/dashboard/form`);  
         } else {
             if (form.id) {
-                msg(t('update_form_failed'), t(res.msg), 'warning');
+                msg(t('form.update_form_failed'), t(res.msg), 'warning');
             } else {
-                msg(t('create_form_failed'), t(res.msg), 'warning');
+                msg(t('form.create_form_failed'), t(res.msg), 'warning');
             }
         }
 
@@ -293,7 +293,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                     <CardHeader>
                         <h2 className="flex items-center space-x-2">
                             <ListPlus size={16} />
-                            <span>{t('controls')}</span>
+                            <span>{t('form.controls')}</span>
                         </h2>
                     </CardHeader>
                     <Divider />
@@ -307,7 +307,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                     <CardHeader>
                         <h2 className="flex items-center space-x-2">
                             <StickyNote size={16} />
-                            <span>{t('fields')}</span>
+                            <span>{t('form.fields')}</span>
                         </h2>
                     </CardHeader>
                     <Divider />
@@ -326,7 +326,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                             <Tab key="controls"
                                 title={<div className="flex items-center space-x-1">
                                     <ListPlus size={16} />
-                                    <span>{t('controls')}</span>
+                                    <span>{t('form.controls')}</span>
                                 </div>}
                                 className="xl:hidden block h-full"
                             >
@@ -337,7 +337,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                             <Tab key="form-property"
                                 title={<div className="flex items-center space-x-1">
                                     <Settings size={16} />
-                                    <span>{t('form_settings')}</span>
+                                    <span>{t('form.form_settings')}</span>
                                 </div>}
                                 className="h-full">
                                 <Scroll>
@@ -347,7 +347,7 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                             <Tab key="field-property"
                                 title={<div className="flex items-center space-x-1">
                                     <Settings2 size={16} />
-                                    <span>{t('field_settings')}</span>
+                                    <span>{t('form.field_settings')}</span>
                                 </div>}
                                 className="h-full"
                             >
@@ -363,10 +363,10 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
                 >
                     <CardBody className="flex flex-row justify-center gap-2">
                         <Button className="w-auto" color="primary" radius="sm" size="sm" variant="flat">
-                            {t('reset')}
+                            {t('form.reset')}
                         </Button>
                         <Button className="w-auto" color="primary" size="sm" variant="shadow" radius="sm" onPress={handleSubmit} isLoading={isPending} disabled={isPending} >
-                            {isPending ? t('submitting') : t('submit')}
+                            {isPending ? t('form.submitting') : t('form.submit')}
                         </Button>
                     </CardBody>
                 </Card>

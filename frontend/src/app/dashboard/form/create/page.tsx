@@ -11,7 +11,11 @@ import { getTranslations } from 'next-intl/server';
 export default async function Create() {
     const t = await getTranslations();
 
-    const initialControls: Control[] = await getControls();
+    const res = await getControls();
+    if (res.code !== 0) {
+        const initialControls = [];
+    }
+    const initialControls = res.data as Control[];
 
     const initialFields: Field[] = [];
 

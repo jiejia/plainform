@@ -19,7 +19,7 @@ export default function DatetimeFormat({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const handleDatetimeFormatChange = (e: any) => {
         const datetimeFormat = e.target.value;
         
@@ -66,8 +66,8 @@ export default function DatetimeFormat({
             {
                 currentField.config.datetime_format !== undefined && (
                     <Select 
-                        label={t('datetime_format')} 
-                        placeholder={t('please_select')} 
+                        label={t('form.datetime_format')} 
+                        placeholder={t('form.please_select')} 
                         className="max-w-full" 
                         selectedKeys={[(currentField.config.datetime_format as string)]} 
                         onChange={handleDatetimeFormatChange} 
@@ -77,10 +77,10 @@ export default function DatetimeFormat({
                         }}
                     >
                         {/* Full Date & Time Formats */}
-                        <SelectItem key={"day"}>{t('day')}</SelectItem>
-                        <SelectItem key={"hour"}>{t('hour')}</SelectItem>
-                        <SelectItem key={"minute"}>{t('minute')}</SelectItem>
-                        <SelectItem key={"second"}>{t('second')}</SelectItem>
+                        <SelectItem key={"day"}>{t('form.day')}</SelectItem>
+                        <SelectItem key={"hour"}>{t('form.hour')}</SelectItem>
+                        <SelectItem key={"minute"}>{t('form.minute')}</SelectItem>
+                        <SelectItem key={"second"}>{t('form.second')}</SelectItem>
                     </Select>
                 )
             }

@@ -18,7 +18,7 @@ export default function DefaultValue({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const handleTextDefaultValueChange = (e: any) => {
         const default_value = e.target.value;
         setFields(fields.map(field => field.uuid === currentField.uuid ? { ...field, config: { ...field.config, default_value: { ...field.config.default_value, value: default_value } } } : field));
@@ -37,8 +37,8 @@ export default function DefaultValue({
                         {
                             currentField.config.default_value.type === "string" && (
                                 <Input
-                                    label={t('default_value')}
-                                    placeholder={t('please_enter')}
+                                    label={t('form.default_value')}
+                                    placeholder={t('form.please_enter')}
                                     type="text"
                                     size="sm"
                                     value={currentField.config.default_value.value}
@@ -53,7 +53,7 @@ export default function DefaultValue({
                         {
                             currentField.config.default_value.type === "boolean" && (
                                 <div className="grid grid-cols-1 gap-1">
-                                    <span className="text-xs font-semibold">{t('default_value')}</span>
+                                    <span className="text-xs font-semibold">{t('form.default_value')}</span>
                                     <Switch
                                         classNames={{
                                             base: cn(
@@ -76,7 +76,7 @@ export default function DefaultValue({
                                         isSelected={currentField.config.default_value.value as boolean}
                                     >
                                         <div className="flex flex-col gap-1">
-                                            <p className="text-tiny text-default-400 ms-0">{t('default_value')}</p>
+                                            <p className="text-tiny text-default-400 ms-0">{t('form.default_value')}</p>
                                         </div>
                                     </Switch>
                                 </div>

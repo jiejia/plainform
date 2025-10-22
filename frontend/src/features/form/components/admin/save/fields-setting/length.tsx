@@ -18,7 +18,7 @@ export default function Length({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const handleLengthChange = (value: number | number[]) => {
         const uuid = currentField.uuid;
         const [min, max] = Array.isArray(value) ? value : [value, value];
@@ -45,7 +45,7 @@ export default function Length({
                             labelWrapper: "w-full",
                             label: "text-xs font-semibold"
                         }}
-                        label={t('length_range')}
+                        label={t('form.length_range')}
                         maxValue={1000}
                         minValue={0}
                         step={1}

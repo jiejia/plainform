@@ -7,18 +7,18 @@ import { TimeHeatmap as TimeHeatmapType } from "@/features/form/types/statistic"
 import { useTranslations } from "next-intl";
 
 export default function TimeHeatmap( { data }: { data: TimeHeatmapType } ) {
-    const t = useTranslations('form');
+    const t = useTranslations();
     
     // 生成静态热力图数据 (小时 x 星期)
     const hours = Array.from({ length: 24 }, (_, i) => i);
     const days = [
-        t('monday'),
-        t('tuesday'),
-        t('wednesday'),
-        t('thursday'),
-        t('friday'),
-        t('saturday'),
-        t('sunday')
+        t('form.monday'),
+        t('form.tuesday'),
+        t('form.wednesday'),
+        t('form.thursday'),
+        t('form.friday'),
+        t('form.saturday'),
+        t('form.sunday')
     ];
 
     // 静态数据：每个时间段的提交次数
@@ -36,7 +36,7 @@ export default function TimeHeatmap( { data }: { data: TimeHeatmapType } ) {
     };
 
     return (
-        <Chart title={t('submission_time_heatmap')}>
+        <Chart title={t('form.submission_time_heatmap')}>
             <div className="overflow-x-auto">
                 <div className="min-w-[800px]">
                     {/* 小时标签 */}
@@ -62,12 +62,12 @@ export default function TimeHeatmap( { data }: { data: TimeHeatmapType } ) {
                                         key={hourIndex}
                                         className="flex-1 h-8 rounded transition-all hover:opacity-80 cursor-pointer group relative"
                                         style={{ backgroundColor: getColor(value) }}
-                                        title={`${day} ${hourIndex}:00 - ${value} ${t('times_submission')}`}
+                                        title={`${day} ${hourIndex}:00 - ${value} ${t('form.times_submission')}`}
                                     >
                                         {/* Tooltip */}
                                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
                                             {day} {hourIndex}:00<br />
-                                            {value} {t('times_submission')}
+                                            {value} {t('form.times_submission')}
                                         </div>
                                     </div>
                                 ))}

@@ -50,32 +50,32 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
     initialSearchParams: SearchParams
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
 
     // 定义搜索字段配置
     const searchFields: SearchField[] = [
         { key: 'id', label: 'ID', type: 'number' },
-        { key: 'name', label: t('name'), type: 'string' },
-        { key: 'created_at', label: t('created_at'), type: 'dateRange' },
-        { key: 'submission_count', label: t('submission_count'), type: 'number' },
+        { key: 'name', label: t('form.name'), type: 'string' },
+        { key: 'created_at', label: t('form.created_at'), type: 'dateRange' },
+        { key: 'submission_count', label: t('form.submission_count'), type: 'number' },
         {
             key: 'status',
-            label: t('status'),
+            label: t('form.status'),
             type: 'select',
             options: [
-                { key: 'active', label: t('enabled') },
-                { key: 'inactive', label: t('disabled') },
-                { key: 'draft', label: t('disabled') }
+                { key: 'active', label: t('form.enabled') },
+                { key: 'inactive', label: t('form.disabled') },
+                { key: 'draft', label: t('form.disabled') }
             ]
         }
     ];
 
 
     const sortOptions = [
-        { key: "id_desc", orderBy: "id", orderType: "desc", text: t('sort_id_desc') },
-        { key: "id_asc", orderBy: "id", orderType: "asc", text: t('sort_id_asc') },
-        { key: "ipv4_desc", orderBy: "ipv4", orderType: "desc", text: t('sort_by_ip_desc') },
-        { key: "ipv4_asc", orderBy: "ipv4", orderType: "asc", text: t('sort_by_ip_asc') },
+        { key: "id_desc", orderBy: "id", orderType: "desc", text: t('form.sort_id_desc') },
+        { key: "id_asc", orderBy: "id", orderType: "asc", text: t('form.sort_id_asc') },
+        { key: "ipv4_desc", orderBy: "ipv4", orderType: "desc", text: t('form.sort_by_ip_desc') },
+        { key: "ipv4_asc", orderBy: "ipv4", orderType: "asc", text: t('form.sort_by_ip_asc') },
     ];
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -117,21 +117,21 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
 
         console.log('ids', ids);
         if (ids.length === 0) {
-            msg(t('delete_failed_message'), t('at_least_select_one_message'), 'warning');
+            msg(t('form.delete_failed_message'), t('form.at_least_select_one_message'), 'warning');
             return;
         }
         // confirm
-        const isConfirmed = await confirm(t('confirm_delete_message'));
+        const isConfirmed = await confirm(t('form.confirm_delete_message'));
         if (!isConfirmed) {
             return; 
         }
         // update remote data
         const res = await batchDelete(formId, ids);
         if (res.code === 0) {
-            msg(t('delete_success_message'), t('delete_success_message'), 'success');
+            msg(t('form.delete_success_message'), t('form.delete_success_message'), 'success');
             window.location.reload();
         } else {
-            msg(t('delete_failed_message'), res.msg, 'warning');
+            msg(t('form.delete_failed_message'), t(res.msg), 'warning');
         }
     }
 
@@ -156,7 +156,7 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
             
             // msg("导出成功", "Excel文件已开始下载", 'success');
         } else {
-            msg(t('export_failed_message'), res.msg, 'warning');
+            msg(t('form.export_failed_message'), t(res.msg), 'warning');
         }
     }
 
@@ -175,13 +175,13 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                         label=""
                         type="text"
                         size="sm"
-                        placeholder={t('search_placeholder')}
+                        placeholder={t('form.search_placeholder')}
                         startContent={<Search size="16" />}
                     />
                     <Select
                         className=""
                         size="sm"
-                        placeholder={t('select_version')}
+                        placeholder={t('form.select_version')}
                         selectedKeys={params.version ? [params.version.toString()] : versions.length > 0 ? [versions[versions.length - 1].toString()] : []}
                         onSelectionChange={(keys) => {
                             const first = Array.from(keys)[0] as string | undefined;
@@ -192,7 +192,7 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                         }}
                     >
                         {versions.map((version) => (
-                            <SelectItem key={version.toString()} textValue={t('version_prefix') +  version.toString()}>{t('version_prefix')}{version}</SelectItem>
+                            <SelectItem key={version.toString()} textValue={t('form.version_prefix') +  version.toString()}>{t('form.version_prefix')}{version}</SelectItem>
                         ))}
                     </Select>
                 </form>
@@ -207,12 +207,12 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                 >
                     <RefreshCw size="16" />
                 </Button>
-                <FormModal title={t('advanced_search')} footer={null} button={
+                <FormModal title={t('form.advanced_search')} footer={null} button={
                     <Button
                         isIconOnly
                         size="sm"
                         variant="flat"
-                        title={t('advanced_search')}
+                        title={t('form.advanced_search')}
                         onPress={onOpen}
                     >
                         <ListFilterPlus size="16" />
@@ -256,10 +256,10 @@ export default function Actions({ formId, params, setParams, tableSelectedKeys, 
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions">
                         <DropdownItem key="delete" className="text-danger" color="danger" startContent={<Trash2 size="16" />} onPress={handleBatchDelete}>
-                            {t('batch_delete_action')}
+                            {t('form.batch_delete_action')}
                         </DropdownItem>
                         <DropdownItem key="export" className="text-primary" color="primary" startContent={<Download size="16" />} onPress={handleExportExcel}>
-                            {t('export_excel')}
+                            {t('form.export_excel')}
                         </DropdownItem>
                     </DropdownMenu>
                 </Dropdown>

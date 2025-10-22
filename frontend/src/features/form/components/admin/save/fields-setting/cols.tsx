@@ -19,7 +19,7 @@ export default function Cols({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const handleColsChange = (value: number | number[]) => {
         const uuid = currentField.uuid;
         const numValue = Array.isArray(value) ? value[0] : value;
@@ -37,7 +37,7 @@ export default function Cols({
         <>
             {currentField.config.cols !== undefined ? (
                 <Slider
-                    label={t('cols')}
+                    label={t('form.cols')}
                     step={1}
                     maxValue={255}
                     minValue={0}

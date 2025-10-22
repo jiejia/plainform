@@ -21,6 +21,7 @@ export async function getOptions(group: string[] = ['general'], name: string[] =
     
         return res
     } catch (err: any) {
+        console.log("setting-action getOptions error: ", err);
         return {
             code: 9999,
             msg: 'core.server_error'
@@ -65,13 +66,13 @@ export async function setOptions(group: string, name: string, value: any) {
 export async function getProfile() {
     try {
         const res:any = await api.get('api/admin/profile/me').json();
-        if (res.code === 0) {
-            return res.data;
-        } else {
-            return res.msg;
-        }
+        return res;
     } catch (err: any) {
-        return err.message;
+        console.log("setting-action getProfile error: ", err);
+        return {
+            code: 9999,
+            msg: 'core.server_error'
+        }
     }
 }
 
@@ -88,12 +89,12 @@ export async function updateAvatar(avatar: string) {
                 avatar_url: avatar
             }
         }).json();
-        if (res.code === 0) {
-            return true;
-        } else {
-            return res.msg;
-        }
+        return res;
     } catch (err: any) {
-        return err.message;
+        console.log("setting-action updateAvatar error: ", err);
+        return {
+            code: 9999,
+            msg: 'core.server_error'
+        }
     }
 }

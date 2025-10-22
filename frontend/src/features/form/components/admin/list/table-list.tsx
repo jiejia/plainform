@@ -38,20 +38,20 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
     setSelectedKeys: Dispatch<SetStateAction<Selection>>
 }) {
     const [mounted, setMounted] = useState(false);
-    const t = useTranslations('form');
+    const t = useTranslations();
 
     const columns = [{
-        key: "id", label: t('id'),
+        key: "id", label: t('form.id'),
     }, {
-        key: "title", label: t('title'),
+        key: "title", label: t('form.title'),
     }, {
-        key: "created_at", label: t('created_at'),
+        key: "created_at", label: t('form.created_at'),
     }, {
-        key: "submissions_count", label: t('submissions_count')
+        key: "submissions_count", label: t('form.submissions_count')
     }, {
-        key: "enabled", label: t('enabled_status'),
+        key: "enabled", label: t('form.enabled_status'),
     }, {
-        key: "actions", label: t('actions')
+        key: "actions", label: t('form.actions')
     }];
 
 
@@ -60,14 +60,14 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
     }, []);
 
     if (!mounted) {
-        return <div className="flex justify-center items-center h-full">{t('loading')}</div>;
+        return <div className="flex justify-center items-center h-full">{t('form.loading')}</div>;
     }
 
     if (loading) {
         return <div className="flex justify-center items-center h-full"></div>;
     } else {
         if (data.data.length === 0) {
-            return <div className="flex justify-center items-center h-full">{t('no_data')}</div>;
+            return <div className="flex justify-center items-center h-full">{t('form.no_data')}</div>;
         }
     }
 
@@ -86,9 +86,9 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
 
     const handleDelete = async (id: number) => {
         // confirm
-        const isConfirmed = await confirm(t('confirm_delete'));
+        const isConfirmed = await confirm(t('form.confirm_delete'));
         if (!isConfirmed) {
-            msg(t('delete_failed'), t('at_least_select_one'), 'warning');
+            msg(t('form.delete_failed'), t('core.at_least_select_one'), 'warning');
             return;
         }
 
@@ -101,17 +101,17 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
                 data: prev.data.filter(item => item.id !== id),
             }));
         } else {
-            msg(t('delete_failed'), res.msg, 'warning');
+            msg(t('form.delete_failed'), res.msg, 'warning');
         }
     }
 
     if (data.data.length === 0) {
-        return <div className="flex justify-center items-center h-full">{t('no_data')}</div>;
+        return <div className="flex justify-center items-center h-full">{t('form.no_data')}</div>;
     }
 
     return (
         <Table
-            aria-label="Controlled table example with dynamic content"
+            aria-label={t('form.controlled_table_example_with_dynamic_content')}
             selectedKeys={selectedKeys}
             onSelectionChange={setSelectedKeys}
             selectionMode="multiple"
@@ -137,20 +137,20 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
                                                 <EllipsisVertical size="16" />
                                             </Button>
                                         </DropdownTrigger>
-                                        <DropdownMenu aria-label="Row actions">
+                                        <DropdownMenu aria-label={t('form.row_actions')}>
                                             <DropdownItem
                                                 key="edit"
                                                 startContent={<Pencil size="16" />}
                                                 href={`/dashboard/form/${item.id}/edit`}
                                             >
-                                                {t('edit')}
+                                                {t('form.edit')}
                                             </DropdownItem>
                                             <DropdownItem
                                                 key="view"
                                                 startContent={<Eye size="16" />}
                                                 href={`/dashboard/form/${item.id}`}
                                             >
-                                                {t('view')}
+                                                {t('form.view')}
                                             </DropdownItem>
                                             <DropdownItem
                                                 key="delete"
@@ -159,7 +159,7 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
                                                 startContent={<Trash2 size="16" />}
                                                 onPress={() => handleDelete(item.id)}
                                             >
-                                                {t('delete')}
+                                                {t('form.delete')}
                                             </DropdownItem>
                                         </DropdownMenu>
                                     </Dropdown>
@@ -186,7 +186,7 @@ export default function TableList({ loading, data, setData, selectedKeys, setSel
                                     <Switch
 
                                         isSelected={item.enabled as boolean}
-                                        aria-label="Automatic updates"
+                                        aria-label={t('form.enabled_status')}
                                         size="sm"
                                         onValueChange={(isSelected) => handleEnabledChange(isSelected, item.id)} />
 

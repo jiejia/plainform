@@ -1,11 +1,10 @@
 'use client'
 
-import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Card, CardHeader, CardBody, CardFooter} from "@heroui/react"
+import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Card, CardBody} from "@heroui/react"
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { logout } from "@/features/admin/actions/auth-action";
 import { useAppContext } from "@/features/core/context/AppContext";
-import ThemeToggle from "@/features/core/components/shared/theme-toggle";
 import { useTranslations } from 'next-intl';
 
 export default function Header({ 
@@ -16,7 +15,7 @@ export default function Header({
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const { admin, setAdmin } = useAppContext();
-  const t = useTranslations('core');
+  const t = useTranslations();
   
   const handleSettingsClick = () => {
     router.push('/dashboard/setting/profile')
@@ -49,11 +48,11 @@ export default function Header({
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Profile Actions" variant="flat">
                             <DropdownItem key="profile" className="h-14 gap-2">
-                                <p className="font-semibold">{t('logged_in_as')}</p>
+                                <p className="font-semibold">{t('core.logged_in_as')}</p>
                                 <p className="font-semibold">{admin.username || ''}</p>
                             </DropdownItem>
                             <DropdownItem key="settings" onPress={handleSettingsClick}>
-                                {t('settings')}
+                                {t('core.settings')}
                             </DropdownItem>
                             <DropdownItem
                                 key="logout"
@@ -61,7 +60,7 @@ export default function Header({
                                 isDisabled={isPending}
                                 onPress={handleLogout}
                             >
-                                {isPending ? t('logging_out') : t('logout')}
+                                {isPending ? t('core.logging_out') : t('core.logout')}
                             </DropdownItem>
                         </DropdownMenu>
                     </Dropdown>

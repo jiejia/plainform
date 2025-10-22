@@ -25,7 +25,7 @@ export default function Options({
     setFieldErrors: (errors: FieldError) => void
 }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
     const handleMultipleChange = (e: any) => {
         const multiple = e.target.checked;
         const uuid = currentField.uuid;
@@ -187,7 +187,7 @@ export default function Options({
                     <>
                         {!currentField.config.options.hide_multiple && (
                             <div className="grid grid-cols-1 gap-1">
-                                <span className="text-xs font-semibold">{t('multiple')}</span>
+                                <span className="text-xs font-semibold">{t('form.multiple')}</span>
                                 <Switch
                                     classNames={{
                                         base: cn(
@@ -210,13 +210,13 @@ export default function Options({
                                     isSelected={currentField.config.options.multiple as boolean}
                                 >
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-tiny text-default-400 ms-0">{t('whether_the_field_is_multiple')}</p>
+                                        <p className="text-tiny text-default-400 ms-0">{t('form.whether_the_field_is_multiple')}</p>
                                     </div>
                                 </Switch>
                             </div>
                         )}
                         <div className="grid grid-cols-1 gap-1">
-                            <span className="text-xs font-semibold">{t('options')}</span>
+                            <span className="text-xs font-semibold">{t('form.options')}</span>
                             <ul className="max-w-full grid grid-flow-row gap-1 bg-white">
                                 {(currentField.config.options.default_options as Option[] | undefined)?.map(
                                     (option: Option, index: number) => (
@@ -250,7 +250,7 @@ export default function Options({
                                                 radius="full"
                                                 size="sm"
                                                 color="primary"
-                                                aria-label={t('plus')}
+                                                aria-label={t('form.plus')}
                                                 onClick={() => handleOptionAddClick(index)}
                                                 variant="flat"
                                                 className="flex-shrink-0"
@@ -276,7 +276,7 @@ export default function Options({
                                                     invisible: index === 0,
                                                 })}
                                                 color="primary"
-                                                aria-label={t('minus')}
+                                                aria-label={t('form.minus')}
                                                 onClick={() => handleOptionRemoveClick(index)}
                                                 variant="flat"
                                             >

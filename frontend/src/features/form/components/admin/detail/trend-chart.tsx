@@ -31,13 +31,13 @@ ChartJS.register(
 
 export default function TrendChart( { data }: { data: Trend[] } ) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
 
     const chartData = {
         labels: data.map(item => item.point),
         datasets: [
             {
-                label: t('views_label'),
+                label: t('form.views_label'),
                 data: data.map(item => item.views_count),
                 borderColor: '#0070f3',
                 backgroundColor: 'rgba(0, 112, 243, 0.1)',
@@ -50,7 +50,7 @@ export default function TrendChart( { data }: { data: Trend[] } ) {
                 pointBorderWidth: 2,
             },
             {
-                label: t('submissions_label'),
+                label: t('form.submissions_label'),
                 data: data.map(item => item.submissions_count),
                 borderColor: '#10b981',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -138,7 +138,7 @@ export default function TrendChart( { data }: { data: Trend[] } ) {
     };
 
     return (
-        <Chart title={t('trend_chart')}>
+        <Chart title={t('form.trend_chart')}>
             <div style={{ height: '300px' }}>
                 <Line data={chartData} options={options} />
             </div>
