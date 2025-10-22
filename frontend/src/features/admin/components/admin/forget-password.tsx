@@ -15,7 +15,7 @@ type forgetPasswordError = {
 }
 
 export default function ForgetPassword() {
-    const t = useTranslations('auth');
+    const t = useTranslations('admin');
 
     const [email, setEmail] = useState('');
     const [isPending, setIsPending] = useState(false);
@@ -65,7 +65,7 @@ export default function ForgetPassword() {
             msg(t('forget_password_sent_success'), t('forget_password_sent_success'), 'success');
             setCountdown(60); // Start 60 seconds countdown
         } else {
-            msg(t('forget_password_sent_failed', { res: res }), res, 'warning');
+            msg(t('forget_password_sent_failed'), t(res), 'warning');
         }
 
         setIsPending(false);

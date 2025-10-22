@@ -36,7 +36,7 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
             if (res.code === 0) {
                 setSelectedImage(res.data.avatar_url);
             } else {
-                msg(t('upload_failed', { res: res.msg }), res.msg, 'warning');
+                msg(t('upload_failed'), t(res), 'warning');
             }
         }
     };
@@ -46,10 +46,10 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
         
         const res = await updateAvatar(selectedImage);
         if (res === true) {
-            msg(t('update_success', { res: res.msg }), res.msg, 'success');
+            msg(t('update_success'), t(res), 'success');
             window.location.reload();
         } else {
-            msg(t('update_failed', { res: res.msg }), res.msg, 'warning');
+            msg(t('update_failed'), t(res), 'warning');
         }
 
         setIsPending(false);

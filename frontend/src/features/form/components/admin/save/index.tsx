@@ -123,9 +123,9 @@ export default function Save({ initialControls, initialFields, initialForm }: { 
             router.push(`/dashboard/form`);  
         } else {
             if (form.id) {
-                msg(t('update_form_failed'), res.msg, 'warning');
+                msg(t('update_form_failed'), t(res.msg), 'warning');
             } else {
-                msg(t('create_form_failed'), res.msg, 'warning');
+                msg(t('create_form_failed'), t(res.msg), 'warning');
             }
         }
 

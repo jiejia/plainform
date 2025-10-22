@@ -19,17 +19,17 @@ class OptionValidator extends AbstractValidator
     protected function messages()
     {
         return [
-            'group.string' => '分组必须是字符串',
-            'group.max' => '分组不能超过255个字符',
-            'name.string' => '名称必须是字符串',
-            'name.max' => '名称不能超过255个字符',
-            'update_group.required' => '分组不能为空',
-            'update_group.string' => '分组必须是字符串',
-            'update_group.max' => '分组不能超过255个字符',
-            'update_name.required' => '名称不能为空',
-            'update_name.string' => '名称必须是字符串',
-            'update_name.max' => '名称不能超过255个字符',
-            'update_data.required' => '数据不能为空',
+            'group.string' => 'group_string',
+            'group.max' => 'group_max',
+            'name.string' => 'name_string',
+            'name.max' => 'name_max',
+            'update_group.required' => 'update_group_required',
+            'update_group.string' => 'update_group_string',
+            'update_group.max' => 'update_group_max',
+            'update_name.required' => 'update_name_required',
+            'update_name.string' => 'update_name_string',
+            'update_name.max' => 'update_name_max',
+            'update_data.required' => 'update_data_required',
         ];
     }
     

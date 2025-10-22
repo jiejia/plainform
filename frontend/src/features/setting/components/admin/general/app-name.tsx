@@ -46,7 +46,7 @@ export default function AppName({ options, setOptions }: { options: any, setOpti
         if (res === true) {
             msg(t('app_name_save_success'), t('app_name_save_success'), 'success');
         } else {
-            msg(t('app_name_save_failed', { res }), res, 'warning');
+            msg(t('app_name_save_failed'), t(res), 'warning');
         }
 
         setIsPending(false);

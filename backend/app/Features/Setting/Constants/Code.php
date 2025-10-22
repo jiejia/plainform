@@ -7,11 +7,9 @@ enum Code: int
 
     public function message(): string
     {
-        $key = match($this) {
-            self::OPTION_NOT_FOUND => __('setting.option_not_found'),
+        return match($this) {
+            self::OPTION_NOT_FOUND => 'option_not_found',
         };
-
-        return __($key);
     }
 
 }

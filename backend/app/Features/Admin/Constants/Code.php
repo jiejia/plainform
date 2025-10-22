@@ -25,20 +25,18 @@ enum Code: int
 
     public function message(): string
     {
-        $key = match($this) {
-            self::EMAIL_NOT_FOUND => __('auth.email_not_found'),
-            self::PASSWORD_INCORRECT => __('auth.password'),
-            self::PASSWORD_RESET_TOKEN_NOT_FOUND => __('auth.password_reset_token_not_found'),
-            self::PASSWORD_RESET_TOKEN_EXPIRED => __('auth.password_reset_token_expired'),
-            self::EMAIL_VERIFY_CODE_ERROR => __('auth.email_verify_code_error'),
-            self::PASSWORD_ERROR => __('auth.password_error'),
-            self::PASSWORD_SAME => __('auth.password_same'),
-            self::TOKEN_GENERATION_TOO_FREQUENT => __('auth.token_generation_too_frequent'),
-            self::EMAIL_SAME => __('auth.email_same'),
-            self::EMAIL_OTHER_FOUND => __('auth.email_other_found'),
+        return match($this) {
+            self::EMAIL_NOT_FOUND => 'email_not_found',
+            self::PASSWORD_INCORRECT => 'password_incorrect',
+            self::PASSWORD_RESET_TOKEN_NOT_FOUND => 'password_reset_token_not_found',
+            self::PASSWORD_RESET_TOKEN_EXPIRED => 'password_reset_token_expired',
+            self::EMAIL_VERIFY_CODE_ERROR => 'email_verify_code_error',
+            self::PASSWORD_ERROR => 'password_error',
+            self::PASSWORD_SAME => 'password_same',
+            self::TOKEN_GENERATION_TOO_FREQUENT => 'token_generation_too_frequent',
+            self::EMAIL_SAME => 'email_same',
+            self::EMAIL_OTHER_FOUND => 'email_other_found',
         };
-
-        return __($key);
     }
 
 }

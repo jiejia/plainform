@@ -94,8 +94,7 @@ class AuthService
             
             if ($timeDifference < 60) {
                 $remainingSeconds = 60 - $timeDifference;
-                $message = __('auth.token_generation_too_frequent', ['seconds' => $remainingSeconds]);
-                throw new BusinessException($message, Code::TOKEN_GENERATION_TOO_FREQUENT->value);
+                throw new BusinessException(Code::TOKEN_GENERATION_TOO_FREQUENT->message() . ':' . $remainingSeconds, Code::TOKEN_GENERATION_TOO_FREQUENT->value);
             }
         }
 

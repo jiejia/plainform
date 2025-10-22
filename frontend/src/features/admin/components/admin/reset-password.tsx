@@ -17,7 +17,7 @@ type resetPasswordError = {
 }
 
 export default function ResetPassword() {
-    const t = useTranslations('auth');
+    const t = useTranslations('admin');
 
     const router = useRouter();
 
@@ -62,7 +62,7 @@ export default function ResetPassword() {
             msg(t('reset_success'), t('reset_success'), 'success');
             router.push('/login');
         } else {
-            msg(t('reset_failed', { res: res }), res, 'warning');
+            msg(t('reset_failed'), t(res), 'warning');
         }
 
         setIsPending(false);

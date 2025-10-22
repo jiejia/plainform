@@ -18,17 +18,17 @@ class AuthValidator extends AbstractValidator
     protected function messages()
     {
         return [
-            'email.required' => '邮箱不能为空',
-            'email.email' => '邮箱格式不正确',
-            'password.required' => '密码不能为空',
-            'password.string' => '密码必须是字符串',
-            'password.min' => '密码长度不能小于6位',
-            'password.max' => '密码长度不能大于100位',
-            'password_confirmation.required' => '确认密码不能为空',
-            'password_confirmation.string' => '确认密码必须是字符串',
-            'password_confirmation.same' => '确认密码与密码不一致',
-            'reset_password_token.required' => '重置密码token不能为空',
-            'reset_password_token.string' => '重置密码token必须是字符串',
+            'email.required' => 'email_required',
+            'email.email' => 'email_invalid',
+            'password.required' => 'password_required',
+            'password.string' => 'password_string',
+            'password.min' => 'password_min',
+            'password.max' => 'password_max',
+            'password_confirmation.required' => 'password_confirmation_required',
+            'password_confirmation.string' => 'password_confirmation_string',
+            'password_confirmation.same' => 'password_confirmation_same',
+            'reset_password_token.required' => 'reset_password_token_required',
+            'reset_password_token.string' => 'reset_password_token_string',
         ];
     }
     

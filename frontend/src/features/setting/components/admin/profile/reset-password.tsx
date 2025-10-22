@@ -65,7 +65,7 @@ export default function ResetPassword() {
             return
 
         } else {
-            msg(t('update_password_failed', { res: res }), res, 'warning');
+            msg(t('update_password_failed'), t(res), 'warning');
         }
 
         setIsPending(false);

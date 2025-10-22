@@ -17,7 +17,7 @@ type loginError = {
 }
 
 export default function Login() {
-    const t = useTranslations('auth');
+    const t = useTranslations('admin');
 
 
     const router = useRouter();
@@ -55,7 +55,7 @@ export default function Login() {
         if (res === true) {
             router.push('/dashboard');
         } else {
-            msg('login failed', res, 'warning');
+            msg(t('login_failed'), t(res), 'warning');
         }
 
         setIsPending(false);

@@ -20,8 +20,8 @@ class IndexValidator extends AbstractValidator
     protected function messages()
     {
         return [
-            'period_type.required' => __('dashboard.period_type_required'),
-            'period_type.in' => __('dashboard.period_type_in'),
+            'period_type.required' => 'period_type_required',
+            'period_type.in' => 'period_type_in',
         ];
     }
 

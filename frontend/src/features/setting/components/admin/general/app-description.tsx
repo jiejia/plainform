@@ -44,7 +44,7 @@ export default function AppDescription({ options, setOptions }: { options: any, 
         if (res === true) {
             msg(t('app_description_save_success'), t('app_description_save_success'), 'success');
         } else {
-            msg(t('app_description_save_failed', { res }), res, 'warning');
+            msg(t('app_description_save_failed'), t(res), 'warning');
         }
         setIsPending(false);
     };
