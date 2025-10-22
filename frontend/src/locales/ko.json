@@ -171,7 +171,8 @@
         "logging_out": "로그아웃 중...",
         "menu_dashboard": "대시보드",
         "menu_form": "양식",
-        "menu_setting": "설정"
+        "menu_setting": "설정",
+        "server_error": "서버 오류"
     },
     "dashboard": {
         "period_type_required": "기간 유형은 필수입니다",
@@ -206,7 +207,8 @@
         "status_closed": "닫힘",
         "status_enabled": "활성화됨",
         "total": "전체",
-        "submission_time_distribution": "제출 시간 분포"
+        "submission_time_distribution": "제출 시간 분포",
+        "server_error": "서버 오류"
     },
     "form": {
         "form_not_found": "양식을 찾을 수 없습니다",

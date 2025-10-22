@@ -17,7 +17,7 @@ type loginError = {
 }
 
 export default function Login() {
-    const t = useTranslations('admin');
+    const t = useTranslations();
 
 
     const router = useRouter();
@@ -52,10 +52,10 @@ export default function Login() {
 
         // login
         const res = await login(email, password);
-        if (res === true) {
+        if (res.code === 0) {
             router.push('/dashboard');
         } else {
-            msg(t('login_failed'), t(res), 'warning');
+            msg(t('admin.login_failed'), t(res.msg), 'warning');
         }
 
         setIsPending(false);
@@ -71,7 +71,7 @@ export default function Login() {
                 className="w-full"
                 onPress={handleSubmit}
             >
-                {isPending ? t('logging_in') : t('login')}
+                {isPending ? t('admin.logging_in') : t('admin.login')}
             </Button>
         );
     }
@@ -79,7 +79,7 @@ export default function Login() {
     return (
         <Card className="w-full mt-5">
             <CardHeader className="text-center">
-                <h2 className="text-center text-lg font-normal block w-full">{t('login')}</h2>
+                <h2 className="text-center text-lg font-normal block w-full">{t('admin.login')}</h2>
             </CardHeader>
             <Divider />
             <CardBody className="p-5">
@@ -88,11 +88,11 @@ export default function Login() {
                         type="email"
                         name="email"
                         label=""
-                        placeholder={t('email')}
+                        placeholder={t('admin.email')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Mail size={16} className="content-center" aria-label={t('email')} />
+                                <Mail size={16} className="content-center" aria-label={t('admin.email')} />
                             </span>
                         }
                         defaultValue={email}
@@ -112,11 +112,11 @@ export default function Login() {
                         type="password"
                         name="password"
                         label=""
-                        placeholder={t('password')}
+                        placeholder={t('admin.password')}
                         labelPlacement="outside"
                         startContent={
                             <span className="shrink-0">
-                                <Lock size={16} className="content-center" aria-label={t('password')} />
+                                <Lock size={16} className="content-center" aria-label={t('admin.password')} />
                             </span>
                         }
                         defaultValue={password}
@@ -133,10 +133,10 @@ export default function Login() {
                     />
                     <div className="text-xs grid grid-flow-col">
                         <Checkbox defaultSelected size="sm">
-                            <span className="text-xs">{t('remember_me')}</span>
+                            <span className="text-xs">{t('admin.remember_me')}</span>
                         </Checkbox>
                         <Link href="/forget-password" className="content-center justify-self-end text-xs">
-                            {t('forget_password')}
+                            {t('admin.forget_password')}
                         </Link>
                     </div>
                     <SubmitButton />

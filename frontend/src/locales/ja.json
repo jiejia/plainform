@@ -71,7 +71,8 @@
         "enter_confirm_new_password": "新しいパスワードの確認を入力",
         "enter_reset_password": "リセットパスワードを入力",
         "enter_reset_password_description": "リセットパスワードの説明を入力",
-        "enter_reset_password_problem": "リセットパスワードの問題を入力"
+        "enter_reset_password_problem": "リセットパスワードの問題を入力",
+        "email_not_valid": "メールアドレスが無効です"
     },
     "setting": {
         "group_string": "グループは文字列である必要があります",
@@ -171,7 +172,8 @@
         "logging_out": "ログアウト中...",
         "menu_dashboard": "ダッシュボード",
         "menu_form": "フォーム",
-        "menu_setting": "設定"
+        "menu_setting": "設定",
+        "server_error": "サーバーエラー"
     },
     "dashboard": {
         "period_type_required": "期間タイプは必須です",
@@ -206,7 +208,7 @@
         "status_closed": "クローズ",
         "status_enabled": "有効",
         "total": "合計",
-        "submission_time_distribution": "送信時間分布"
+        "submission_time_distribution": "送信時間分布"        
     },
     "form": {
         "form_not_found": "フォームが見つかりません",

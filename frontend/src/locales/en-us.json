@@ -72,6 +72,7 @@
         "enter_reset_password": "Enter Reset Password",
         "enter_reset_password_description": "Enter Reset Password Description",
         "enter_reset_password_problem": "Enter Reset Password Problem",
+        "email_not_valid": "Email is not valid"
     },
     "setting": {
         "group_string": "Group must be a string",
@@ -171,7 +172,8 @@
         "logging_out": "Logging out...",
         "menu_dashboard": "Dashboard",
         "menu_form": "Form",
-        "menu_setting": "Setting"
+        "menu_setting": "Setting",
+        "server_error": "Server Error"
     },
     "dashboard": {
         "period_type_required": "Period type is required",

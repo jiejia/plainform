@@ -34,13 +34,14 @@ export async function login(email: string, password: string) {
                 maxAge: 60 * 60 * 24 * 7, // 7 days
                 path: '/'
             });
-
-            return true
-        } else {
-            return res.msg;
         }
+
+        return res;
     } catch (err: any) {
-        return err.message;
+        return {
+            code: 9999,
+            msg: 'core.server_error'
+        }
     }
 }
 

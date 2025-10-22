@@ -19,13 +19,12 @@ export async function getOptions(group: string[] = ['general'], name: string[] =
             }
         }).json();
     
-        if (res.code === 0) {
-            return res.data;
-        } else {
-            return res.msg;
-        }
+        return res
     } catch (err: any) {
-        return err.message;
+        return {
+            code: 9999,
+            msg: 'core.server_error'
+        }
     }
 }
 
@@ -48,13 +47,13 @@ export async function setOptions(group: string, name: string, value: any) {
             }
         }).json();
 
-        if (res.code === 0) {
-            return true;
-        } else {
-            return res.msg;
-        }
+        return res;
     } catch (err: any) {
-        return err.message;
+        console.log("setting-action setOptions error: ", err);
+        return {
+            code: 9999,
+            msg: 'server_error'
+        }
     }
 }
 

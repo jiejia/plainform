@@ -71,7 +71,8 @@
         "enter_confirm_new_password": "输入确认新密码",
         "enter_reset_password": "输入重置密码",
         "enter_reset_password_description": "输入重置密码描述",
-        "enter_reset_password_problem": "输入重置密码问题"
+        "enter_reset_password_problem": "输入重置密码问题",
+        "email_not_valid": "邮箱格式不正确"
     },
     "setting": {
         "group_string": "分组必须是字符串",
@@ -171,7 +172,8 @@
         "logging_out": "退出中...",
         "menu_dashboard": "仪表板",
         "menu_form": "表单",
-        "menu_setting": "设置"
+        "menu_setting": "设置",
+        "server_error": "服务器错误"
     },
     "dashboard": {
         "period_type_required": "时间段类型不能为空",

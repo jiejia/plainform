@@ -31,7 +31,18 @@ export default async function RootLayout({
 
   const getSetting = async () => {
     const res = await getOptions([], ['theme', 'default_language']);
-    return res;
+    if (res.code === 0) {
+      return res.data;
+    } else{
+      return {
+        general: {
+          default_language: 'en-us'
+        },
+        appearances: {
+          theme: 'light'
+        }
+      }
+    } 
   }
 
   const setting = await getSetting();
