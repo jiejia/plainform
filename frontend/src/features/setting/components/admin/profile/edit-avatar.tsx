@@ -12,7 +12,7 @@ import { useTranslations } from 'next-intl';
 
 export default function EditAvatar({ admin }: { admin: Admin }) {
     const [isPending, setIsPending] = useState(false);
-    const t = useTranslations('setting');
+    const t = useTranslations();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedImage, setSelectedImage] = useState<string>(admin.avatar as string);
 
@@ -36,7 +36,7 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
             if (res.code === 0) {
                 setSelectedImage(res.data.avatar_url);
             } else {
-                msg(t('upload_failed'), t(res), 'warning');
+                msg(t('setting.upload_failed'), t(res.msg), 'warning');
             }
         }
     };
@@ -45,18 +45,18 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
         setIsPending(true);
         
         const res = await updateAvatar(selectedImage);
-        if (res === true) {
-            msg(t('update_success'), t(res), 'success');
+        if (res.code === 0) {
+            msg(t('setting.upload_success'), t('setting.upload_success'), 'success');
             window.location.reload();
         } else {
-            msg(t('update_failed'), t(res), 'warning');
+            msg(t('setting.update_failed'), t(res.msg), 'warning');
         }
 
         setIsPending(false);
     }
 
     return (
-        <FormModal title={t('edit_avatar')} button={
+        <FormModal title={t('setting.edit_avatar')} button={
             <Button isIconOnly radius="full" variant="light">
                 <Avatar
                     className="transition-transform"
@@ -76,7 +76,7 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
                     isLoading={isPending}
                     onPress={handleSave}
                 >
-                    {isPending ? t('updating') : t('save')}
+                    {isPending ? t('setting.updating') : t('setting.save')}
                 </Button>
             }
         >
@@ -89,7 +89,7 @@ export default function EditAvatar({ admin }: { admin: Admin }) {
                     isBordered
                     onClick={handleAvatarClick}
                 />
-                <p className="text-sm text-gray-500">{t('click_avatar_to_select_new_image')}</p>
+                <p className="text-sm text-gray-500">{t('setting.click_avatar_to_select_new_image')}</p>
                 <input
                     ref={fileInputRef}
                     type="file"

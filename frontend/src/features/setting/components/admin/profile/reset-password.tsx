@@ -16,7 +16,7 @@ type errors = {
 }
 
 export default function ResetPassword() {
-    const t = useTranslations('setting');
+    const t = useTranslations();
     const [oldPassword, setOldPassword] = useState('');
     const [Password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -53,8 +53,8 @@ export default function ResetPassword() {
 
         // reset password
         const res = await resetPassword(oldPassword, Password, confirmPassword);
-        if (res === true) {
-            msg(t('update_password_success'), t('update_password_success'), 'success');
+        if (res.code === 0) {
+            msg(t('setting.update_password_success'), t('setting.update_password_success'), 'success');
 
             // clear form
             setOldPassword('');
@@ -65,20 +65,20 @@ export default function ResetPassword() {
             return
 
         } else {
-            msg(t('update_password_failed'), t(res), 'warning');
+            msg(t('setting.update_password_failed'), t(res.msg), 'warning');
         }
 
         setIsPending(false);
     }
 
     return (
-        <FormModal title={t('update_password')} button={
+        <FormModal title={t('setting.update_password')} button={
             <Button
                 startContent={<SquarePen size={16} />}
                 size="sm"
                 color="primary"
                 variant="flat"
-            >{t('update')}</Button>
+            >{t('setting.update')}</Button>
         }
             footer={
                 <>
@@ -90,13 +90,13 @@ export default function ResetPassword() {
                         isLoading={isPending}
                         disabled={isPending}
                         onPress={handleSubmit}
-                    >{isPending ? t('submitting') : t('submit')}</Button>
+                    >{isPending ? t('setting.submitting') : t('setting.submit')}</Button>
                 </>
             }
         >
             <Input
                 type="password"
-                placeholder={t('enter_old_password')}
+                placeholder={t('setting.enter_old_password')}
                 label=""
                 labelPlacement="inside"
                 startContent={
@@ -118,7 +118,7 @@ export default function ResetPassword() {
             />
             <Input
                 type="password"
-                placeholder={t('enter_new_password')}
+                placeholder={t('setting.enter_new_password')}
                 label=""
                 labelPlacement="inside"
                 startContent={
@@ -140,7 +140,7 @@ export default function ResetPassword() {
             />
             <Input
                 type="password"
-                placeholder={t('enter_confirm_password')}
+                placeholder={t('setting.enter_confirm_password')}
                 label=""
                 labelPlacement="inside"
                 startContent={

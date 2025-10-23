@@ -14,7 +14,7 @@ type appNameError = {
 }
 
 export default function AppName({ options, setOptions }: { options: any, setOptions: any }) {
-    const t = useTranslations('setting');
+    const t = useTranslations();
     const [isPending, setIsPending] = useState(false);
 
     const [errors, setErrors] = useState<appNameError>({
@@ -43,23 +43,22 @@ export default function AppName({ options, setOptions }: { options: any, setOpti
 
         // set pending
         const res = await setOptionsAction('general', 'app_name', value);
-        if (res === true) {
-            msg(t('app_name_save_success'), t('app_name_save_success'), 'success');
+        if (res.code === 0) {
+            msg(t('setting.app_name_save_success'), t('setting.app_name_save_success'), 'success');
         } else {
-            msg(t('app_name_save_failed'), t(res), 'warning');
+            msg(t('setting.app_name_save_failed'), t(res.msg), 'warning');
         }
-
         setIsPending(false);
     };
 
     return (
-        <FormModal title={t('edit_app_name')} button={
+        <FormModal title={t('setting.edit_app_name')} button={
             <Button
                 startContent={<SquarePen size={16} />}
                 size="sm"
                 color="default"
                 variant="flat"
-            >{t('edit')}</Button>
+            >{t('setting.edit')}</Button>
         }
             footer={
                 <Button
@@ -70,12 +69,12 @@ export default function AppName({ options, setOptions }: { options: any, setOpti
                     onPress={() => handleUpdateAppNameChange(options.app_name)}
                     isLoading={isPending}
                     disabled={isPending}
-                >{isPending ? t('saving') : t('save')}</Button>
+                >{isPending ? t('setting.saving') : t('setting.save')}</Button>
             }
         >
             <Input
                 type="text"
-                placeholder={t('enter_app_name')}
+                placeholder={t('setting.enter_app_name')}
                 value={options.app_name}
                 onValueChange={handleAppNameChange}
                 maxLength={20}

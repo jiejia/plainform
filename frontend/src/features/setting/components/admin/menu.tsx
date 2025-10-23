@@ -22,25 +22,25 @@ export default function Menu({ activeItem = 'general', onItemClick }: MenuProps)
         // 然后进行路由跳转
         router.push(url);
     };
-    const t = useTranslations('setting');
+    const t = useTranslations();
 
     // 菜单项常量数组
     const MENU_ITEMS = [
         {
             id: 'general',
-            label: t('general'),
+            label: t('setting.general'),
             icon: Settings,
             url: '/dashboard/setting',
         },
         {
             id: 'profile',
-            label: t('profile'),
+            label: t('setting.profile'),
             icon: User,
             url: '/dashboard/setting/profile',
         },
         {
             id: 'appearance',
-            label: t('appearance'),
+            label: t('setting.appearance'),
             icon: Palette,
             url: '/dashboard/setting/appearance',
         },

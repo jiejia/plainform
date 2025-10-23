@@ -8,11 +8,11 @@ import { getTranslations } from 'next-intl/server';
 
 export default async function Setting() {
 
-    const options = await getOptions(['appearances']);
+    const res = await getOptions(['appearances']);
     const t = await getTranslations('setting');
     return (
         <DashboardLayout breadcrumbs={<><Link href={"/dashboard"}>{t('dashboard')}</Link> / <Link href={"/dashboard/setting"}>{t('setting')}</Link> / <span>{t('appearance')}</span></>} menuItemId={3}>
-            <Appearance initialOptions={options.appearances as Option}/>
+            <Appearance initialOptions={res.data.appearances as Option}/>
         </DashboardLayout>
     );
 }

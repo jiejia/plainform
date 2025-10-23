@@ -35,42 +35,36 @@ export default function Index({ form, versions }: { form: FormType, versions: nu
 
     const fetchList = async () => {
         setLoading(true);
-        try {
-            const res = await list(form.id as number, params);
-            if (res && (res as any).code === 0 && (res as any).data) {
-                setData(res.data as PaginationParams<Submission>);
-            } else {
-                setData(initialPagination);
-            }
-        } catch (error: any) {
-            console.log(error);
+        const res = await list(form.id as number, params);
+        if (res.code === 0) {
+            setData(res.data as PaginationParams<Submission>);
+        } else {
             setData(initialPagination);
-        } finally {
-            setLoading(false);
         }
+        setLoading(false);
     }
 
-    useEffect(() => {   
+    useEffect(() => {
         fetchList();
     }, [params]);
 
 
     return (<div className="grid grid-rows-[56px_1fr_56px] gap-4 h-full">
         <Card className="h-full">
-            <CardBody className="pt-3"> 
-                <Actions formId={formId} params={params} setParams={setParams} tableSelectedKeys={selectedKeys} currentPageIds={data.data.map(item => item.id)} data={data} setData={setData} versions={versions} initialSearchParams={initialSearchParams}/>
+            <CardBody className="pt-3">
+                <Actions formId={formId} params={params} setParams={setParams} tableSelectedKeys={selectedKeys} currentPageIds={data.data.map(item => item.id)} data={data} setData={setData} versions={versions} initialSearchParams={initialSearchParams} />
             </CardBody>
         </Card>
         <Card className="h-full">
             <CardBody className="h-full">
                 <Scroll>
-                    <TableList loading={loading} formId={formId} data={data} setData={setData} setParams={setParams} selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys} initialSearchParams={initialSearchParams}/>
+                    <TableList loading={loading} formId={formId} data={data} setData={setData} setParams={setParams} selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys} initialSearchParams={initialSearchParams} />
                 </Scroll>
             </CardBody>
         </Card>
         <Card>
             <CardBody className="grid sm:grid-cols-[80px_1fr_80px] grid-cols-[1fr] pt-3 gap-2">
-                <Paginate data={data} params={params} setParams={setParams}/>
+                <Paginate data={data} params={params} setParams={setParams} />
             </CardBody>
         </Card>
     </div>);

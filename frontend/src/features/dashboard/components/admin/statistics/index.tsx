@@ -25,7 +25,9 @@ export default function Index({ initialData }: { initialData: Statistic }) {
 
     useEffect(() => {
         getStatistic(searchParams.type).then((res) => {
-            setData(res.data);
+            if (res.code === 0) {
+                setData(res.data);
+            }
         });
     }, [searchParams]);
 

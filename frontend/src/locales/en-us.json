@@ -151,7 +151,7 @@
         "enter_new_password": "Enter New Password",
         "enter_confirm_password": "Enter Confirm Password",
         "update_password_success": "Update Password Success",
-        "update_password_failed": "Update Password Failed: {res}",
+        "update_password_failed": "Update Password Failed",
         "update_password": "Update Password",
         "app_name_required": "App Name is required",
         "app_name_max": "App Name must be less than 100 characters",
@@ -169,7 +169,14 @@
         "new_password_min": "New Password must be at least 6 characters",
         "new_password_max": "New Password must be less than 100 characters",
         "confirm_password_required": "Confirm Password is required",
-        "confirm_password_not_match": "Confirm Password does not match"
+        "confirm_password_not_match": "Confirm Password does not match",
+        "language_save_success": "Language Saved Success",
+        "language_save_failed": "Language Save Failed",
+        "maintenance_mode_save_success": "Maintenance Mode Saved Success",
+        "maintenance_mode_save_failed": "Maintenance Mode Save Failed",
+        "theme_save_success": "Theme Saved Success",
+        "theme_save_failed": "Theme Save Failed",
+        "upload_success": "Upload Success"
     },
     "core": {
         "logged_in_as": "Logged in as",

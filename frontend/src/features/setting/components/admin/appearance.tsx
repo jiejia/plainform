@@ -8,7 +8,7 @@ import { Option } from '@/features/setting/types/appearance-option';
 import { useTranslations } from 'next-intl';
 
 export default function Appearance({ initialOptions }: { initialOptions: Option }) {
-    const t = useTranslations('setting');
+    const t = useTranslations();
     const [options, setOptions] = useState<Option>(initialOptions);
 
     return (
@@ -17,7 +17,7 @@ export default function Appearance({ initialOptions }: { initialOptions: Option 
                 <Menu activeItem="appearance" />
                 <Card className="">
                     <CardHeader>
-                        <h2>{t('appearance')}</h2>
+                        <h2>{t('setting.appearance')}</h2>
                     </CardHeader>
                     <Divider />
                     <CardBody>
@@ -25,8 +25,8 @@ export default function Appearance({ initialOptions }: { initialOptions: Option 
                         <ul className="h-full grid gap-2 content-start">
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
                                 <div>
-                                    <h3 className="text-sm">{t('default_theme')}</h3>
-                                    <span className="text-default-400 text-xs">{t('default_theme_description')}</span>
+                                    <h3 className="text-sm">{t('setting.default_theme')}</h3>
+                                    <span className="text-default-400 text-xs">{t('setting.default_theme_description')}</span>
                                 </div>
                                 <div>
                                     <Theme options={options} setOptions={setOptions} />

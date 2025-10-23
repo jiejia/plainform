@@ -3,41 +3,45 @@
 import { Monitor, Sun, Moon } from "lucide-react";
 import { Select, SelectItem, SharedSelection } from "@heroui/react";
 import { setOptions as setOptionsAction } from '@/features/setting/actions/setting-action';
-import { CookieKey } from "@/features/core/constants/cookie-key";
-import Cookies from 'js-cookie'
 import { useTranslations } from 'next-intl';
+import { msg } from "@/features/core/utils/ui";
 
 
 export default function Theme({ options, setOptions }: { options: any, setOptions: any }) {
-    const t = useTranslations('setting');
+    const t = useTranslations();
     const themes = [
         {
             key: "system",
-            label: t('system'),
+            label: t('setting.system'),
             icon: <Monitor className="w-4 h-4" />
         },
         {
             key: "light",
-            label: t('light'),
+            label: t('setting.light'),
             icon: <Sun className="w-4 h-4" />
         },
         {
             key: "dark",
-            label: t('dark'),
+            label: t('setting.dark'),
             icon: <Moon className="w-4 h-4" />
         },
 
     ];
 
-    const handleChange = (keys: SharedSelection) => {
+    const handleChange = async (keys: SharedSelection) => {
         const selected = keys.currentKey as string;
         setOptions({ ...options, theme: selected });
-        setOptionsAction('appearances', 'theme', selected);
+        const res = await setOptionsAction('appearances', 'theme', selected);
+        if (res.code === 0) {
+            msg(t('setting.theme_save_success'), t('setting.theme_save_success'), 'success');
+        } else {
+            msg(t('setting.theme_save_failed'), t(res.msg), 'warning');
+        }
     }   
 
     return (
         <Select
-            placeholder={t('select_theme')}
+            placeholder={t('setting.select_theme')}
             selectedKeys={[options.theme]}
             onSelectionChange={handleChange}
             className="w-48"

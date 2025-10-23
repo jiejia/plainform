@@ -14,7 +14,7 @@ type appDescriptionError = {
 }
 
 export default function AppDescription({ options, setOptions }: { options: any, setOptions: any }) {
-    const t = useTranslations('setting');
+    const t = useTranslations();
     const [isPending, setIsPending] = useState(false);
 
     const [errors, setErrors] = useState<appDescriptionError>({
@@ -41,10 +41,10 @@ export default function AppDescription({ options, setOptions }: { options: any, 
         setOptions({ ...options, app_description: value });
 
         const res = await setOptionsAction('general', 'app_description', value);
-        if (res === true) {
-            msg(t('app_description_save_success'), t('app_description_save_success'), 'success');
+        if (res.code === 0) {
+            msg(t('setting.app_description_save_success'), t('setting.app_description_save_success'), 'success');
         } else {
-            msg(t('app_description_save_failed'), t(res), 'warning');
+            msg(t('setting.app_description_save_failed'), t(res.msg), 'warning');
         }
         setIsPending(false);
     };
@@ -54,12 +54,12 @@ export default function AppDescription({ options, setOptions }: { options: any, 
     };
 
     return (
-        <FormModal title={t('edit_app_description')} button={
+        <FormModal title={t('setting.edit_app_description')} button={
             <Button
                 startContent={<SquarePen size={16} />}
                 size="sm"
                 color="default" variant="flat"
-            >{t('edit')}</Button>
+            >{t('setting.edit')}</Button>
         }
             footer={
                 <Button
@@ -70,11 +70,11 @@ export default function AppDescription({ options, setOptions }: { options: any, 
                     isLoading={isPending}
                     disabled={isPending}
                     onPress={() => handleUpdateAppDescriptionChange(options.app_description)}
-                >{isPending ? t('saving') : t('save')}</Button>
+                >{isPending ? t('setting.saving') : t('setting.save')}</Button>
             }>
             <Input
                 type="text"
-                placeholder={t('enter_app_description')}
+                placeholder={t('setting.enter_app_description')}
                 value={options.app_description} onValueChange={handleAppDescriptionChange}
                 onFocus={() => setErrors({ ...errors, app_description: '' })} endContent={
                     errors.app_description && (

@@ -1,9 +1,9 @@
 import * as z from "zod"; 
 
 const schema = z.object({
-    app_name: z.string().nonempty("app_name_required").max(100, "app_name_max"),
-    app_description: z.string().nonempty("app_description_required").max(255, "app_description_max"),
-    default_language: z.string().nonempty("default_language_required"),
+    app_name: z.string().nonempty("setting.app_name_required").max(100, "setting.app_name_max"),
+    app_description: z.string().nonempty("setting.app_description_required").max(255, "setting.app_description_max"),
+    default_language: z.string().nonempty("setting.default_language_required"),
     maintenance_mode: z.boolean(),
 });
 

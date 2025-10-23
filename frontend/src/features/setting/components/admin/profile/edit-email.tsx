@@ -15,7 +15,7 @@ type errors = {
 
 
 export default function EditEmail() {
-    const t = useTranslations('setting');
+    const t = useTranslations();
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
 
@@ -66,13 +66,13 @@ export default function EditEmail() {
         }
 
         const res = await sendEmailResetCode(email);
-        if (res === true) {
-            msg(t('send_email_reset_code_success'), t('send_email_reset_code_success'), 'success');
+        if (res.code === 0) {
+            msg(t('setting.send_email_reset_code_success'), t('setting.send_email_reset_code_success'), 'success');
 
             setCountdown(60); // Start 60 seconds countdown
 
         } else {
-            msg(t('send_email_reset_code_failed', { res: res }), res, 'warning');
+            msg(t('setting.send_email_reset_code_failed'), t(res.msg), 'warning');
         }
 
         setIsCodePending(false);
@@ -101,8 +101,8 @@ export default function EditEmail() {
 
         // reset password
         const res = await updateEmail(email, code);
-        if (res === true) {
-            msg(t('update_email_success'), t('update_email_success'), 'success');
+        if (res.code === 0) {
+            msg(t('setting.update_email_success'), t('setting.update_email_success'), 'success');
 
             // clear form
             setEmail('');
@@ -112,20 +112,20 @@ export default function EditEmail() {
             return
 
         } else {
-            msg(t('update_email_failed', { res: res }), res, 'warning');
+            msg(t('setting.update_email_failed'), t(res.msg), 'warning');
         }
 
         setIsPending(false);
     }
 
     return (
-        <FormModal title={t('update_email')} button={
+        <FormModal title={t('setting.update_email')} button={
             <Button
                 startContent={<SquarePen size={16} />}
                 size="sm"
                 color="primary"
                 variant="flat"
-            >{t('update')}</Button>
+            >{t('setting.update')}</Button>
         }
             footer={
                 <>
@@ -137,14 +137,14 @@ export default function EditEmail() {
                         isLoading={isPending}
                         disabled={isPending}
                         onPress={handleSubmit}
-                    >{isPending ? t('submitting') : t('submit')}</Button>
+                    >{isPending ? t('setting.submitting') : t('setting.submit')}</Button>
                 </>
             }
         >
             <div className="grid grid-cols-[3fr_1fr] gap-2">
                 <Input
                     type="email"
-                    placeholder={t('enter_email')}
+                    placeholder={t('setting.enter_email')}
                     label=""
                     labelPlacement="inside"
                     startContent={
@@ -172,12 +172,12 @@ export default function EditEmail() {
                     onPress={() => handleSendEmailResetCode()}
                     isLoading={isCodePending}
                     disabled={isCodePending || countdown > 0}
-                >{isCodePending ? t('sending') : countdown > 0 ? `${t('resend')} (${countdown}s)` : t('send_email_reset_code')}</Button>
+                >{isCodePending ? t('setting.sending') : countdown > 0 ? `${t('setting.resend')} (${countdown}s)` : t('setting.send_email_reset_code')}</Button>
             </div>
 
             <Input
                 type="text"
-                placeholder={t('enter_code')}
+                placeholder={t('setting.enter_code')}
                 label=""
                 labelPlacement="inside"
                 startContent={
