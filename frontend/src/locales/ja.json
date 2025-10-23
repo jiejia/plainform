@@ -145,7 +145,7 @@
         "resend": "再送信",
         "send_email_reset_code_success": "メールリセットコードの送信に成功しました",
         "send_email_reset_code_failed": "メールリセットコードの送信に失敗しました",
-        "update_email_success": "メールアドレスの更新に成功しました",
+        "update_email_success": "メールアドレスの更新に成功しました",   
         "update_email_failed": "メールアドレスの更新に失敗しました：{res}",
         "enter_old_password": "現在のパスワードを入力",
         "enter_new_password": "新しいパスワードを入力",
@@ -187,7 +187,8 @@
         "menu_dashboard": "ダッシュボード",
         "menu_form": "フォーム",
         "menu_setting": "設定",
-        "server_error": "サーバーエラー"
+        "server_error": "サーバーエラー",
+        "powered_by": "{app_name} によって駆動されています"
     },
     "dashboard": {
         "period_type_required": "期間タイプは必須です",

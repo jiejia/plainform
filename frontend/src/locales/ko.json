@@ -187,7 +187,8 @@
         "menu_dashboard": "대시보드",
         "menu_form": "폼",
         "menu_setting": "설정",
-        "server_error": "서버 오류"
+        "server_error": "서버 오류",
+        "powered_by": "{app_name} 에 의해 구동되고 있습니다"
     },
     "dashboard": {
         "period_type_required": "기간 유형은 필수입니다",

@@ -187,7 +187,8 @@
         "menu_dashboard": "Dashboard",
         "menu_form": "Form",
         "menu_setting": "Setting",
-        "server_error": "Server Error"
+        "server_error": "Server Error",
+        "powered_by": "Powered By {app_name}"
     },
     "dashboard": {
         "period_type_required": "Period type is required",

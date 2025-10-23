@@ -187,7 +187,8 @@
         "menu_dashboard": "仪表盘",
         "menu_form": "表单",
         "menu_setting": "设置",
-        "server_error": "服务器错误"
+        "server_error": "服务器错误",
+        "powered_by": "由 {app_name} 驱动"
     },
     "dashboard": {
         "period_type_required": "时间段类型是必填项",
