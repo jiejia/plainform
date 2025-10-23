@@ -12,7 +12,7 @@ import { Language } from '@/features/setting/types/language';
 import { useTranslations } from 'next-intl';
 
 export default function General({ initialOptions, languages }: { initialOptions: Option, languages: Language[] }) {
-    const t = useTranslations('setting');
+    const t = useTranslations();
     const [options, setOptions] = useState<Option>(initialOptions);
 
     return (
@@ -21,15 +21,15 @@ export default function General({ initialOptions, languages }: { initialOptions:
                 <Menu activeItem="general" />
                 <Card className="">
                     <CardHeader>
-                        <h2>{t('general')}</h2>
+                        <h2>{t('setting.general')}</h2>
                     </CardHeader>
                     <Divider />
                     <CardBody>
                         <ul className="h-full grid gap-2 content-start">
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
                                 <div>
-                                    <h3 className="text-sm">{t('app_name')}</h3>
-                                    <span className="text-default-400 text-xs">{t('app_name_description')}</span>
+                                    <h3 className="text-sm">{t('setting.app_name')}</h3>
+                                    <span className="text-default-400 text-xs">{t('setting.app_name_description')}</span>
                                 </div>
                                 <div>
                                     <AppName options={options} setOptions={setOptions} />
@@ -37,8 +37,8 @@ export default function General({ initialOptions, languages }: { initialOptions:
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
                                 <div>
-                                    <h3 className="text-sm">{t('app_description')}</h3>
-                                    <span className="text-default-400 text-xs">{t('app_description_description')}</span>
+                                    <h3 className="text-sm">{t('setting.app_description')}</h3>
+                                    <span className="text-default-400 text-xs">{t('setting.app_description_description')}</span>
                                 </div>
                                 <div>
                                     <AppDescription options={options} setOptions={setOptions} />
@@ -46,8 +46,8 @@ export default function General({ initialOptions, languages }: { initialOptions:
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
                                 <div>
-                                    <h3 className="text-sm">{t('language')}</h3>
-                                    <span className="text-default-400 text-xs">{t('language_description')}</span>
+                                    <h3 className="text-sm">{t('setting.language')}</h3>
+                                    <span className="text-default-400 text-xs">{t('setting.language_description')}</span>
                                 </div>
                                 <div>
                                     <DefaultLanguage options={options} setOptions={setOptions} languages={languages} />
@@ -55,8 +55,8 @@ export default function General({ initialOptions, languages }: { initialOptions:
                             </li>
                             <li className="grid grid-flow-col justify-between items-center border-b-1 border-dotted border-default-200 pb-2">
                                 <label>
-                                    <h3 className="text-sm">{t('maintenance_mode')}</h3>
-                                    <span className="text-default-400 text-xs">{t('maintenance_mode_description')}</span>
+                                    <h3 className="text-sm">{t('setting.maintenance_mode')}</h3>
+                                    <span className="text-default-400 text-xs">{t('setting.maintenance_mode_description')}</span>
                                 </label>
                                 <div>
                                     <MaintanceMode options={options} setOptions={setOptions} />

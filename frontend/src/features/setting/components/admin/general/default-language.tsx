@@ -8,18 +8,21 @@ import Cookies from 'js-cookie'
 import { CookieKey } from '@/features/core/constants/cookie-key';
 import { useTranslations } from 'next-intl';
 import { msg } from "@/features/core/utils/ui";
+import { useRouter } from "next/navigation";
 
 export default function DefaultLanguage({ options, setOptions, languages }: { options: Option, setOptions: any, languages: Language[] }) {
     const t = useTranslations();
+    const router = useRouter(); // 新增
 
     const handleLanguageChange = async (value: SharedSelection) => {
         setOptions({ ...options, default_language: value.currentKey as string });
         const res = await setOptionsAction('general', 'default_language', value.currentKey as string);
         if (res.code === 0) {
-            msg(t('setting.language_save_success'), t('setting.language_save_success'), 'success');
+            // msg(t('setting.language_save_success'), t('setting.language_save_success'), 'success');
             Cookies.set(CookieKey.LANGUAGE, value.currentKey as string, { expires: 365 });
+            router.refresh();
         } else {
-            msg(t('setting.language_save_failed'), t(res.msg), 'warning');
+            // msg(t('setting.language_save_failed'), t(res.msg), 'warning');
         }
     };
 

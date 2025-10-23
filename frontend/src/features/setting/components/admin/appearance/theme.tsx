@@ -4,11 +4,14 @@ import { Monitor, Sun, Moon } from "lucide-react";
 import { Select, SelectItem, SharedSelection } from "@heroui/react";
 import { setOptions as setOptionsAction } from '@/features/setting/actions/setting-action';
 import { useTranslations } from 'next-intl';
-import { msg } from "@/features/core/utils/ui";
+import { useTheme } from 'next-themes'
 
 
 export default function Theme({ options, setOptions }: { options: any, setOptions: any }) {
     const t = useTranslations();
+    const { theme, setTheme } = useTheme()
+
+
     const themes = [
         {
             key: "system",
@@ -28,15 +31,11 @@ export default function Theme({ options, setOptions }: { options: any, setOption
 
     ];
 
-    const handleChange = async (keys: SharedSelection) => {
+    const handleChange = (keys: SharedSelection) => {
         const selected = keys.currentKey as string;
         setOptions({ ...options, theme: selected });
-        const res = await setOptionsAction('appearances', 'theme', selected);
-        if (res.code === 0) {
-            msg(t('setting.theme_save_success'), t('setting.theme_save_success'), 'success');
-        } else {
-            msg(t('setting.theme_save_failed'), t(res.msg), 'warning');
-        }
+        setOptionsAction('appearances', 'theme', selected);
+        setTheme(selected);
     }   
 
     return (
