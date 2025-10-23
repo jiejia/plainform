@@ -20,19 +20,19 @@ enum Code: int
     public function message(): string
     {
         return match($this) {
-            self::FORM_NOT_FOUND => 'form_not_found',
-            self::FORM_FIELD_UUID_EXISTS => 'form_field_uuid_exists',
-            self::FORM_HAS_SUBMISSIONS => 'form_has_submissions',
-            self::SUBMISSION_NOT_FOUND => 'submission_not_found',
-            self::FILE_NOT_FOUND => 'file_not_found',
-            self::FORM_FIELD_REQUIRED => 'form_field_required',
-            self::FORM_FIELD_INVALID_EMAIL => 'form_field_invalid_email',
-            self::FORM_FIELD_INVALID_URL => 'form_field_invalid_url',
-            self::FORM_FIELD_INVALID_NUMBER => 'form_field_invalid_number',
-            self::FORM_FIELD_INVALID_DATE => 'form_field_invalid_date',
-            self::FORM_FIELD_INVALID_REGEX => 'form_field_invalid_regex',
-            self::FORM_FIELD_CONFIG_REGEX_FAILED => 'form_field_config_regex_failed',
-            self::FORM_ALREADY_SUBMITTED => 'form_already_submitted',
+            self::FORM_NOT_FOUND => 'form.form_not_found',
+            self::FORM_FIELD_UUID_EXISTS => 'form.form_field_uuid_exists',
+            self::FORM_HAS_SUBMISSIONS => 'form.form_has_submissions',
+            self::SUBMISSION_NOT_FOUND => 'form.submission_not_found',
+            self::FILE_NOT_FOUND => 'form.file_not_found',
+            self::FORM_FIELD_REQUIRED => 'form.form_field_required',
+            self::FORM_FIELD_INVALID_EMAIL => 'form.form_field_invalid_email',
+            self::FORM_FIELD_INVALID_URL => 'form.form_field_invalid_url',
+            self::FORM_FIELD_INVALID_NUMBER => 'form.form_field_invalid_number',
+            self::FORM_FIELD_INVALID_DATE => 'form.form_field_invalid_date',
+            self::FORM_FIELD_INVALID_REGEX => 'form.form_field_invalid_regex',
+            self::FORM_FIELD_CONFIG_REGEX_FAILED => 'form.form_field_config_regex_failed',
+            self::FORM_ALREADY_SUBMITTED => 'form.form_already_submitted',
         };
     }
 

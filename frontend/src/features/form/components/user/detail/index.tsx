@@ -31,7 +31,7 @@ function FieldItem({ field, value, onChange }: FieldItemProps & { value: unknown
 }
 export default function Detail({ form }: { form: FormType }) {
 
-    const t = useTranslations('form');
+    const t = useTranslations();
 
     const [formData, setFormData] = useState<Array<{
         uuid: string;
@@ -90,7 +90,7 @@ export default function Detail({ form }: { form: FormType }) {
             if (field.required) {
                 if (!formData.find(item => item.uuid === field.uuid)?.value) {
                     // set error
-                    const newErrors = { ...errors, [field.uuid]: t('this_field_is_required') };
+                    const newErrors = { ...errors, [field.uuid]: t('form.this_field_is_required') };
                     setErrors(newErrors);
                     console.log("newErrors", newErrors);
 
@@ -112,7 +112,7 @@ export default function Detail({ form }: { form: FormType }) {
                     const regex = new RegExp(field.regex);
                     if (!regex.test(formData.find(item => item.uuid === field.uuid)?.value as string)) {
 
-                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : t('this_field_is_invalid') }));
+                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : t('form.this_field_is_invalid') }));
 
                         // scroll to field
                         document.getElementById(field.uuid)?.scrollIntoView({ behavior: 'smooth' });
@@ -126,7 +126,7 @@ export default function Detail({ form }: { form: FormType }) {
                     const regex = new RegExp(field.regex);
                     if (!regex.test(formData.find(item => item.uuid === field.uuid)?.value as string)) {
 
-                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : t('this_field_is_invalid') }));
+                        setErrors(prev => ({ ...prev, [field.uuid]: field.config.regex.warning_message ? field.config.regex.warning_message : t('form.this_field_is_invalid') }));
                     }
 
                     // scroll to field
@@ -144,11 +144,11 @@ export default function Detail({ form }: { form: FormType }) {
 
         const res = await submit(form.uuid, formData, form.version || 1, getOrCreateVisitorId(), navigator.userAgent);
         if (res.code === 0) {
-            msg(t('success'), t('submit_successfully'), "success");
+            msg(t('form.success'), t('form.submit_successfully'), "success");
             initializeFormData();
             initializeErrors();
         } else {
-            msg(t('error'), res.msg, "warning");
+            msg(t('form.error'), t(res.msg), "warning");
         }
 
         setIsPending(false);
@@ -233,9 +233,9 @@ export default function Detail({ form }: { form: FormType }) {
                             size="sm"
                             variant="flat"
                             radius="sm"
-                            onPress={() => confirm(t('are_you_sure_you_want_to_reset_the_form')) && initializeFormData() && initializeErrors()}
+                            onPress={() => confirm(t('form.are_you_sure_you_want_to_reset_the_form')) && initializeFormData() && initializeErrors()}
                         >
-                            {t('reset')}
+                            {t('form.reset')}
                         </Button>
                         <Button
                             className=""
@@ -247,7 +247,7 @@ export default function Detail({ form }: { form: FormType }) {
                             disabled={isPending}
                             onPress={handleSubmit}
                         >
-                            {isPending ? t('submitting') : t('submit')}
+                            {isPending ? t('form.submitting') : t('form.submit')}
                         </Button>
                     </div>
                 </CardBody>

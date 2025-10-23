@@ -18,17 +18,17 @@ class AuthValidator extends AbstractValidator
     protected function messages()
     {
         return [
-            'email.required' => 'email_required',
-            'email.email' => 'email_invalid',
-            'password.required' => 'password_required',
-            'password.string' => 'password_string',
-            'password.min' => 'password_min',
-            'password.max' => 'password_max',
-            'password_confirmation.required' => 'password_confirmation_required',
-            'password_confirmation.string' => 'password_confirmation_string',
-            'password_confirmation.same' => 'password_confirmation_same',
-            'reset_password_token.required' => 'reset_password_token_required',
-            'reset_password_token.string' => 'reset_password_token_string',
+            'email.required' => 'admin.email_required',
+            'email.email' => 'admin.email_invalid',
+            'password.required' => 'admin.password_required',
+            'password.string' => 'admin.password_string',
+            'password.min' => 'admin.password_min',
+            'password.max' => 'admin.password_max',
+            'password_confirmation.required' => 'admin.password_confirmation_required',
+            'password_confirmation.string' => 'admin.password_confirmation_string',
+            'password_confirmation.same' => 'admin.password_confirmation_same',
+            'reset_password_token.required' => 'admin.reset_password_token_required',
+            'reset_password_token.string' => 'admin.reset_password_token_string',
         ];
     }
     

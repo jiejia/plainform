@@ -26,16 +26,16 @@ enum Code: int
     public function message(): string
     {
         return match($this) {
-            self::EMAIL_NOT_FOUND => 'email_not_found',
-            self::PASSWORD_INCORRECT => 'password_incorrect',
-            self::PASSWORD_RESET_TOKEN_NOT_FOUND => 'password_reset_token_not_found',
-            self::PASSWORD_RESET_TOKEN_EXPIRED => 'password_reset_token_expired',
-            self::EMAIL_VERIFY_CODE_ERROR => 'email_verify_code_error',
-            self::PASSWORD_ERROR => 'password_error',
-            self::PASSWORD_SAME => 'password_same',
-            self::TOKEN_GENERATION_TOO_FREQUENT => 'token_generation_too_frequent',
-            self::EMAIL_SAME => 'email_same',
-            self::EMAIL_OTHER_FOUND => 'email_other_found',
+            self::EMAIL_NOT_FOUND => 'admin.email_not_found',
+            self::PASSWORD_INCORRECT => 'admin.password_incorrect',
+            self::PASSWORD_RESET_TOKEN_NOT_FOUND => 'admin.password_reset_token_not_found',
+            self::PASSWORD_RESET_TOKEN_EXPIRED => 'admin.password_reset_token_expired',
+            self::EMAIL_VERIFY_CODE_ERROR => 'admin.email_verify_code_error',
+            self::PASSWORD_ERROR => 'admin.password_error',
+            self::PASSWORD_SAME => 'admin.password_same',
+            self::TOKEN_GENERATION_TOO_FREQUENT => 'admin.token_generation_too_frequent',
+            self::EMAIL_SAME => 'admin.email_same',
+            self::EMAIL_OTHER_FOUND => 'admin.email_other_found',
         };
     }
 

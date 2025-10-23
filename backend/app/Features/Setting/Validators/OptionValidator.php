@@ -19,17 +19,17 @@ class OptionValidator extends AbstractValidator
     protected function messages()
     {
         return [
-            'group.string' => 'group_string',
-            'group.max' => 'group_max',
-            'name.string' => 'name_string',
-            'name.max' => 'name_max',
-            'update_group.required' => 'update_group_required',
-            'update_group.string' => 'update_group_string',
-            'update_group.max' => 'update_group_max',
-            'update_name.required' => 'update_name_required',
-            'update_name.string' => 'update_name_string',
-            'update_name.max' => 'update_name_max',
-            'update_data.required' => 'update_data_required',
+            'group.string' => 'setting.group_string',
+            'group.max' => 'setting.group_max',
+            'name.string' => 'setting.name_string',
+            'name.max' => 'setting.name_max',
+            'update_group.required' => 'setting.update_group_required',
+            'update_group.string' => 'setting.update_group_string',
+            'update_group.max' => 'setting.update_group_max',
+            'update_name.required' => 'setting.update_name_required',
+            'update_name.string' => 'setting.update_name_string',
+            'update_name.max' => 'setting.update_name_max',
+            'update_data.required' => 'setting.update_data_required',
         ];
     }
     

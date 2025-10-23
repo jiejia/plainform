@@ -12,13 +12,13 @@ enum Code: int
     public function message(): string
     {
         $key = match($this) {
-            self::BUSINESS_LOGIC_ERROR => __('core.business_logic_error'),
+            self::BUSINESS_LOGIC_ERROR => 'core.business_logic_error',
             self::INVALID_TOKEN => 'core.invalid_token',
             self::VALIDATION_ERROR => 'core.validation_error',
             self::SUCCESS => 'core.success',
-            self::FREQUENCY_LIMIT_ERROR => __('core.frequency_limit_error'),
+            self::FREQUENCY_LIMIT_ERROR => 'core.frequency_limit_error',
         };
 
-        return __($key);
+        return $key;
     }
 }
