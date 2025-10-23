@@ -144,7 +144,7 @@
         "send_email_reset_code": "Send",
         "resend": "Resend",
         "send_email_reset_code_success": "Send Email Reset Code Success",
-        "send_email_reset_code_failed": "Send Email Reset Code Failed: {res}",
+        "send_email_reset_code_failed": "Send Email Reset Code Failed",
         "update_email_success": "Update Email Success",
         "update_email_failed": "Update Email Failed: {res}",
         "enter_old_password": "Enter Old Password",
@@ -176,7 +176,8 @@
         "maintenance_mode_save_failed": "Maintenance Mode Save Failed",
         "theme_save_success": "Theme Saved Success",
         "theme_save_failed": "Theme Save Failed",
-        "upload_success": "Upload Success"
+        "upload_success": "Upload Success",
+        "sending": "Sending..."
     },
     "core": {
         "logged_in_as": "Logged in as",

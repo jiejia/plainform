@@ -144,7 +144,7 @@
         "send_email_reset_code": "送信",
         "resend": "再送信",
         "send_email_reset_code_success": "メールリセットコードの送信に成功しました",
-        "send_email_reset_code_failed": "メールリセットコードの送信に失敗しました：{res}",
+        "send_email_reset_code_failed": "メールリセットコードの送信に失敗しました",
         "update_email_success": "メールアドレスの更新に成功しました",
         "update_email_failed": "メールアドレスの更新に失敗しました：{res}",
         "enter_old_password": "現在のパスワードを入力",
@@ -176,7 +176,8 @@
         "maintenance_mode_save_failed": "メンテナンスモードの保存に失敗しました",
         "theme_save_success": "テーマの保存に成功しました",
         "theme_save_failed": "テーマの保存に失敗しました",
-        "upload_success": "アップロードに成功しました"
+        "upload_success": "アップロードに成功しました",
+        "sending": "送信中..."
     },
     "core": {
         "logged_in_as": "ログイン中：",

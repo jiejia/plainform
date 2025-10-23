@@ -144,7 +144,7 @@
         "send_email_reset_code": "发送",
         "resend": "重新发送",
         "send_email_reset_code_success": "发送邮箱重置验证码成功",
-        "send_email_reset_code_failed": "发送邮箱重置验证码失败：{res}",
+        "send_email_reset_code_failed": "发送邮箱重置验证码失败",
         "update_email_success": "更新邮箱成功",
         "update_email_failed": "更新邮箱失败：{res}",
         "enter_old_password": "输入旧密码",
@@ -176,7 +176,8 @@
         "maintenance_mode_save_failed": "维护模式保存失败",
         "theme_save_success": "主题保存成功",
         "theme_save_failed": "主题保存失败",
-        "upload_success": "上传成功"
+        "upload_success": "上传成功",
+        "sending": "发送中..."
     },
     "core": {
         "logged_in_as": "登录身份：",

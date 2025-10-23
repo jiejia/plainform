@@ -57,7 +57,7 @@ export default function EditEmail() {
         if (!result.success) {
             const { fieldErrors } = result.error.flatten();
             setErrors({
-                email: t(fieldErrors.email?.[0] ?? ''),
+                email: fieldErrors.email?.[0] ?? '',
                 code: '',
             });
 
