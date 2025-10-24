@@ -6,17 +6,22 @@ import { useRouter } from 'next/navigation'
 import { logout } from "@/features/admin/actions/auth-action";
 import { useAppContext } from "@/features/core/context/AppContext";
 import { useTranslations } from 'next-intl';
+import {PanelLeft} from "lucide-react";
+import { Button } from "@heroui/react";
 
 export default function Header({ 
-  breadcrumbs = <></>
+  breadcrumbs = <></>,
+  sidebarOpen,
+  setSidebarOpen
 }: {
-  breadcrumbs: React.ReactNode
+  breadcrumbs: React.ReactNode,
+  sidebarOpen: boolean,
+  setSidebarOpen: (open: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const { admin, setAdmin } = useAppContext();
   const t = useTranslations();
-  
   const handleSettingsClick = () => {
     router.push('/dashboard/setting/profile')
   }
@@ -31,7 +36,8 @@ export default function Header({
     <header>
         <Card>
             <CardBody className="grid grid-cols-8 !py-3">
-                <div className="col-span-6 content-center">
+                <div className="col-span-6 content-center flex items-center gap-2">
+                    <Button isIconOnly variant="light" size="sm" onPress={() => setSidebarOpen(!sidebarOpen)}><PanelLeft /></Button>
                     {breadcrumbs}
                 </div>
                 <div className="col-span-2 content-center justify-self-end">

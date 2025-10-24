@@ -10,7 +10,7 @@ import { Shell } from "lucide-react";
 import { useTranslations } from 'next-intl';
 
 
-export default function Sidebar({menuItemId}: { menuItemId: number }) {
+export default function Sidebar({menuItemId, sidebarOpen}: { menuItemId: number, sidebarOpen: boolean }) {
     const router = useRouter();
     const t = useTranslations();
 
@@ -36,7 +36,7 @@ export default function Sidebar({menuItemId}: { menuItemId: number }) {
     ]
 
     return (
-        <aside className="h-full lg:block hidden">
+        <aside className={clsx("h-full lg:block hidden", { "w-[280px]": sidebarOpen, "w-0": !sidebarOpen })}>
             <Card className="h-full w-[280px] relative">
                 <CardHeader>
                     <h1 className="text-xl font-semibold lg:px-8 w-full">
