@@ -101,7 +101,7 @@ export default function Login() {
                         onFocus={() => setErrors({ ...errors, email: '' })}
                         endContent={
                             errors.email && (
-                                <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                                <span className="text-danger-500 text-xs bg-content3 px-2 py-1 rounded-md whitespace-nowrap shrink-0">
                                     {t(errors.email)}
                                 </span>
                             )
@@ -125,7 +125,7 @@ export default function Login() {
                         onFocus={() => setErrors({ ...errors, password: '' })}
                         endContent={
                             errors.password && (
-                                <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
+                                <span className="text-danger-500 text-xs bg-content3 px-2 py-1 rounded-md whitespace-nowrap shrink-0">
                                     {t(errors.password)}
                                 </span>
                             )

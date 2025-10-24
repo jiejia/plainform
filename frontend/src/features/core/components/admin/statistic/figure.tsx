@@ -14,7 +14,7 @@ export default function Figure(
         <Card>
             <CardBody className="flex flex-row items-center justify-between p-4">
                 <div>
-                    <p className="text-sm text-gray-600 mb-1">{title}</p>
+                    <p className="text-sm text-default-500 mb-1">{title}</p>
                     <p className="text-2xl font-bold">{value}</p>
                     <p className={`text-xs flex items-center mt-1 ${changeType === 'increase'
                             ? 'text-green-600'

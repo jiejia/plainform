@@ -24,7 +24,7 @@ export default function RecentActivities({ data }: RecentActivitiesProps) {
                     data.map((activity, index) => (
                         <div
                             key={`${activity.id}-${index}`}
-                            className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-content3 transition-colors"
                         >
                             <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
@@ -39,18 +39,18 @@ export default function RecentActivities({ data }: RecentActivitiesProps) {
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-gray-900 truncate">
+                                    <p className="text-sm font-medium truncate">
                                         {activity.visitor_region || t('unknown_region')} {activity.status === 'completed' ? t('user_submitted') : t('user_viewed')}
                                     </p>
                                     <div className="flex items-center gap-2 mt-0.5">
-                                        <FileText className="w-3 h-3 text-gray-400" />
-                                        <span className="text-xs text-gray-500 truncate">
+                                        <FileText className="w-3 h-3 text-default-500" />
+                                        <span className="text-xs text-default-500 truncate">
                                             {activity.form_title}
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 text-xs text-gray-500 flex-shrink-0 ml-2">
+                            <div className="flex items-center gap-2 text-xs text-default-500 flex-shrink-0 ml-2">
                                 <Clock className="w-3 h-3" />
                                 {activity.time}
                             </div>
