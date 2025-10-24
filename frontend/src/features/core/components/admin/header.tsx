@@ -37,7 +37,7 @@ export default function Header({
         <Card>
             <CardBody className="grid grid-cols-8 !py-3">
                 <div className="col-span-6 content-center flex items-center gap-2">
-                    <Button isIconOnly variant="light" size="sm" onPress={() => setSidebarOpen(!sidebarOpen)}><PanelLeft /></Button>
+                    <Button isIconOnly variant="light" size="sm" onPress={() => setSidebarOpen(!sidebarOpen)}><PanelLeft width={20} height={20} /></Button>
                     {breadcrumbs}
                 </div>
                 <div className="col-span-2 content-center justify-self-end">
