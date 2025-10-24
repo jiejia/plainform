@@ -27,12 +27,12 @@ export default function TimeHeatmap( { data }: { data: TimeHeatmapType } ) {
     const maxValue = Math.max(...heatmapData.flat());
 
     const getColor = (value: number) => {
-        if (value === 0) return '#f3f4f6';
+        if (value === 0) return 'bg-content4';
         const intensity = value / maxValue;
-        if (intensity > 0.75) return '#1e40af';
-        if (intensity > 0.5) return '#3b82f6';
-        if (intensity > 0.25) return '#60a5fa';
-        return '#93c5fd';
+        if (intensity > 0.75) return 'bg-primary-700';
+        if (intensity > 0.5) return 'bg-primary';
+        if (intensity > 0.25) return 'bg-primary-400';
+        return 'bg-primary-200';
     };
 
     return (
@@ -45,7 +45,7 @@ export default function TimeHeatmap( { data }: { data: TimeHeatmapType } ) {
                         {hours.map(hour => (
                             <div
                                 key={hour}
-                                className="flex-1 text-center text-xs text-gray-500"
+                                className="flex-1 text-center text-xs"
                             >
                                 {hour % 3 === 0 ? `${hour}h` : ''}
                             </div>
@@ -55,17 +55,16 @@ export default function TimeHeatmap( { data }: { data: TimeHeatmapType } ) {
                     {/* 热力图网格 */}
                     {days.map((day, dayIndex) => (
                         <div key={day} className="flex items-center mb-1">
-                            <div className="w-16 text-xs text-gray-600">{day}</div>
+                            <div className="w-16 text-xs">{day}</div>
                             <div className="flex-1 flex gap-1">
                                 {heatmapData[dayIndex].map((value, hourIndex) => (
                                     <div
                                         key={hourIndex}
-                                        className="flex-1 h-8 rounded transition-all hover:opacity-80 cursor-pointer group relative"
-                                        style={{ backgroundColor: getColor(value) }}
+                                        className={`flex-1 h-8 rounded transition-all hover:opacity-80 cursor-pointer group relative ${getColor(value)}`}
                                         title={`${day} ${hourIndex}:00 - ${value} ${t('form.times_submission')}`}
                                     >
                                         {/* Tooltip */}
-                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-content1 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
                                             {day} {hourIndex}:00<br />
                                             {value} {t('form.times_submission')}
                                         </div>

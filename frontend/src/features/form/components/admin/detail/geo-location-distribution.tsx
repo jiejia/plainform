@@ -35,10 +35,10 @@ export default function GeoLocationDistribution( { data }: { data: GeoLocationDi
                     {locationData.map((location, index) => (
                         <div key={index} className="flex items-center justify-between">
                             <div className="flex items-center gap-3 flex-1">
-                                <span className="text-sm font-medium text-gray-500 w-6">
+                                <span className="text-sm font-medium w-6">
                                     #{index + 1}
                                 </span>
-                                <span className="text-sm font-medium text-gray-900">
+                                <span className="text-sm font-medium">
                                     {location.city}
                                 </span>
                                 <div className="flex-1 mx-4">
@@ -54,7 +54,7 @@ export default function GeoLocationDistribution( { data }: { data: GeoLocationDi
                                 <span className="text-lg font-bold text-gray-900">
                                     {location.count}
                                 </span>
-                                <span className="text-xs text-gray-500 mb-0.5">
+                                <span className="text-xs mb-0.5">
                                     {location.percentage}%
                                 </span>
                             </div>

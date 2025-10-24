@@ -25,15 +25,15 @@ export default function Overlay({ activeItem, fields, controls }: { activeItem: 
                 (activeItem.area === "control"
                     ? controls[activeItem.id] && (
                         <Item
-                            className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer border border-gray-400 transition-colors">
-                            <Icon size={18} className="text-blue-500" />
+                            className="flex items-center space-x-3 p-3 rounded-lg hover:bg-content2 cursor-pointer border border-default-400 transition-colors">
+                            <Icon size={18} className="text-primary" />
                             <span className="text-sm font-medium">{t(`form.${controls[activeItem.id].type}`)}</span>
                         </Item>
                     )
                     : fields[activeItem.id] && (
-                        <Item className={clsx("flex items-center justify-between p-3 rounded-lg border border-gray-400 hover:bg-gray-100 transition-colors", { "outline -outline-offset-2 outline-2 outline-primary": fields[activeItem.id].active })}>
-                            <span className="text-sm font-medium text-gray-700">{fields[activeItem.id].title}</span>
-                            <span className="text-xs text-gray-500 px-2 py-1 rounded-full">{t(`form.${fields[activeItem.id].control_type}`)}</span>
+                        <Item className={clsx("flex items-center justify-between p-3 rounded-lg border border-default-400 hover:bg-content2 transition-colors", { "outline -outline-offset-2 outline-2 outline-primary": fields[activeItem.id].active })}>
+                            <span className="text-sm font-medium">{fields[activeItem.id].title}</span>
+                            <span className="text-xs px-2 py-1 rounded-full">{t(`form.${fields[activeItem.id].control_type}`)}</span>
                         </Item>
                     ))}
         </DragOverlay>

@@ -8,7 +8,7 @@ export default function Recycle() {
     return (
         <DndDroppable
             id="recycle"
-            className="p-6 bg-danger-50 rounded-lg flex justify-center items-center h-8 w-full cursor-pointer hover:bg-danger-150"
+            className="p-6 bg-content3 rounded-lg flex justify-center items-center h-8 w-full cursor-pointer hover:bg-content3"
         >
             <Trash2 size={16} />
         </DndDroppable>

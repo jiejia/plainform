@@ -20,9 +20,9 @@ export default function Controls({ controls }: { controls: Control[] }) {
                         <DndSortableItem
                             key={index}
                             id={"control-" + index}
-                            className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer border border-gray-400 transition-colors"
+                            className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer border border-default-400 transition-colors"
                         >
-                            <Icon size={18} className="text-blue-500" />
+                            <Icon size={18} className="text-primary" />
                             <span className="text-sm font-medium">{t(control.type)}</span>
                         </DndSortableItem>
                     )

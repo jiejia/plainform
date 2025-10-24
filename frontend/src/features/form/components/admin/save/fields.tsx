@@ -42,13 +42,13 @@ export default function Fields({ fields, setFields, setTabSelectedKey, setFieldE
                     {fields.map((field, index) => (
                         <DndSortableItem
                             id={"field-" + index}
-                            className={clsx("flex items-center justify-between p-3 rounded-lg border border-gray-400 hover:bg-gray-100 transition-colors", { "outline -outline-offset-2 outline-2 outline-primary": fields[index].active })}
+                            className={clsx("flex items-center justify-between p-3 rounded-lg border border-default-400 hover:bg-content2 transition-colors", { "outline -outline-offset-2 outline-2 outline-primary": fields[index].active })}
                             key={index}
                             onClick={(e) => handleFieldClick(e, index)}
                             title={field.title}
                         >
-                            <span className="text-sm font-medium text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap">{field.title}</span>
-                            <span className="text-xs text-gray-500 px-2 py-1 rounded-full">{t(field.control_type)}</span>
+                            <span className="text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap">{field.title}</span>
+                            <span className="text-xs px-2 py-1 rounded-full">{t(field.control_type)}</span>
                         </DndSortableItem>
                     ))}
                 </ul>
