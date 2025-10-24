@@ -8,6 +8,7 @@ import { setOptions as setOptionsAction } from '@/features/setting/actions/setti
 import { msg } from "@/features/core/utils/ui";
 import { appDescriptionValidator } from "@/features/setting/validators/general-validator";
 import { useTranslations } from 'next-intl';
+import ErrorMessage from "@/features/core/components/shared/error-message";
 
 type appDescriptionError = {
     app_description: string;
@@ -78,9 +79,7 @@ export default function AppDescription({ options, setOptions }: { options: any, 
                 value={options.app_description} onValueChange={handleAppDescriptionChange}
                 onFocus={() => setErrors({ ...errors, app_description: '' })} endContent={
                     errors.app_description && (
-                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {t(errors.app_description)}
-                        </span>
+                        <ErrorMessage error={t(errors.app_description)} />
                     )
                 } />
         </FormModal>

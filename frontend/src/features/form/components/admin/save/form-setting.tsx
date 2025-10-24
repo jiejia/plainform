@@ -4,7 +4,8 @@ import { Input, Textarea, Select, SelectItem, Switch, cn } from "@heroui/react";
 import React from "react";
 import { Form } from "@/features/form/types/form";
 import { FormError } from "@/features/form/types/save/form-error";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";        
+import ErrorMessage from "@/features/core/components/shared/error-message";
 
 export default function FormSetting({ form, setForm, errors ,setErrors}: { form: Form, setForm: (form: Form) => void, errors: FormError, setErrors: (errors: FormError) => void }) {
 
@@ -43,9 +44,7 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                 onFocus={() => setErrors({ ...errors, title: '' })}
                 endContent={
                     errors.title && (
-                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {t(errors.title as any)}
-                        </span>
+                        <ErrorMessage error={t(errors.title as any)} />
                     )
                 }
                 maxLength={255}
@@ -66,9 +65,7 @@ export default function FormSetting({ form, setForm, errors ,setErrors}: { form:
                 onFocus={() => setErrors({ ...errors, description: '' })}
                 endContent={
                     errors.description && (
-                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {t(errors.description as any)}
-                        </span>
+                        <ErrorMessage error={t(errors.description as any)} />
                     )
                 }
                 maxLength={1000}

@@ -8,6 +8,7 @@ import { resetPasswordValidator } from "@/features/setting/validators/reset-pass
 import { msg } from "@/features/core/utils/ui";
 import { resetPassword } from "@/features/admin/actions/auth-action";
 import { useTranslations } from 'next-intl';
+import ErrorMessage from "@/features/core/components/shared/error-message";
 
 type errors = {
     oldPassword: string;
@@ -110,9 +111,7 @@ export default function ResetPassword() {
                 onFocus={() => setErrors({ ...errors, oldPassword: '' })}
                 endContent={
                     errors.oldPassword && (
-                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {t(errors.oldPassword)}
-                        </span>
+                        <ErrorMessage error={t(errors.oldPassword)} />
                     )
                 }
             />
@@ -132,9 +131,7 @@ export default function ResetPassword() {
                 onFocus={() => setErrors({ ...errors, Password: '' })}
                 endContent={
                     errors.Password && (
-                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {t(errors.Password)}
-                        </span>
+                        <ErrorMessage error={t(errors.Password)} />
                     )
                 }
             />
@@ -154,9 +151,7 @@ export default function ResetPassword() {
                 onFocus={() => setErrors({ ...errors, confirmPassword: '' })}
                 endContent={
                     errors.confirmPassword && (
-                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {t(errors.confirmPassword)}
-                        </span>
+                        <ErrorMessage error={t(errors.confirmPassword)} />
                     )
                 }
             />

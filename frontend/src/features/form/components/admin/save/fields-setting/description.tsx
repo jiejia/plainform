@@ -4,6 +4,7 @@ import { Input } from "@heroui/react";
 import { Field } from "@/features/form/types/field";
 import { FieldError } from "@/features/form/types/save/field-error";
 import { useTranslations } from 'next-intl';
+import ErrorMessage from "@/features/core/components/shared/error-message";
 export default function Description({
     fields,
     setFields,
@@ -45,9 +46,7 @@ export default function Description({
                         onFocus={() => setFieldErrors({ ...errors, description: '' })}
                         endContent={
                             errors.description && (
-                                <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {t(errors.description)}
-                                </span>
+                                <ErrorMessage error={t(errors.description)} />
                             )
                         }
                     />

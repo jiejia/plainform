@@ -10,6 +10,7 @@ import { resetPasswordValidator } from "@/features/admin/validators/reset-passwo
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
+import ErrorMessage from "@/features/core/components/shared/error-message";
 
 type resetPasswordError = {
     newPassword: string;
@@ -96,9 +97,7 @@ export default function ResetPassword() {
                         onFocus={() => setErrors({ ...errors, newPassword: '' })}
                         endContent={
                             errors.newPassword && (
-                                <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {t(errors.newPassword)}
-                                </span>
+                                <ErrorMessage error={t(errors.newPassword)} />
                             )
                         }
                     />
@@ -119,9 +118,7 @@ export default function ResetPassword() {
                         onFocus={() => setErrors({ ...errors, confirmPassword: '' })}
                         endContent={
                             errors.confirmPassword && (
-                                <span className="text-danger-500 text-xs bg-default px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {t(errors.confirmPassword)}
-                                </span>
+                                <ErrorMessage error={t(errors.confirmPassword)} />
                             )
                         }
                     />

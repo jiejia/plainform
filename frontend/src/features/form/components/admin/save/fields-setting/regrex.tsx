@@ -5,6 +5,8 @@ import { Field } from "@/features/form/types/field";
 import { FieldError } from "@/features/form/types/save/field-error";
 import { Select, SelectItem } from "@heroui/react";
 import { useTranslations } from 'next-intl';
+import ErrorMessage from "@/features/core/components/shared/error-message";
+
 export default function Regrex({
     fields,
     setFields,
@@ -51,9 +53,7 @@ export default function Regrex({
                             onFocus={() => setFieldErrors({ ...errors, regex: '' })}
                             endContent={
                                 errors.regex && (
-                                    <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                        {t(errors.regex)}
-                                    </span>
+                                    <ErrorMessage error={t(errors.regex)} />
                                 )
                             }
                         />

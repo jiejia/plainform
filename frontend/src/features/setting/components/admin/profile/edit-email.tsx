@@ -8,6 +8,8 @@ import { updateEmailValidator, sendEmailResetCodeValidator } from "@/features/se
 import { msg } from "@/features/core/utils/ui";
 import { updateEmail, sendEmailResetCode } from "@/features/admin/actions/auth-action";
 import { useTranslations } from 'next-intl';
+import ErrorMessage from "@/features/core/components/shared/error-message";
+
 type errors = {
     email: string;
     code: string;
@@ -158,9 +160,7 @@ export default function EditEmail() {
                     onFocus={() => setErrors({ ...errors, email: '' })}
                     endContent={
                         errors.email && (
-                            <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                {t(errors.email)}
-                            </span>
+                            <ErrorMessage error={t(errors.email)} />
                         )
                     }
                 />
@@ -191,9 +191,7 @@ export default function EditEmail() {
                 onFocus={() => setErrors({ ...errors, code: '' })}
                 endContent={
                     errors.code && (
-                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {t(errors.code)}
-                        </span>
+                        <ErrorMessage error={t(errors.code)} />
                     )
                 }
             />

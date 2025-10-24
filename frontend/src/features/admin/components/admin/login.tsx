@@ -9,6 +9,7 @@ import { msg } from "@/features/core/utils/ui";
 import { login } from "@/features/admin/actions/auth-action";
 import { loginValidator } from "@/features/admin/validators/login-validator";
 import { useTranslations } from 'next-intl';
+import ErrorMessage from "@/features/core/components/shared/error-message";
 
 
 type loginError = {
@@ -101,9 +102,7 @@ export default function Login() {
                         onFocus={() => setErrors({ ...errors, email: '' })}
                         endContent={
                             errors.email && (
-                                <span className="text-danger-500 text-xs bg-content3 px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {t(errors.email)}
-                                </span>
+                                <ErrorMessage error={t(errors.email)} />
                             )
                         }
                     />
@@ -125,9 +124,7 @@ export default function Login() {
                         onFocus={() => setErrors({ ...errors, password: '' })}
                         endContent={
                             errors.password && (
-                                <span className="text-danger-500 text-xs bg-content3 px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {t(errors.password)}
-                                </span>
+                                <ErrorMessage error={t(errors.password)} />
                             )
                         }
                     />

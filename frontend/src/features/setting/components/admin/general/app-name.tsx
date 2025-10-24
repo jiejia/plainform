@@ -8,6 +8,7 @@ import { setOptions as setOptionsAction } from '@/features/setting/actions/setti
 import { appNameValidator } from '@/features/setting/validators/general-validator';
 import { msg } from '@/features/core/utils/ui';
 import { useTranslations } from 'next-intl';
+import ErrorMessage from "@/features/core/components/shared/error-message";
 
 type appNameError = {
     app_name: string;
@@ -81,9 +82,7 @@ export default function AppName({ options, setOptions }: { options: any, setOpti
                 onFocus={() => setErrors({ ...errors, app_name: '' })}
                 endContent={
                     errors.app_name && (
-                        <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                            {t(errors.app_name)}
-                        </span>
+                        <ErrorMessage error={t(errors.app_name)} />
                     )
                 }
             />

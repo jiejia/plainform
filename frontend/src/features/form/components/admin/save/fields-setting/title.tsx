@@ -4,7 +4,7 @@ import { Field } from "@/features/form/types/field";
 import { Input } from "@heroui/react";
 import { FieldError } from "@/features/form/types/save/field-error";
 import { useTranslations } from "next-intl";
-
+import ErrorMessage from "@/features/core/components/shared/error-message";
 
 export default function Title({
     fields,
@@ -56,9 +56,7 @@ export default function Title({
                         onFocus={() => setFieldErrors({ ...errors, title: '' })}
                         endContent={
                             errors.title && (
-                                <span className="text-danger-500 text-xs bg-white px-2 py-1 rounded-md whitespace-nowrap shrink-0">
-                                    {t(errors.title as any)}
-                                </span>
+                                <ErrorMessage error={t(errors.title as any)} />
                             )
                         }
                         isRequired
