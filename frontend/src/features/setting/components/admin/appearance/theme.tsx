@@ -35,6 +35,7 @@ export default function Theme({ options, setOptions }: { options: any, setOption
         const selected = keys.currentKey as string;
         setOptions({ ...options, theme: selected });
         setOptionsAction('appearances', 'theme', selected);
+        setTheme(selected);
     }   
 
     return (

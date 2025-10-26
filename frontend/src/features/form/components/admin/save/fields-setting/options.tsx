@@ -217,11 +217,11 @@ export default function Options({
                         )}
                         <div className="grid grid-cols-1 gap-1">
                             <span className="text-xs font-semibold">{t('form.options')}</span>
-                            <ul className="max-w-full grid grid-flow-row gap-1 bg-white">
+                            <ul className="max-w-full grid grid-flow-row gap-1">
                                 {(currentField.config.options.default_options as Option[] | undefined)?.map(
                                     (option: Option, index: number) => (
                                         <li
-                                            className="max-w-full flex items-center gap-1 bg-content2 p-1 rounded-lg"
+                                            className="max-w-full flex items-center gap-1 bg-content p-1 rounded-lg"
                                             key={index}
                                         >
                                             <Checkbox
@@ -239,11 +239,6 @@ export default function Options({
                                                 value={option.val}
                                                 onChange={(e) => handleOptionValChange(index, e)}
                                                 className="flex-grow min-w-0"
-                                                classNames={{
-                                                    input: "!bg-white",
-                                                    inputWrapper: "!bg-white"
-                                                }}
-                                                variant="underlined"
                                             />
                                             <Button
                                                 isIconOnly
